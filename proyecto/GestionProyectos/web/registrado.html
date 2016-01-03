@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>TODO write content</div>
+        
+        <script type="text/javascript">
+            //window.alert(getCookie("username"));
+            var user = getCookie("username");
+            window.alert(user);
+            jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/proyectos", {
+                    user: user
+                }, function (resultado) {
+                    //jQuery("#resultado span").text(resultado);
+                    //var pagina = 'http://localhost:8080/GestionProyectos/registrado.html';
+                    //document.location.href=pagina;
+                });
+                
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+d.toUTCString();
+                document.cookie = cname + "=" + cvalue + "; " + expires;
+            }
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)===' ') c = c.substring(1);
+                        if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
+                    }
+                    return "";
+            }
+
+            function checkCookie() {
+                var user = getCookie("username");
+                if (user !== "") {
+                    window.alert("Welcome again " + user);
+                } else {
+                    user = window.prompt("Please enter your name:", "");
+                if (user !== "" && user !== null) {
+                    setCookie("username", user, 365);
+                }
+                }
+            }
+        </script>
+        
+        <script type="text/javascript">
+            
+        </script>
+    </body>
+</html>
