@@ -10,18 +10,16 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
+import modelo.Administrador;
 import modelo.Dedicacion;
 import modelo.Proyecto;
 import modelo.Trabajador;
+import persistencia.AdministradorFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
 import persistencia.TrabajadorFacadeLocal;
@@ -45,6 +43,9 @@ public class SimpleRootResource {
     
     @EJB
     private DedicacionFacadeLocal dedicacionFacade;
+    
+    @EJB
+    private AdministradorFacadeLocal administradorFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -69,7 +70,7 @@ public class SimpleRootResource {
      * @return an HTTP response with content of the updated or created resource.
      */
     @GET
-    @Consumes("application/xml")
+    //@Consumes("application/xml")
     public String getTest(String content) {
         return "Funciono";
     }
@@ -78,32 +79,53 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/proyectos")
     public List<Proyecto> getProyectos(@QueryParam("user") String nombre){
-        List<Proyecto> proyectos = proyectoFacade.findAll();
         List<Dedicacion> dedicaciones = dedicacionFacade.findAll();
         Trabajador t = trabajadorFacade.find(nombre);
-        List<Dedicacion> dedicFilt = new ArrayList<Dedicacion>();
+        List<Dedicacion> dedicFilt = new ArrayList<>();
         for(Dedicacion item:dedicaciones){
             if(item.getTrabajador().getNick().equals(t.getNick())){
                 dedicFilt.add(item);
             }
         }
         
-        List<Proyecto> pFiltrado = new ArrayList<Proyecto>();
+        List<Proyecto> pFiltrado = new ArrayList<>();
         for(Dedicacion item:dedicFilt){
             pFiltrado.add(item.getProyecto());
         }
-        return proyectos;
+        return pFiltrado;
     }
     
     @GET
     @Path("/usuario")
-    public boolean login(@QueryParam("user") String nombre, @QueryParam("password") String contraseña){
+    public int login(@QueryParam("user") String nombre, @QueryParam("password") String contraseña){
            List<Trabajador> trabajadores = trabajadorFacade.findAll();
+           List<Administrador> admins = administradorFacade.findAll();
            for(Trabajador item : trabajadores){              
                if(item.getNick().equals(nombre)){
-                   return item.getPassword().compareTo(contraseña)==0;
+                   if(item.getPassword().compareTo(contraseña)==0){
+                       return 2;
+                   }
                }
            }
-           return false;
+           for(Administrador item: admins){
+               if(item.getNick().equals(nombre)){
+                   if(item.getPassword().compareTo(contraseña)==0){
+                       return 1;
+                   }
+               }              
+           }
+           return 0;
+    }
+    
+    @GET
+    @Path("/admin")
+    public int checkAdmin(@QueryParam("user") String nombre){
+           List<Administrador> admins = administradorFacade.findAll();           
+           for(Administrador item: admins){
+               if(item.getNick().equals(nombre)){
+                  return 1;
+               }              
+           }
+           return 0;
     }
 }
