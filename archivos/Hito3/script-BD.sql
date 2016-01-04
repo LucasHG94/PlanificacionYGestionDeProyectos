@@ -18,9 +18,18 @@ CREATE TABLE Administrador (
  PRIMARY KEY (nick)
 );
 
+
+CREATE TABLE Trabajador (
+ nick VARCHAR(20) NOT NULL,
+ password VARCHAR(20),
+ categoria INT,
+ PRIMARY KEY (nick)
+);
+
+
 CREATE TABLE CategoriaRoles (
  categoria INT NOT NULL,
- rol CHAR(20) NOT NULL,
+ rol VARCHAR(20) NOT NULL,
  PRIMARY KEY (categoria,rol),
  CHECK( (rol='JEFE') OR (rol='ANALISTA') OR (rol='DISENADOR') OR (rol='ANALISTA-PROGRAMADOR')
 	 OR (rol='RESPONSABLE-PRUEBAS') OR (rol='PROGRAMADOR') OR (rol='PROBADOR'))
@@ -28,7 +37,9 @@ CREATE TABLE CategoriaRoles (
 
 
 CREATE TABLE DatosConfigurables (
- proyectosAlMismoTiempo INT NOT NULL
+ nombreVariable VARCHAR(40),
+ valor INT NOT NULL,
+ PRIMARY KEY (nombreVariable)
 );
 
 
@@ -37,15 +48,8 @@ CREATE TABLE Proyecto (
  nombre VARCHAR(100),
  fechaInicio DATE,
  fechaFin DATE,
+ nickJefe VARCHAR(20) NOT NULL,
  PRIMARY KEY (id)
-);
-
-
-CREATE TABLE Trabajador (
- nick VARCHAR(20) NOT NULL,
- password VARCHAR(20),
- categoria INT,
- PRIMARY KEY (nick)
 );
 
 
@@ -86,7 +90,7 @@ CREATE TABLE Actividad (
  fechaInicio DATE,
  fechaFin DATE,
  esfuerzoEstimado INT,
- rol CHAR(20),
+ rol VARCHAR(20),
  PRIMARY KEY (idProyecto,idEtapa, id),
  FOREIGN KEY (idEtapa,idProyecto) REFERENCES Etapa (id,idProyecto),
  CHECK( (rol='JEFE') OR (rol='ANALISTA') OR (rol='DISENADOR') OR (rol='ANALISTA-PROGRAMADOR')
@@ -137,10 +141,14 @@ CREATE TABLE Precedencia (
 
 INSERT INTO Administrador VALUES ('Administrador', 'password');
 INSERT INTO Trabajador VALUES ('Trabajador1', 'password', 1);
+INSERT INTO Trabajador VALUES ('Trabajador7', 'password', 1);
 INSERT INTO Trabajador VALUES ('Trabajador2', 'password', 2);
 INSERT INTO Trabajador VALUES ('Trabajador3', 'password', 3);
 INSERT INTO Trabajador VALUES ('Trabajador4', 'password', 4);
 INSERT INTO Trabajador VALUES ('Trabajador5', 'password', 4);
+INSERT INTO Trabajador VALUES ('Trabajador8', 'password', 4);
+INSERT INTO Trabajador VALUES ('Trabajador9', 'password', 2);
+INSERT INTO Trabajador VALUES ('Trabajador10', 'password', 3);
 
 INSERT INTO CategoriaRoles VALUES (1, 'JEFE');
 INSERT INTO CategoriaRoles VALUES (2, 'ANALISTA');
@@ -150,9 +158,12 @@ INSERT INTO CategoriaRoles VALUES (3, 'RESPONSABLE-PRUEBAS');
 INSERT INTO CategoriaRoles VALUES (4, 'PROGRAMADOR');
 INSERT INTO CategoriaRoles VALUES (4, 'PROBADOR');
 
-INSERT INTO DatosConfigurables VALUES (2);
+INSERT INTO DatosConfigurables VALUES ('ProyectosAlMismoTiempo', 2);
 
-INSERT INTO Proyecto VALUES(1, 'Crear pagina web', '2015-10-05' , '2015-12-14');
+
+/*Proyecto 1*/
+
+INSERT INTO Proyecto VALUES(1, 'Crear pagina web', '2015-10-05' , '2015-12-14','Trabajador7');
 INSERT INTO Etapa VALUES(1, 1, 'Inicio');
 INSERT INTO Etapa VALUES(1, 2, 'Elaboracion');
 INSERT INTO Etapa VALUES(1, 3, 'Contruccion');
@@ -244,17 +255,119 @@ INSERT INTO Asignacion VALUES('Trabajador4', 1, 4, 1);
 INSERT INTO Asignacion VALUES('Trabajador4', 1, 4, 2);
 INSERT INTO Asignacion VALUES('Trabajador4', 1, 4, 3);
 
+/* Proyecto 2*/
+INSERT INTO Proyecto VALUES(2, 'Programa para intel S.A.', '2015-10-05' , '2015-12-14', 'Trabajador1');
+INSERT INTO Etapa VALUES(2, 1, 'Inicio');
+INSERT INTO Etapa VALUES(2, 2, 'Elaboracion');
+INSERT INTO Etapa VALUES(2, 3, 'Contruccion');
+INSERT INTO Etapa VALUES(2, 4, 'Transicion');
+INSERT INTO Actividad VALUES(2, 1, 1, 'Comprobar la viabalidad','2015-10-05', '2015-10-15', 4, 'ANALISTA');
+INSERT INTO Actividad VALUES(2, 1, 2, 'Identificar requisitos', '2015-10-15', '2015-10-23', 10, 'ANALISTA');
+INSERT INTO Actividad VALUES(2, 1, 3, 'Obtener informe conceptual de objetivos', NULL, '2015-10-23', 0, NULL); /* hito */
+INSERT INTO Actividad VALUES(2, 2, 1, 'Diseno de la BD', '2015-10-19', '2015-10-28', 15, 'ANALISTA');
+INSERT INTO Actividad VALUES(2, 2, 2, 'Diseno del modelo de dominio', '2015-10-31', '2015-11-2', 15, 'ANALISTA');
+INSERT INTO Actividad VALUES(2, 2, 3, 'Disenos iteraticos', '2015-10-26', '2015-11-4', 24, 'DISENADOR');
+INSERT INTO Actividad VALUES(2, 2, 4, 'Disenos de casos de uso','2015-11-4', '2015-11-12', 14, 'DISENADOR');
+INSERT INTO Actividad VALUES(2, 2, 5, 'Comprobar la viabilidad', '2015-11-12', '2015-11-13', 14, 'DISENADOR');
+INSERT INTO Actividad VALUES(2, 2, 6, 'Informes Diseno aplicacion', NULL, '2015-11-13', 0, NULL); /* hito */
+INSERT INTO Actividad VALUES(2, 3, 1, 'Programar la aplicacion', '2015-11-13','2015-11-30', 230, 'PROGRAMADOR');
+INSERT INTO Actividad VALUES(2, 3, 2, 'Crear clases de prueba', '2015-11-13', '2015-11-30', 60, 'PROBADOR');
+INSERT INTO Actividad VALUES(2, 3, 3, 'Comprobar la concordancia codigo-arquitectura', '2015-11-30', '2015-12-05', 14, 'ANALISTA-PROGRAMADOR');
+INSERT INTO Actividad VALUES(2, 3, 4, 'Aplicacion operativa', NULL, '2015-12-05', 0, NULL); /* hito */
+INSERT INTO Actividad VALUES(2, 4, 1, 'Integrar la aplicacion', '2015-11-05', '2015-12-09', 13, 'ANALISTA-PROGRAMADOR');
+INSERT INTO Actividad VALUES(2, 4, 2, 'Corregir fallos', '2015-12-09', '2015-12-17', 30, 'PROGRAMADOR');
+INSERT INTO Actividad VALUES(2, 4, 3, 'Crear Guia de Usuario', '2015-12-17', '2015-12-19', 14, 'ANALISTA-PROGRAMADOR');
+INSERT INTO Actividad VALUES(2, 4, 4, 'Aplicacion lista para entorno real', NULL, '2015-12-20', 0, NULL); /* hito */
+
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 1, 1, '2015-10-05',0,2,0,0,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 1, 1, '2015-10-12',0,0,0,0,6,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 1, 2, '2015-10-12',3,0,3,5,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 1, 2, '2015-10-12',2,0,2,2,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 2, 1, '2015-10-19',6,0,0,34,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 2, 2, '2015-10-26',0,0,3,0,2,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 2, 3, '2015-10-26',0,0,5,0,20,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 2, 2, 3, '2015-10-26',0,0,3,0,30,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 2, 2, 4, '2015-11-2',0,3,0,3,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 2, 5, '2015-11-9',0,0,0,0,0,5,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 3, 1, '2015-11-9',0,0,0,0,30,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 3, 1, '2015-11-9',0,0,0,0,40,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 2, 3, 1, '2015-11-9',0,0,0,0,40,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 3, 1, '2015-11-9',0,0,0,0,20,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 2, 3, 1, '2015-11-16',0,0,0,0,20,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 2, 3, 1, '2015-11-16',0,0,0,0,10,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 2, 3, 1, '2015-11-16',0,0,0,0,30,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 3, 1, '2015-11-16',0,0,0,0,20,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 3, 2, '2015-11-16',0,0,0,0,20,3,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 3, 2, '2015-11-23',0,0,0,0,20,3,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 2, 3, 3, '2015-11-30',3,2,0,2,0,2,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 4, 1, '2015-11-30',2,0,2,0,3,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 4, 2, '2015-12-07',4,0,2,0,6,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 2, 4, 3, '2015-12-14',1,1,1,5,6,1,'ACEPTADO');
+
+INSERT INTO Precedencia VALUES(2, 1, 1, 2, 1, 2);
+INSERT INTO Precedencia VALUES(2, 1, 2, 2, 1, 3);
+INSERT INTO Precedencia VALUES(2, 1, 3, 2, 2, 1);
+INSERT INTO Precedencia VALUES(2, 2, 1, 2, 2, 2);
+INSERT INTO Precedencia VALUES(2, 2, 1, 2, 2, 3);
+INSERT INTO Precedencia VALUES(2, 2, 1, 2, 2, 4);
+INSERT INTO Precedencia VALUES(2, 2, 2, 2, 2, 5);
+INSERT INTO Precedencia VALUES(2, 2, 3, 2, 2, 5);
+INSERT INTO Precedencia VALUES(2, 2, 4, 2, 2, 5);
+INSERT INTO Precedencia VALUES(2, 2, 5, 2, 2, 6);
+INSERT INTO Precedencia VALUES(2, 2, 6, 2, 3, 1);
+INSERT INTO Precedencia VALUES(2, 2, 6, 2, 3, 2);
+INSERT INTO Precedencia VALUES(2, 3, 1, 2, 3, 3);
+INSERT INTO Precedencia VALUES(2, 3, 2, 2, 3, 3);
+INSERT INTO Precedencia VALUES(2, 3, 3, 2, 3, 4);
+INSERT INTO Precedencia VALUES(2, 3, 4, 2, 4, 1);
+INSERT INTO Precedencia VALUES(2, 4, 1, 2, 4, 2);
+INSERT INTO Precedencia VALUES(2, 4, 2, 2, 4, 3);
+INSERT INTO Precedencia VALUES(2, 4, 3, 2, 4, 4);
+
+INSERT INTO Dedicacion VALUES('Trabajador7', 2, 50);
+INSERT INTO Dedicacion VALUES('Trabajador9', 2, 50);
+INSERT INTO Dedicacion VALUES('Trabajador10', 2, 50);
+INSERT INTO Dedicacion VALUES('Trabajador8', 2, 50);
+
+INSERT INTO Asignacion VALUES('Trabajador7', 2, 1, 1);
+INSERT INTO Asignacion VALUES('Trabajador7', 2, 1, 2);
+INSERT INTO Asignacion VALUES('Trabajador9', 2, 1, 2);
+INSERT INTO Asignacion VALUES('Trabajador9', 2, 2, 1);
+INSERT INTO Asignacion VALUES('Trabajador9', 2, 2, 2);
+INSERT INTO Asignacion VALUES('Trabajador9', 2, 2, 3);
+INSERT INTO Asignacion VALUES('Trabajador10', 2, 2, 3);
+INSERT INTO Asignacion VALUES('Trabajador10', 2, 2, 4);
+INSERT INTO Asignacion VALUES('Trabajador7', 2, 2, 5);
+INSERT INTO Asignacion VALUES('Trabajador7', 2, 3, 1);
+INSERT INTO Asignacion VALUES('Trabajador9', 2, 3, 1);
+INSERT INTO Asignacion VALUES('Trabajador10', 2, 3, 1);
+INSERT INTO Asignacion VALUES('Trabajador8', 2, 3, 1);
+INSERT INTO Asignacion VALUES('Trabajador8', 2, 3, 2);
+INSERT INTO Asignacion VALUES('Trabajador10', 2, 3, 3);
+INSERT INTO Asignacion VALUES('Trabajador8', 2, 4, 1);
+INSERT INTO Asignacion VALUES('Trabajador8', 2, 4, 2);
+INSERT INTO Asignacion VALUES('Trabajador8', 2, 4, 3);
 
 INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador1');
 INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador1');
 INSERT INTO Vacaciones VALUES('2015-09-07', 'Trabajador1');
 INSERT INTO Vacaciones VALUES('2015-09-14', 'Trabajador1');
+INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador7');
+INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador7');
+INSERT INTO Vacaciones VALUES('2015-09-07', 'Trabajador7');
+INSERT INTO Vacaciones VALUES('2015-09-14', 'Trabajador7');
 INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador2');
 INSERT INTO Vacaciones VALUES('2015-09-21', 'Trabajador2');
 INSERT INTO Vacaciones VALUES('2015-09-28', 'Trabajador2');
 INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador2');
 INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador3');
 INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador3');
+INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador9');
+INSERT INTO Vacaciones VALUES('2015-09-21', 'Trabajador9');
+INSERT INTO Vacaciones VALUES('2015-09-28', 'Trabajador9');
+INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador9');
+INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador10');
+INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador10');
 INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador4');
 INSERT INTO Vacaciones VALUES('2015-08-24', 'Trabajador4');
 INSERT INTO Vacaciones VALUES('2015-08-17', 'Trabajador5');

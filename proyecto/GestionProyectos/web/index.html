@@ -14,11 +14,11 @@ and open the template in the editor.
     </head>
     <body>
         <h2>Login</h2>
-        Usuario: <input type="text" name="user" id="user"/>
-        Password: <input type="text" name="password" id="password"/>
+        <p>Usuario: <input type="text" name="user" id="user"/></p>
+        <p>Password: <input type="password" name="password" id="password"/></p>
         <button type="button" id="loguearBtn">Login</button>
         <div id="resultado">
-            Resultado: <span></span>
+            <span></span>
         </div>
 
         <script type="text/javascript">
@@ -28,7 +28,7 @@ and open the template in the editor.
                 jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/usuario", {
                     user: user, password: password
                 }, function (resultado) {
-                    jQuery("#resultado span").text(resultado);
+                    //jQuery("#resultado span").text(resultado);
                     if(resultado!=0){
                         setCookie("username",user,1);
                         if(resultado==1){

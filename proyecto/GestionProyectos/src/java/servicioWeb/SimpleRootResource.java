@@ -56,13 +56,13 @@ public class SimpleRootResource {
     /**
      * Retrieves representation of an instance of servicioWeb.SimpleRootResource
      * @return an instance of java.lang.String
-     */
+     *
     @GET
     @Produces("application/xml")
     public String getXml() {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
-    }
+    }*/
 
     /**
      * PUT method for updating or creating an instance of SimpleRootResource
@@ -93,6 +93,23 @@ public class SimpleRootResource {
             pFiltrado.add(item.getProyecto());
         }
         return pFiltrado;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectosjefe")
+    public List<Proyecto> getProyectosJefe(@QueryParam("user") String nombre){
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> pJefe = new ArrayList<>();
+        List<Trabajador> trabajadores = trabajadorFacade.findAll();
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for(Proyecto itemp:proyectos){
+            if(itemp.getNickjefe().equals(t.getNick())){
+                System.out.println(itemp.getNickjefe());
+                pJefe.add(itemp);
+            }
+        }
+        return pJefe;
     }
     
     @GET

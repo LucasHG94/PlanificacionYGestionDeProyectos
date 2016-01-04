@@ -6,18 +6,31 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Vista de proyectos</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
         </script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        
+        <!-- TODO Ajustar este script para que funcione correctamente-->
         <script type="text/javascript">
             jQuery(function(){
             var user = getCookie("username");
+            window.alert("llego2");
             jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/proyectos", {
+                    user: user
+                }, function(resultado) {
+                    window.alert("llego");
+                    for(j=0; j<resultado.length;j++){
+                        document.write("<p>"+resultado[j].nombre+' <button type=\n\
+                            "button" id="operaciones">Operaciones</button>\n\
+                            <button type="button" id="consultar">Consultar</button>\n\
+                            <button type="button" id="calendario">Calendario</button></p>');
+                    }
+                });
+            document.write('<h3>Proyectos en los que eres jefe:</h3>');
+            jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/proyectosjefe", {
                     user: user
                 }, function(resultado) {
                     for(j=0; j<resultado.length;j++){
@@ -26,7 +39,7 @@ and open the template in the editor.
                             <button type="button" id="consultar">Consultar</button>\n\
                             <button type="button" id="calendario">Calendario</button></p>');
                     }
-                });
+                });    
             });
             jQuery("#operaciones").click(function(){
                 

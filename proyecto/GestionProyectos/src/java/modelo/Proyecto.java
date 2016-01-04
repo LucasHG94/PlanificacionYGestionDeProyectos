@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Proyecto.findById", query = "SELECT p FROM Proyecto p WHERE p.id = :id"),
     @NamedQuery(name = "Proyecto.findByNombre", query = "SELECT p FROM Proyecto p WHERE p.nombre = :nombre"),
     @NamedQuery(name = "Proyecto.findByFechainicio", query = "SELECT p FROM Proyecto p WHERE p.fechainicio = :fechainicio"),
-    @NamedQuery(name = "Proyecto.findByFechafin", query = "SELECT p FROM Proyecto p WHERE p.fechafin = :fechafin")})
+    @NamedQuery(name = "Proyecto.findByFechafin", query = "SELECT p FROM Proyecto p WHERE p.fechafin = :fechafin"),
+    @NamedQuery(name = "Proyecto.findByNickjefe", query = "SELECT p FROM Proyecto p WHERE p.nickjefe = :nickjefe")})
 public class Proyecto implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,6 +54,11 @@ public class Proyecto implements Serializable {
     @Column(name = "FECHAFIN")
     @Temporal(TemporalType.DATE)
     private Date fechafin;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "NICKJEFE")
+    private String nickjefe;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "proyecto")
     private Collection<Etapa> etapaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "proyecto")
@@ -63,6 +69,11 @@ public class Proyecto implements Serializable {
 
     public Proyecto(Integer id) {
         this.id = id;
+    }
+
+    public Proyecto(Integer id, String nickjefe) {
+        this.id = id;
+        this.nickjefe = nickjefe;
     }
 
     public Integer getId() {
@@ -95,6 +106,14 @@ public class Proyecto implements Serializable {
 
     public void setFechafin(Date fechafin) {
         this.fechafin = fechafin;
+    }
+
+    public String getNickjefe() {
+        return nickjefe;
+    }
+
+    public void setNickjefe(String nickjefe) {
+        this.nickjefe = nickjefe;
     }
 
     @XmlTransient

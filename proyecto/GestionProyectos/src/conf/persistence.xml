@@ -5,6 +5,7 @@
     <class>modelo.Actividad</class>
     <class>modelo.Administrador</class>
     <class>modelo.Categoriaroles</class>
+    <class>modelo.Datosconfigurables</class>
     <class>modelo.Dedicacion</class>
     <class>modelo.Etapa</class>
     <class>modelo.Informesemanal</class>
