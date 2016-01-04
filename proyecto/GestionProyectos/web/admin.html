@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Administracion</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
+        </script>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h2>Opciones de administracion</h2>
+
+        <ul id="menu">
+            <li><a href="/html/default.asp">Alta de proyecto</a></li>
+            <li><a href="/css/default.asp">Modificar alta de proyecto</a></li>
+            <li><a href="/js/default.asp">Alta de usuario</a></li>
+            <li><a href="/php/default.asp">Eliminar usuario</a></li>
+            <li><a href="/html/default.asp">Asignar Jefe de Proyecto</a></li>
+            <li><a href="/html/default.asp">Establecer maximo numero de proyectos paralelos</a></li>
+            <li><a href="/html/default.asp">Cambiar categoria de empleado</a></li>
+        </ul>  
+
+        <script type="text/javascript">              
+                var user = getCookie("username");                   
+                jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin", {
+                    user: user
+                }, function (resultado) {                
+                        if(resultado!=1){    
+                            window.alert("Acceso denegado");
+                            var pagina = 'http://localhost:8080/GestionProyectos/index.html';
+                            document.location.href=pagina;
+                            
+                        }      
+                });            
+               
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+d.toUTCString();
+                document.cookie = cname + "=" + cvalue + "; " + expires +"; path=/";
+            }
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)===' ') c = c.substring(1);
+                        if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
+                    }
+                    return "";
+            }
+
+            function checkCookie() {
+                var user = getCookie("username");
+                if (user !== "") {
+                    alert("Welcome again " + user);
+                } else {
+                    user = prompt("Please enter your name:", "");
+                if (user !== "" && user !== null) {
+                    setCookie("username", user, 365);
+                }
+                }
+            }
+        </script>
+
+    </body>
+</html>
