@@ -5,10 +5,11 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-     <head>
+    <head>
         <title>Login</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
         </script>
+        <script type="text/javascript" src="js/utilidades.js"></script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
@@ -21,59 +22,8 @@ and open the template in the editor.
             <span></span>
         </div>
 
-        <script type="text/javascript">
-            jQuery("#loguearBtn").click(function(){                
-                var user = jQuery("#user").val();
-                var password = jQuery("#password").val();
-                jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/usuario", {
-                    user: user, password: password
-                }, function (resultado) {
-                    //jQuery("#resultado span").text(resultado);
-                    if(resultado!=0){
-                        setCookie("username",user,1);
-                        if(resultado==1){
-                            var pagina = 'http://localhost:8080/GestionProyectos/admin.html';
-                            document.location.href=pagina;
-                        }else{
-                            var pagina = 'http://localhost:8080/GestionProyectos/registrado.html';
-                            document.location.href=pagina; 
-                        }
-                    
-                    }
-                    
-                });
-            });
-        </script>
-        <script type="text/javascript">
-            function setCookie(cname, cvalue, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                var expires = "expires="+d.toUTCString();
-                document.cookie = cname + "=" + cvalue + "; " + expires +"; path=/";
-            }
-            function getCookie(cname) {
-                var name = cname + "=";
-                var ca = document.cookie.split(';');
-                for(var i=0; i<ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0)===' ') c = c.substring(1);
-                        if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
-                    }
-                    return "";
-            }
-
-            function checkCookie() {
-                var user = getCookie("username");
-                if (user !== "") {
-                    alert("Welcome again " + user);
-                } else {
-                    user = prompt("Please enter your name:", "");
-                if (user !== "" && user !== null) {
-                    setCookie("username", user, 365);
-                }
-                }
-            }
-        </script>
+        <script type="text/javascript" src="js/indexscript.js"></script>
+        
 
     </body>
 </html>
