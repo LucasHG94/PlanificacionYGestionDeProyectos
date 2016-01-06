@@ -35,11 +35,28 @@ function checkCookie() {
     }
 }
 
-function parametro( name, url ) {
-  if (!url) url = location.href;
-  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-  var regexS = "[\\?&]"+name+"=([^&#]*)";
-  var regex = new RegExp( regexS );
-  var results = regex.exec( url );
-  return results === null ? null : results[1];
+function parametro(name, url) {
+    if (!url)
+        url = location.href;
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(url);
+    return results === null ? null : results[1];
 }
+
+function checkAdmin() {
+    var user = getCookie("username");
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin", {
+        user: user
+    }, function (resultado) {
+        if (resultado != 1) {
+            window.alert("Acceso denegado");
+            var pagina = 'http://localhost:8080/GestionProyectos/index.html';
+            document.location.href = pagina;
+
+        }
+    });
+}
+
+

@@ -5,9 +5,11 @@
  */
 package persistencia;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import modelo.Proyecto;
 
 /**
@@ -26,6 +28,14 @@ public class ProyectoFacade extends AbstractFacade<Proyecto> implements Proyecto
 
     public ProyectoFacade() {
         super(Proyecto.class);
+    }
+
+    @Override
+    public List<Proyecto> getByName(String nombre) {
+        Query query = em.createNamedQuery("Proyecto.findByNombre");
+        query.setParameter("nombre", nombre);
+        List<Proyecto> resultado = query.getResultList();
+        return resultado;
     }
     
 }
