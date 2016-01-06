@@ -15,10 +15,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import modelo.Actividad;
 import modelo.Administrador;
 import modelo.Dedicacion;
 import modelo.Proyecto;
 import modelo.Trabajador;
+import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
@@ -46,6 +48,9 @@ public class SimpleRootResource {
     
     @EJB
     private AdministradorFacadeLocal administradorFacade;
+    
+    @EJB
+    private ActividadFacadeLocal actividadFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -105,7 +110,6 @@ public class SimpleRootResource {
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for(Proyecto itemp:proyectos){
             if(itemp.getNickjefe().equals(t.getNick())){
-                System.out.println(itemp.getNickjefe());
                 pJefe.add(itemp);
             }
         }
@@ -144,5 +148,21 @@ public class SimpleRootResource {
                }              
            }
            return 0;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/actividades")
+    public List<Actividad> getActividades(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto){
+        Trabajador t = trabajadorFacade.find(nombre);
+        Proyecto p = proyectoFacade.find(idProyecto);
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> actividadesTrabajador = new ArrayList<>();
+        for(Actividad item : actividades){
+            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)){
+                actividadesTrabajador.add(item);
+            }
+        }
+        return actividadesTrabajador;
     }
 }
