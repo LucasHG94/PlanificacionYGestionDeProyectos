@@ -9,14 +9,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import modelo.Actividad;
 import modelo.Administrador;
@@ -87,6 +90,38 @@ public class SimpleRootResource {
     //@Consumes("application/xml")
     public String getTest(String content) {
         return "Funciono";
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/nombreDisponible")
+    public boolean nombreDisponible(@QueryParam("nombre") String nombre){
+        return proyectoFacade.getByName(nombre).isEmpty();
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/trabajador/{nick}/disponibleParaJefe")
+    public boolean trabajadorDisponibleJefe(@PathParam("nick") String nick){
+        if(trabajadorFacade.find(nick)==null) return false;
+        List<Proyecto> proyectos = getProyectosJefe(nick);
+        Date hoy = new Date();
+        for(Proyecto p : proyectos){
+            if(p.getFechafin()!= null && p.getFechafin().compareTo(hoy)>=0) return false;
+        }
+        return true;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Consumes("application/json")
+    @Path("/proyectos/nuevo")
+    public boolean nuevoProyecto(@QueryParam("nombre") String nombre, @QueryParam("nickjefe") String nickjefe){
+        int id = proyectoFacade.findAll().size() + 1;
+        Proyecto p = new Proyecto(id, nickjefe);
+        p.setNombre(nombre);
+        proyectoFacade.create(p);
+        return true;
     }
     
     @GET

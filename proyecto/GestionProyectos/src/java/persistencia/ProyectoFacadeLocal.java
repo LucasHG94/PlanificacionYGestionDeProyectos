@@ -29,5 +29,7 @@ public interface ProyectoFacadeLocal {
     List<Proyecto> findRange(int[] range);
 
     int count();
+
+    List<Proyecto> getByName(String nombre);
     
 }
