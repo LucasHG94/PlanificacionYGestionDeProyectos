@@ -6,6 +6,8 @@
 package servicioWeb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import modelo.Actividad;
@@ -20,11 +23,14 @@ import modelo.Administrador;
 import modelo.Dedicacion;
 import modelo.Proyecto;
 import modelo.Trabajador;
+import modelo.Vacaciones;
+import modelo.VacacionesPK;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
 import persistencia.TrabajadorFacadeLocal;
+import persistencia.VacacionesFacadeLocal;
 
 /**
  * REST Web Service
@@ -51,6 +57,9 @@ public class SimpleRootResource {
     
     @EJB
     private ActividadFacadeLocal actividadFacade;
+    
+    @EJB
+    private VacacionesFacadeLocal vacacionesFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -164,5 +173,40 @@ public class SimpleRootResource {
             }
         }
         return actividadesTrabajador;
+    }
+    
+    @PUT
+    @Produces("application/json")
+    @Path("/vacaciones")
+    public void setVacaciones(@QueryParam("user") String nombre, 
+            @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
+            @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2){
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Vacaciones> vacaciones = vacacionesFacade.findAll();
+        List<Vacaciones> vacacionesTrabajador = new ArrayList<>();
+        for(Vacaciones item : vacaciones){
+            if(item.getTrabajador().equals(t)){
+                vacacionesTrabajador.add(item);
+            }
+        }
+        System.out.println("---->"+ano1);
+        Date fecha1 = new Date();
+        fecha1.setDate(dia1);
+        fecha1.setMonth(mes1-1);
+        fecha1.setYear(ano1-1900);//arreglar esto
+        vacacionesTrabajador.get(0).getVacacionesPK().setFechasemana(fecha1);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fecha1);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        vacacionesTrabajador.get(1).getVacacionesPK().setFechasemana(cal.getTime());
+        
+        Date fecha2 = new Date();
+        fecha1.setDate(dia2);
+        fecha1.setMonth(mes2-1);
+        fecha1.setYear(ano2-1900);//arreglar esto
+        vacacionesTrabajador.get(2).getVacacionesPK().setFechasemana(fecha2);
+        cal.setTime(fecha1);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        vacacionesTrabajador.get(3).getVacacionesPK().setFechasemana(cal.getTime());
     }
 }

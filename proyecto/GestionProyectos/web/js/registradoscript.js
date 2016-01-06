@@ -36,7 +36,7 @@ jQuery(function () {
             p.appendChild(btn);
             var btn = document.createElement("a");
             btn.setAttribute("id", "escoger");
-            btn.setAttribute("href","");
+            btn.setAttribute("href","http://localhost:8080/GestionProyectos/vacaciones.html");
             var t = document.createTextNode("escogerVacaciones,  ");
             btn.appendChild(t);
             p.appendChild(btn);
