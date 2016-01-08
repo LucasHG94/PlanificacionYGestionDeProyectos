@@ -1,0 +1,40 @@
+[{
+  "nombre": "Inicio",
+  "pre": [],
+  "duracion_estimada": 0,
+  "rol": "PROBADOR"
+}, {
+  "nombre": "Crear BD",
+  "pre": [0],
+  "duracion_estimada": 5,
+  "rol": "PROGRAMADOR",
+}, {
+  "nombre": "Crear Script",
+  "pre": [0],
+  "duracion_estimada": 7,
+  "rol": "ANALISTA"
+}, {
+  "nombre": "Pasar script a BD",
+  "pre": [1, 2],
+  "duracion_estimada": 2,
+  "rol": "PROGRAMADOR"
+}, {
+  "nombre": "PostBD",
+  "pre": [3],
+  "duracion_estimada": 0
+}, {
+  "nombre": "Hacer algo",
+  "pre": [4],
+  "duracion_estimada": 1,
+  "rol": "JEFE"
+}, {
+  "nombre": "Hacer otra cosa",
+  "pre": [4],
+  "duracion_estimada": 1,
+  "rol": "ANALISTA"
+}, {
+  "nombre": "Fin",
+  "pre": [5, 6],
+  "duracion_estimada": 1,
+  "rol": "JEFE"
+}]
