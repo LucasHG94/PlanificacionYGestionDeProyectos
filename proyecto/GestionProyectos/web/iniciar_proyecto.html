@@ -22,7 +22,7 @@ and open the template in the editor.
     </head>
     <body>
 
-        <div class="container">
+        <div class="container" style="margin-bottom:50">
 
             <div class="row">
                 <div class="col col-md-10 col-md-offset-1">
@@ -77,15 +77,41 @@ and open the template in the editor.
                                 <div class="form-group">
                                     <input type="text" class="form-control" id="nickt" placeholder="Nick trabajador.">
                                 </div>
-                                <span class="btn btn-info">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="porpar" placeholder="Porcentaje de participacion">
+                                </div>
+                                <span class="btn btn-info" id="addWorker">
                                     <span class="glyphicon glyphicon-plus-sign"></span>
                                     Añadir trabajador
 
                                 </span>
                             </form>
+                            <br>
+
+
+                            <div  style="display:none" id="asignarAlertBad" class="alert alert-danger" role="alert">
+                                <strong>Error!</strong> <span id="aAlertBadText"></span>
+                            </div>
+                            <div  style="display:none" id="asignarAlertGood" class="alert alert-success" role="alert">
+                                <strong>Correcto!</strong> <span id="aAlertGoodText">Es posible que el formato no sea el correcto.</span>
+                            </div>
                         </div>
+                        <ul class="list-group" id="lista-asignacion">
+
+                        </ul>
                     </div>
                 </div>
+                <button style="display:none" id="botonTerminar" class="col-md-2 col-md-offset-5 btn btn-success">
+                    Terminar.
+                </button>
+                
+
+                
+                
+            </div>
+            <div class="row">
+                <h1>&nbsp;</h1>
+                <h1>&nbsp;</h1>
             </div>
         </div>
         <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->

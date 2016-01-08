@@ -25,10 +25,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
 import modelo.Dedicacion;
+import modelo.DedicacionPK;
 import modelo.Etapa;
 import modelo.EtapaPK;
 import modelo.Proyecto;
@@ -37,6 +39,7 @@ import modelo.Vacaciones;
 import modelo.VacacionesPK;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
@@ -154,6 +157,10 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/proyectos/{id}/plan")
     public boolean asignarPlanProyecto(@PathParam("id") String id, String data) {
+        boolean debug = false;
+        if (debug) {
+            return true;
+        }
         try {
             String[] tmp = data.split("octet-stream");
             data = tmp[tmp.length - 1].split("------WebKit")[0];
@@ -217,8 +224,7 @@ public class SimpleRootResource {
                 System.out.println("pre: " + pre.length());
 
             }
-            
-            
+
             for (Etapa eTest : etapas) {
                 System.out.println("Etapa: " + eTest.getNombre());
                 System.out.println("Id: " + eTest.getEtapaPK().getId());
@@ -226,8 +232,8 @@ public class SimpleRootResource {
                 etapaFacade.create(eTest);
                 System.out.println("Etapa guardada.");
             }
-            
-            for(int i=actividades.size()-1; i>=0; i--){
+
+            for (int i = actividades.size() - 1; i >= 0; i--) {
                 Actividad aTest = actividades.get(i);
                 System.out.println("----------");
                 System.out.println("Actividad: " + aTest.getNombre());
@@ -246,11 +252,6 @@ public class SimpleRootResource {
                 actividadFacade.create(aTest);
                 System.out.println("Actividad guardada.");
             }
-
-            
-            
-            
-            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -272,6 +273,95 @@ public class SimpleRootResource {
             }
         }
         return proyectosNoIniciados;
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/{id}/asignarParticipacion/{nick}")
+    public String asignarParticipacion(@PathParam("id") String id, @PathParam("nick") String nick, @QueryParam("por") String por) {
+        /*if (trabajadorFacade.find(nick) == null) {
+         return false;
+         }
+         boolean jefe = !trabajadorDisponibleJefe(nick);
+         if(trabajadorDisponibleJefe(nick)){
+            
+         }
+         return true;*/
+        JSONObject response = new JSONObject();
+        try {
+            int idProyecto = Integer.valueOf(id);
+            int porActual = 0;
+            int porSolicitado = Integer.valueOf(por);
+            int numPActivos = 0;
+            if (porSolicitado > 100) {
+                porSolicitado = 100;
+            }
+            Trabajador t = trabajadorFacade.find(nick);
+            if (t == null) {
+                response.put("error", true);
+                response.put("mensaje", "Este nick no corresponde a ningun trabajador");
+                return response.toString();
+            }
+
+            List<Dedicacion> dedicaciones = new ArrayList<>(t.getDedicacionCollection());
+
+            for (Dedicacion d : dedicaciones) {
+                if (d.getProyecto().getFechafin() == null || d.getProyecto().getFechafin().compareTo(new Date()) >= 0) {
+                    porActual += d.getPorcentaje();
+                    numPActivos++;
+                }
+            }
+            System.out.println("Num proyectos activos: " + numPActivos);
+            System.out.println("Por actual: " + porActual);
+            if (porActual + porSolicitado > 100) {
+                response.put("error", true);
+                response.put("mensaje", "El porcentaje de participacion total superaria el permitido. Introduce un pocrcentaje menor.");
+                return response.toString();
+            }
+
+            if (jefeActualmente(nick) != null) {
+                int idPJefe = jefeActualmente(nick).getId();
+                System.out.println("Jefe del proyecto: " + idPJefe);
+                if (idPJefe == idProyecto) {
+                    response.put("error", true);
+                    response.put("mensaje", "El jefe de un proyecto no puede trabajar en el mismo.");
+                    return response.toString();
+                } else {
+                    if (numPActivos != 0) {
+                        response.put("error", true);
+                        response.put("mensaje", "Un jefe de proyecto solo puede trabajar en otro a mayores. Este usuario ya se encuentra trabjando en otro proyecto");
+                    }
+                }
+            }
+
+            Dedicacion nueva = new Dedicacion(new DedicacionPK(nick, idProyecto));
+            nueva.setPorcentaje(porSolicitado);
+            dedicacionFacade.create(nueva);
+            response.put("error", false);
+            response.put("nick", nick);
+            response.put("por", porSolicitado + "%");
+            response.put("mensaje", "Trabajador añadido al proyecto");
+            return response.toString();
+        } catch (NumberFormatException | JSONException e) {
+            response.put("error", true);
+            response.put("mensaje", "Error desconocido.");
+            return response.toString();
+        }
+
+    }
+
+    public Proyecto jefeActualmente(String nick) {
+        List<Proyecto> proyectos = getProyectosJefe(nick);
+        Date hoy = new Date();
+        for (Proyecto p : proyectos) {
+            if (p.getFechafin() == null) {
+                return p;
+            }
+            if (p.getFechafin().compareTo(hoy) >= 0) {
+                return p;
+            }
+        }
+        return null;
     }
 
     @GET
