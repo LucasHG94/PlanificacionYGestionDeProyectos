@@ -203,53 +203,70 @@ public class SimpleRootResource {
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
         for(Actividad item : actividades){
-            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)){
+            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
+                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
                 actividadesTrabajador.add(item);
             }
         }
         return actividadesTrabajador;
     }
-    //TODO hacer que lea el objeto json
+
     @GET
     @Consumes("application/json")
+    @Produces("application/json")
     @Path("/vacaciones")
     public boolean setVacaciones(@QueryParam("user") String nombre, 
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2){
         Trabajador t = trabajadorFacade.find(nombre);
-        /*List<Vacaciones> vacaciones = vacacionesFacade.findAll();
-        List<Vacaciones> vacacionesTrabajador = new ArrayList<>();
-        for(Vacaciones item : vacaciones){
-            if(item.getTrabajador().equals(t)){
-                vacacionesTrabajador.add(item);
-            }
-        }*/
-        //TODO dar error si coincide con alguna actividad
-        Date fecha1 = new Date();
-        fecha1.setDate(dia1);
-        fecha1.setMonth(mes1-1);
-        fecha1.setYear(ano1-1900);
-        VacacionesPK vpk = new VacacionesPK(new Date(), "Trabajador1");
-        Vacaciones v = new Vacaciones(vpk);
-        //vacacionesTrabajador.get(0).getVacacionesPK().setFechasemana(fecha1);
-        //cómo hacer para modificar la tabla?
-        vacacionesFacade.create(v);
-        /*Calendar cal = Calendar.getInstance();
-        cal.setTime(fecha1);
-        cal.add(Calendar.DAY_OF_MONTH, 7);
-        vacacionesTrabajador.get(1).getVacacionesPK().setFechasemana(cal.getTime());
-        vacacionesFacade.edit(vacacionesTrabajador.get(1));
+        Date fecha1 = new Date(ano1-1900,mes1-1,dia1);
+        Date fecha2 = new Date(ano2-1900,mes2-1,dia2);
         
-        Date fecha2 = new Date();
-        fecha1.setDate(dia2);
-        fecha1.setMonth(mes2-1);
-        fecha1.setYear(ano2-1900);
-        vacacionesTrabajador.get(2).getVacacionesPK().setFechasemana(fecha2);
-        vacacionesFacade.edit(vacacionesTrabajador.get(2));
+        Calendar cal = Calendar.getInstance();
         cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
-        vacacionesTrabajador.get(3).getVacacionesPK().setFechasemana(cal.getTime());
-        vacacionesFacade.edit(vacacionesTrabajador.get(3));*/
-        return true;
+        Date fecha3 = cal.getTime();
+        cal.setTime(fecha3);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha3Fin = cal.getTime();
+        
+        cal.setTime(fecha2);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha4 = cal.getTime();
+        cal.setTime(fecha4);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha4Fin = cal.getTime();
+        
+        boolean permitido = true;
+        List<Actividad> actividades = actividadFacade.findAll();
+        for(Actividad item : actividades){
+            if(t.getActividadCollection().contains(item)){
+                if(item.getFechainicio().after(fecha1) && item.getFechainicio().before(fecha3Fin)){
+                    permitido = false;
+                }
+                else if(item.getFechainicio().after(fecha2) && item.getFechainicio().before(fecha4Fin)){
+                    permitido = false;
+                }
+            }
+        }
+        
+        
+        if(permitido){
+            VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
+            Vacaciones v1 = new Vacaciones(vpk1);       
+            vacacionesFacade.create(v1);
+            VacacionesPK vpk2 = new VacacionesPK(fecha3, t.getNick());
+            Vacaciones v2 = new Vacaciones(vpk2);
+            vacacionesFacade.create(v2);
+
+
+            VacacionesPK vpk3 = new VacacionesPK(fecha2, t.getNick());
+            Vacaciones v3 = new Vacaciones(vpk3);
+            vacacionesFacade.create(v3);
+            VacacionesPK vpk4 = new VacacionesPK(fecha4, t.getNick());
+            Vacaciones v4 = new Vacaciones(vpk4);
+            vacacionesFacade.create(v4);
+        }
+        return permitido;
     }
 }

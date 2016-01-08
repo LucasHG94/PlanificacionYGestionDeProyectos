@@ -6,7 +6,7 @@ jQuery("#enviarDias").click(function () {
 
     var ano2 = jQuery("#ano2").val();
     var mes2 = jQuery("#mes2").val();
-    var dia2 = jQuery("#dia1").val();
+    var dia2 = jQuery("#dia2").val();
     /*jQuery.ajax({
          type: "PUT",
          url: "http://localhost:8080/GestionProyectos/webresources/SimpleRoot/vacaciones",
@@ -19,11 +19,12 @@ jQuery("#enviarDias").click(function () {
     
          error: function (jqXHR, status) {}
     });*/
-    window.alert("casi estoy");
     jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/vacaciones", {
         user:user, ano1:ano1, mes1:mes1, dia1:dia1, ano2:ano2, mes2:mes2, dia2:dia2
     }, function (resultado) {
-        window.alert("semanas de vacaciones guardadas");
+        if(resultado){window.alert("semanas de vacaciones guardadas");
+    }
+        else{window.alert("tienes actividades en esas semanas");}
     });
 });
 

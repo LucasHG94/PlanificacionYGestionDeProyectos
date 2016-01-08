@@ -11,9 +11,9 @@ jQuery(function () {
             var btn = document.createElement("a");
             btn.setAttribute("id", "crear");
             btn.setAttribute("href","http://localhost:8080/GestionProyectos/actividad.html?id="
-                    +resultado[j].actividadPK.id+"&nombre="+resultado[j].nombre+"&rol="+resultado[j].rol/*+
-                "&fehcaIni="+resultado[j].fechaInicio+"&fechaFin="+resultado[j].fechaFin+"&esf="
-                +resultado[j].esfuerzoEstimado*/);
+                    +resultado[j].actividadPK.id+"&nombre="+resultado[j].nombre+"&rol="+resultado[j].rol+
+                "&fechaIni="+resultado[j].fechainicio+"&fechaFin="+resultado[j].fechafin+"&esf="
+                +resultado[j].esfuerzoestimado);
             var t = document.createTextNode("consultar");
             btn.appendChild(t);
             p.appendChild(btn);
