@@ -210,40 +210,46 @@ public class SimpleRootResource {
         return actividadesTrabajador;
     }
     //TODO hacer que lea el objeto json
-    @PUT
+    @GET
     @Consumes("application/json")
     @Path("/vacaciones")
-    public void setVacaciones(@QueryParam("user") String nombre, 
+    public boolean setVacaciones(@QueryParam("user") String nombre, 
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2){
-        System.out.println(nombre);
         Trabajador t = trabajadorFacade.find(nombre);
-        List<Vacaciones> vacaciones = vacacionesFacade.findAll();
+        /*List<Vacaciones> vacaciones = vacacionesFacade.findAll();
         List<Vacaciones> vacacionesTrabajador = new ArrayList<>();
         for(Vacaciones item : vacaciones){
             if(item.getTrabajador().equals(t)){
                 vacacionesTrabajador.add(item);
             }
-        }
-        //TODO dar error si coincide con alguna actividad 
-        System.out.println("voy bien");
+        }*/
+        //TODO dar error si coincide con alguna actividad
         Date fecha1 = new Date();
         fecha1.setDate(dia1);
         fecha1.setMonth(mes1-1);
-        fecha1.setYear(ano1-1900);//arreglar esto
-        vacacionesTrabajador.get(0).getVacacionesPK().setFechasemana(fecha1);
-        Calendar cal = Calendar.getInstance();
+        fecha1.setYear(ano1-1900);
+        VacacionesPK vpk = new VacacionesPK(new Date(), "Trabajador1");
+        Vacaciones v = new Vacaciones(vpk);
+        //vacacionesTrabajador.get(0).getVacacionesPK().setFechasemana(fecha1);
+        //cómo hacer para modificar la tabla?
+        vacacionesFacade.create(v);
+        /*Calendar cal = Calendar.getInstance();
         cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         vacacionesTrabajador.get(1).getVacacionesPK().setFechasemana(cal.getTime());
+        vacacionesFacade.edit(vacacionesTrabajador.get(1));
         
         Date fecha2 = new Date();
         fecha1.setDate(dia2);
         fecha1.setMonth(mes2-1);
-        fecha1.setYear(ano2-1900);//arreglar esto
+        fecha1.setYear(ano2-1900);
         vacacionesTrabajador.get(2).getVacacionesPK().setFechasemana(fecha2);
+        vacacionesFacade.edit(vacacionesTrabajador.get(2));
         cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         vacacionesTrabajador.get(3).getVacacionesPK().setFechasemana(cal.getTime());
+        vacacionesFacade.edit(vacacionesTrabajador.get(3));*/
+        return true;
     }
 }

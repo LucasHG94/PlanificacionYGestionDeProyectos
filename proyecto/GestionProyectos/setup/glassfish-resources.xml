@@ -13,4 +13,6 @@
     <jdbc-resource enabled="true" jndi-name="pgpR" object-type="user" pool-name="derby_net_pgp_grupo09Pool"/>
     <jdbc-resource enabled="true" jndi-name="pgpRe" object-type="user" pool-name="derby_net_pgp_grupo09Pool"/>
     <jdbc-resource enabled="true" jndi-name="pgpRec" object-type="user" pool-name="derby_net_pgp_grupo09Pool"/>
+    <jdbc-resource enabled="true" jndi-name="r" object-type="user" pool-name="derby_net_pgp_grupo09Pool"/>
+    <jdbc-resource enabled="true" jndi-name="respgp" object-type="user" pool-name="derby_net_pgp_grupo09Pool"/>
 </resources>
