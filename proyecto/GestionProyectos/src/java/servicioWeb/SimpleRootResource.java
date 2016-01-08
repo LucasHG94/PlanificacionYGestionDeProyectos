@@ -8,6 +8,7 @@ package servicioWeb;
 import com.owlike.genson.Genson;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import modelo.Proyecto;
 import modelo.Trabajador;
 import modelo.Vacaciones;
 import modelo.VacacionesPK;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
@@ -72,7 +74,7 @@ public class SimpleRootResource {
 
     @EJB
     private VacacionesFacadeLocal vacacionesFacade;
-    
+
     @EJB
     private EtapaFacadeLocal etapaFacade;
 
@@ -101,33 +103,43 @@ public class SimpleRootResource {
     //@Consumes("application/xml")
     public void getTest(String content) {
         /*Proyecto p = proyectoFacade.find(3);
-        Etapa e = new Etapa(new EtapaPK(p.getId(), 1));
-        e.setNombre("Primera");
-        Actividad a = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 1));
-        a.setNombre("Una y ya");
-        Actividad b = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 2));
-        b.setNombre("Otra y ya");
-        //etapaFacade.create(e);
-        actividadFacade.create(a);
-        actividadFacade.create(b);
-        System.out.println("Esta o que");*/
+         Etapa e = new Etapa(new EtapaPK(p.getId(), 1));
+         e.setNombre("Primera");
+         Actividad a = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 1));
+         a.setNombre("Una y ya");
+         Actividad b = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 2));
+         b.setNombre("Otra y ya");
+         //etapaFacade.create(e);
+         actividadFacade.create(a);
+         actividadFacade.create(b);
+         System.out.println("Esta o que");*/
+        System.out.println("aaaah");
     }
-    
+
     @GET
-    @Consumes("application/json")
+    @Produces("application/json")
     @Path("/test/test1")
-    public boolean test1(){
-        Proyecto p = proyectoFacade.find(3);
-        Etapa e = new Etapa(new EtapaPK(p.getId(), 1));
-        e.setNombre("Primera");
-        Actividad a = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 1));
-        a.setNombre("Una y ya");
-        Actividad b = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 2));
-        b.setNombre("Otra y ya");
-        //etapaFacade.create(e);
-        actividadFacade.create(a);
-        actividadFacade.create(b);
-        System.out.println("Esta o que");
+    public boolean test1(@QueryParam("testdata") String test) {
+        /*Proyecto p = proyectoFacade.find(3);
+         Etapa e = new Etapa(new EtapaPK(p.getId(), 1));
+         e.setNombre("Primera");
+         Actividad a = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 1));
+         a.setNombre("Una y ya");
+         Actividad b = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 2));
+         b.setNombre("Otra y ya");
+         etapaFacade.create(e);
+         actividadFacade.create(a);
+         actividadFacade.create(b);
+         */
+
+        Actividad una = actividadFacade.find(new ActividadPK(3, 1, 1));
+        Actividad otra = actividadFacade.find(new ActividadPK(3, 1, 2));
+        //una.getActividadCollection().add(otra);
+        //actividadFacade.edit(una);
+
+        System.out.println(una.getActividadCollection().size());
+
+        System.out.println(test);
         return true;
     }
 
@@ -148,17 +160,103 @@ public class SimpleRootResource {
             System.out.println("Peticion detectada: " + data);
             JSONArray plan = new JSONArray(data);
             JSONObject actividad;
-            Proyecto proyecto = proyectoFacade.find(id);
+            JSONArray pre;
+            Proyecto proyecto = proyectoFacade.find(Integer.valueOf(id));
+            DateTime today = new DateTime(new Date());
+            proyecto.setFechainicio(today.toDate());
             List<Actividad> actividades = new ArrayList<>();
+            Etapa etapa = new Etapa();
             List<Etapa> etapas = new ArrayList<>();
-            for(Object j:plan){
+            String nombre;
+            int duracionEstimada;
+            String rol;
+            JSONObject apjo; //actividad json object
+            int etapaidcont = 1;
+            int actividadidcont = 1;
+            etapa = new Etapa(new EtapaPK(proyecto.getId(), etapaidcont++));
+            for (Object j : plan) {
                 actividad = (JSONObject) j;
-                System.out.println(actividad.get("nombre"));
+                nombre = actividad.getString("nombre");
+                System.out.println(nombre);
+                duracionEstimada = actividad.getInt("duracion_estimada");
+                System.out.println(duracionEstimada);
+                if (duracionEstimada > 0) {
+                    System.out.println(actividad.get("rol"));
+                }
+
+                Actividad a = new Actividad(new ActividadPK(proyecto.getId(), etapa.getEtapaPK().getId(), actividadidcont++));
+                a.setNombre(nombre);
+                a.setRol(actividad.getString("rol"));
+                a.setEsfuerzoestimado(duracionEstimada);
+                pre = actividad.getJSONArray("pre");
+                if (pre.length() > 0) {
+                    for (int i = 0; i < pre.length(); i++) {
+                        Actividad atmp = actividades.get(pre.getInt(i));
+                        if (atmp.getActividadCollection() == null) {
+                            atmp.setActividadCollection(new ArrayList<>());
+                            System.out.println("ActividadCollection vacio.");
+                        }
+                        actividades.get(pre.getInt(i)).getActividadCollection().add(a);
+                    }
+                } else {
+                    //a.setFechainicio(today.toDate());
+                    //a.setFechafin(new DateTime(a.getFechainicio()).plusDays(duracionEstimada));
+                }
+
+                if (actividad.getInt("duracion_estimada") == 0) {
+                    System.out.println("Etapa encontrada.");
+                    etapa.setNombre(nombre);
+                    etapas.add(etapa);
+                    etapa = new Etapa(new EtapaPK(proyecto.getId(), etapaidcont++));
+                    actividadidcont = 1;
+                }
+
+                actividades.add(a);
+
+                System.out.println();
+                System.out.println("pre: " + pre.length());
+
             }
-        }catch(Exception e){
+            
+            
+            for (Etapa eTest : etapas) {
+                System.out.println("Etapa: " + eTest.getNombre());
+                System.out.println("Id: " + eTest.getEtapaPK().getId());
+                System.out.println("GUARDANDO");
+                etapaFacade.create(eTest);
+                System.out.println("Etapa guardada.");
+            }
+            
+            for(int i=actividades.size()-1; i>=0; i--){
+                Actividad aTest = actividades.get(i);
+                System.out.println("----------");
+                System.out.println("Actividad: " + aTest.getNombre());
+                System.out.println("Actividad id: " + aTest.getActividadPK().getId());
+                System.out.println("Esfuerzo estimado: " + aTest.getEsfuerzoestimado());
+                System.out.println("Rol: " + aTest.getRol());
+                System.out.println("Num etapa: " + aTest.getActividadPK().getIdetapa());
+                if (aTest.getActividadCollection() != null) {
+                    System.out.println("Precedidas: " + aTest.getActividadCollection().size());
+                    if (aTest.getActividadCollection().size() > 0) {
+                        System.out.println("Precedidas Ejemplo: " + new ArrayList<>(aTest.getActividadCollection()).get(0).getNombre());
+                    }
+                }
+                System.out.println("----------");
+                System.out.println("GUARDANDO");
+                actividadFacade.create(aTest);
+                System.out.println("Actividad guardada.");
+            }
+
+            
+            
+            
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        
+
         return true;
     }
 
@@ -180,6 +278,7 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/trabajador/{nick}/disponibleParaJefe")
     public boolean trabajadorDisponibleJefe(@PathParam("nick") String nick) {
+        System.out.println("Trabajador disponible para jefe");
         if (trabajadorFacade.find(nick) == null) {
             return false;
         }

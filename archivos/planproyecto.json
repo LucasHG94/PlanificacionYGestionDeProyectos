@@ -1,7 +1,7 @@
 [{
-  "nombre": "Inicio",
+  "nombre": "Iniciar proyecto",
   "pre": [],
-  "duracion_estimada": 0,
+  "duracion_estimada": 1,
   "rol": "PROBADOR"
 }, {
   "nombre": "Crear BD",
@@ -19,9 +19,10 @@
   "duracion_estimada": 2,
   "rol": "PROGRAMADOR"
 }, {
-  "nombre": "PostBD",
+  "nombre": "Base de Datos creada",
   "pre": [3],
-  "duracion_estimada": 0
+  "duracion_estimada": 0,
+  "rol":"JEFE"
 }, {
   "nombre": "Hacer algo",
   "pre": [4],
@@ -35,6 +36,6 @@
 }, {
   "nombre": "Fin",
   "pre": [5, 6],
-  "duracion_estimada": 1,
+  "duracion_estimada": 0,
   "rol": "JEFE"
 }]
