@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import modelo.Actividad;
 import modelo.Administrador;
@@ -174,13 +175,14 @@ public class SimpleRootResource {
         }
         return actividadesTrabajador;
     }
-    
+    //TODO hacer que lea el objeto json
     @PUT
-    @Produces("application/json")
+    @Consumes("application/json")
     @Path("/vacaciones")
     public void setVacaciones(@QueryParam("user") String nombre, 
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2){
+        System.out.println(nombre);
         Trabajador t = trabajadorFacade.find(nombre);
         List<Vacaciones> vacaciones = vacacionesFacade.findAll();
         List<Vacaciones> vacacionesTrabajador = new ArrayList<>();
@@ -189,7 +191,8 @@ public class SimpleRootResource {
                 vacacionesTrabajador.add(item);
             }
         }
-        System.out.println("---->"+ano1);
+        //TODO dar error si coincide con alguna actividad 
+        System.out.println("voy bien");
         Date fecha1 = new Date();
         fecha1.setDate(dia1);
         fecha1.setMonth(mes1-1);
