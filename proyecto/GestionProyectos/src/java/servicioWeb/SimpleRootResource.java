@@ -210,6 +210,30 @@ public class SimpleRootResource {
         }
         return actividadesTrabajador;
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/actividadesSemana")
+    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto){
+        Trabajador t = trabajadorFacade.find(nombre);
+        Proyecto p = proyectoFacade.find(idProyecto);
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> actividadesTrabajador = new ArrayList<>();
+        for(Actividad item : actividades){
+            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
+                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+                actividadesTrabajador.add(item);
+            }
+        }
+        List<Actividad> actividadesSemana= new ArrayList<>();
+        for(Actividad item : actividadesTrabajador){
+            if(item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())){
+                actividadesSemana.add(item);
+                //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
+            }
+        }
+        return actividadesSemana;
+    }
 
     @GET
     @Consumes("application/json")
@@ -267,6 +291,40 @@ public class SimpleRootResource {
             Vacaciones v4 = new Vacaciones(vpk4);
             vacacionesFacade.create(v4);
         }
+        return permitido;
+    }
+    
+    @GET
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/informeSemanal")
+    public boolean setInformeSemanal(@Context UriInfo info
+            /*@QueryParam("user") String nombre, 
+        @QueryParam("horas00") int horas00, @QueryParam("horas10") int horas10, @QueryParam("horas20") int horas20,
+        @QueryParam("horas01") int horas01, @QueryParam("horas11") int horas11, @QueryParam("horas21") int horas21*/){
+        boolean permitido = true;
+        String user = info.getQueryParameters().getFirst("user");
+        List<Integer> horas = new ArrayList<>();
+        Map map = info.getQueryParameters();
+        for(int i=0; i<2;i++){
+            for(int j = 0; j<3; j++){
+                String s = map.get("hora"+j+""+i).toString();
+                String s1=s.substring(0,s.length()-1);
+                String s2=s1.substring(1, s1.length());
+                horas.add(Integer.parseInt(s2));
+                System.out.println("i="+i+";j="+j+" : "+s2);
+                
+            }
+        }
+        int suma=0;
+        for(int i = 0; i<horas.size(); i++){
+            suma = suma +horas.get(i);
+        }
+        if(suma >40){
+            permitido = false;
+        }
+        
+        
         return permitido;
     }
 }

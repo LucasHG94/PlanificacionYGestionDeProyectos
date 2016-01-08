@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/utilidades.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h2>Crea tus informes de esta semana</h2>
+        <script type="text/javascript" src="js/crearInforme.js"></script>
+        <button type="button" id="crear">Prueba aquí</button> 
+        <script>
+            jQuery("#crear").click(function () {
+                /*var user = getCookie("username");
+                var horas00 = jQuery("#horas00").val();
+                var horas10 = jQuery("#horas10").val();
+                var horas20 = jQuery("#horas20").val();
+                
+                var horas01 = jQuery("#horas01").val();
+                var horas11 = jQuery("#horas11").val();
+                var horas21 = jQuery("#horas21").val();
+                
+                var horas02 = jQuery("#horas02").val();
+                var horas12 = jQuery("#horas12").val();
+                var horas22 = jQuery("#horas22").val();
+                
+                var horas03 = jQuery("#horas03").val();
+                var horas13 = jQuery("#horas13").val();
+                var horas23 = jQuery("#horas23").val();*/
+                var uriH = "";
+                for (j = 0; j < 2; j++) { 
+                    var hora0 = jQuery("#hora0"+j).val();
+                    var hora1 = jQuery("#hora1"+j).val();
+                    var hora2 = jQuery("#hora2"+j).val();
+                    uriH = uriH+"&hora0"+j+"="+hora0;
+                    uriH = uriH+"&hora1"+j+"="+hora1;
+                    uriH = uriH+"&hora2"+j+"="+hora2;
+                }
+                
+                jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/informeSemanal?user="+user+""+uriH, {
+                    /*user:user, 
+                    horas00:horas00, horas10:horas10, horas20:horas20,
+                    horas01:horas01, horas11:horas11, horas21:horas21*/
+                }, function (resultado) {
+                    if(resultado){window.alert("informe cerado");
+                }
+                    else{window.alert("datos incorrectos");}
+                });
+            });
+        </script>
+    </body>
+</html>
