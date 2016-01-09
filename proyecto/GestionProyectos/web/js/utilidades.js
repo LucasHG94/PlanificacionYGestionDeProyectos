@@ -59,4 +59,13 @@ function checkAdmin() {
     });
 }
 
+function checkSesionIniciada() {
+    var user = getCookie("username");
+    if (user === null) {
+        window.alert("Inicio de sesion necesario");
+        var pagina = 'http://localhost:8080/GestionProyectos/index.html';
+        document.location.href = pagina;
+    }
+}
+
 
