@@ -472,21 +472,61 @@ public class SimpleRootResource {
         Proyecto p = proyectoFacade.find(idProyecto);
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
+<<<<<<< HEAD
         for (Actividad item : actividades) {
             if (item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)) {
+=======
+        for(Actividad item : actividades){
+            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
+                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+>>>>>>> refs/remotes/origin/master
                 actividadesTrabajador.add(item);
             }
         }
         return actividadesTrabajador;
     }
+<<<<<<< HEAD
 
     @PUT
     @Produces("application/json")
     @Path("/vacaciones")
     public void setVacaciones(@QueryParam("user") String nombre,
+=======
+    
+    @GET
+    @Produces("application/json")
+    @Path("/actividadesSemana")
+    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto){
+        Trabajador t = trabajadorFacade.find(nombre);
+        Proyecto p = proyectoFacade.find(idProyecto);
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> actividadesTrabajador = new ArrayList<>();
+        for(Actividad item : actividades){
+            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
+                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+                actividadesTrabajador.add(item);
+            }
+        }
+        List<Actividad> actividadesSemana= new ArrayList<>();
+        for(Actividad item : actividadesTrabajador){
+            if(item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())){
+                actividadesSemana.add(item);
+                //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
+            }
+        }
+        return actividadesSemana;
+    }
+
+    @GET
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/vacaciones")
+    public boolean setVacaciones(@QueryParam("user") String nombre, 
+>>>>>>> refs/remotes/origin/master
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2) {
         Trabajador t = trabajadorFacade.find(nombre);
+<<<<<<< HEAD
         List<Vacaciones> vacaciones = vacacionesFacade.findAll();
         List<Vacaciones> vacacionesTrabajador = new ArrayList<>();
         for (Vacaciones item : vacaciones) {
@@ -511,7 +551,90 @@ public class SimpleRootResource {
         fecha1.setYear(ano2 - 1900);//arreglar esto
         vacacionesTrabajador.get(2).getVacacionesPK().setFechasemana(fecha2);
         cal.setTime(fecha1);
+=======
+        Date fecha1 = new Date(ano1-1900,mes1-1,dia1);
+        Date fecha2 = new Date(ano2-1900,mes2-1,dia2);
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
-        vacacionesTrabajador.get(3).getVacacionesPK().setFechasemana(cal.getTime());
+        Date fecha3 = cal.getTime();
+        cal.setTime(fecha3);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha3Fin = cal.getTime();
+        
+        cal.setTime(fecha2);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha4 = cal.getTime();
+        cal.setTime(fecha4);
+>>>>>>> refs/remotes/origin/master
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date fecha4Fin = cal.getTime();
+        
+        boolean permitido = true;
+        List<Actividad> actividades = actividadFacade.findAll();
+        for(Actividad item : actividades){
+            if(t.getActividadCollection().contains(item)){
+                if(item.getFechainicio().after(fecha1) && item.getFechainicio().before(fecha3Fin)){
+                    permitido = false;
+                }
+                else if(item.getFechainicio().after(fecha2) && item.getFechainicio().before(fecha4Fin)){
+                    permitido = false;
+                }
+            }
+        }
+        
+        
+        if(permitido){
+            VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
+            Vacaciones v1 = new Vacaciones(vpk1);       
+            vacacionesFacade.create(v1);
+            VacacionesPK vpk2 = new VacacionesPK(fecha3, t.getNick());
+            Vacaciones v2 = new Vacaciones(vpk2);
+            vacacionesFacade.create(v2);
+
+
+            VacacionesPK vpk3 = new VacacionesPK(fecha2, t.getNick());
+            Vacaciones v3 = new Vacaciones(vpk3);
+            vacacionesFacade.create(v3);
+            VacacionesPK vpk4 = new VacacionesPK(fecha4, t.getNick());
+            Vacaciones v4 = new Vacaciones(vpk4);
+            vacacionesFacade.create(v4);
+        }
+        return permitido;
+    }
+    
+    @GET
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/informeSemanal")
+    public boolean setInformeSemanal(@Context UriInfo info
+            /*@QueryParam("user") String nombre, 
+        @QueryParam("horas00") int horas00, @QueryParam("horas10") int horas10, @QueryParam("horas20") int horas20,
+        @QueryParam("horas01") int horas01, @QueryParam("horas11") int horas11, @QueryParam("horas21") int horas21*/){
+        boolean permitido = true;
+        String user = info.getQueryParameters().getFirst("user");
+        List<Integer> horas = new ArrayList<>();
+        Map map = info.getQueryParameters();
+        for(int i=0; i<2;i++){
+            for(int j = 0; j<3; j++){
+                String s = map.get("hora"+j+""+i).toString();
+                String s1=s.substring(0,s.length()-1);
+                String s2=s1.substring(1, s1.length());
+                horas.add(Integer.parseInt(s2));
+                System.out.println("i="+i+";j="+j+" : "+s2);
+                
+            }
+        }
+        int suma=0;
+        for(int i = 0; i<horas.size(); i++){
+            suma = suma +horas.get(i);
+        }
+        if(suma >40){
+            permitido = false;
+        }
+        
+        
+        return permitido;
     }
 }

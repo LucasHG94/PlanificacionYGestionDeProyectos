@@ -18,16 +18,16 @@ jQuery(function () {
             p.appendChild(t);
             var btn = document.createElement("a");
             btn.setAttribute("id", "crear");
-            btn.setAttribute("href","");
+            btn.setAttribute("href","http://localhost:8080/GestionProyectos/crearInforme.html?idP="+resultado[j].id);
             var t = document.createTextNode("crearInforme,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            /*var btn = document.createElement("a");
             btn.setAttribute("id", "modificar");
             btn.setAttribute("href", "");
             var t = document.createTextNode("modificarInforme,  ");
             btn.appendChild(t);
-            p.appendChild(btn);
+            p.appendChild(btn);*/
             var btn = document.createElement("a");
             btn.setAttribute("id", "consultar");
             btn.setAttribute("href","http://localhost:8080/GestionProyectos/consultarActividad.html?idP="+resultado[j].id);
