@@ -29,6 +29,8 @@ import javax.ws.rs.core.Response;
 import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
+import modelo.Categoriaroles;
+import modelo.CategoriarolesPK;
 import modelo.Datosconfigurables;
 import modelo.Dedicacion;
 import modelo.DedicacionPK;
@@ -44,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
+import persistencia.CategoriarolesFacadeLocal;
 import persistencia.DatosconfigurablesFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.EtapaFacadeLocal;
@@ -85,6 +88,9 @@ public class SimpleRootResource {
     
     @EJB
     private DatosconfigurablesFacadeLocal datosFacade;
+    
+    @EJB
+    private CategoriarolesFacadeLocal categoriaFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -122,6 +128,31 @@ public class SimpleRootResource {
          actividadFacade.create(b);
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/trabajador/{nick}/existe")
+    public boolean isTrabajador(@PathParam("nick") String nick){
+        Trabajador t = trabajadorFacade.find(nick);
+        return t!=null;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/trabajador/{nick}/{categoria}")
+    public boolean asignarCategoriaTrabajador(@PathParam("categoria") int cat, @PathParam("nick") String nick){
+        List<Categoriaroles> categorias = categoriaFacade.findAll();
+        Trabajador t = trabajadorFacade.find(nick);
+        for(Categoriaroles c:categorias){
+            
+            if(c.getCategoriarolesPK().getCategoria()==cat){
+                t.setCategoria(cat);
+                trabajadorFacade.edit(t);
+                return true;
+            }
+        }
+        return false;
     }
 
     @GET
