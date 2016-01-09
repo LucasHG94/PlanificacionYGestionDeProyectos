@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
+import modelo.Datosconfigurables;
 import modelo.Dedicacion;
 import modelo.DedicacionPK;
 import modelo.Etapa;
@@ -43,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
+import persistencia.DatosconfigurablesFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.EtapaFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
@@ -80,6 +82,9 @@ public class SimpleRootResource {
 
     @EJB
     private EtapaFacadeLocal etapaFacade;
+    
+    @EJB
+    private DatosconfigurablesFacadeLocal datosFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -287,7 +292,10 @@ public class SimpleRootResource {
             
          }
          return true;*/
+        Datosconfigurables datos = datosFacade.find("ProyectosAlMismoTiempo");
         JSONObject response = new JSONObject();
+        int maxPActivos = (datos!=null) ? datos.getValor() : 2;
+        
         try {
             int idProyecto = Integer.valueOf(id);
             int porActual = 0;
@@ -313,6 +321,13 @@ public class SimpleRootResource {
             }
             System.out.println("Num proyectos activos: " + numPActivos);
             System.out.println("Por actual: " + porActual);
+            
+            if(numPActivos>=maxPActivos){
+                response.put("error", true);
+                response.put("mensaje", "Este trabajador ya se encuentra trabajando en el numero maximo de proyectos permitido.");
+                return response.toString();
+            }
+            
             if (porActual + porSolicitado > 100) {
                 response.put("error", true);
                 response.put("mensaje", "El porcentaje de participacion total superaria el permitido. Introduce un pocrcentaje menor.");
@@ -342,7 +357,7 @@ public class SimpleRootResource {
             response.put("por", porSolicitado + "%");
             response.put("mensaje", "Trabajador añadido al proyecto");
             return response.toString();
-        } catch (NumberFormatException | JSONException e) {
+        } catch (Exception e) {
             response.put("error", true);
             response.put("mensaje", "Error desconocido.");
             return response.toString();
