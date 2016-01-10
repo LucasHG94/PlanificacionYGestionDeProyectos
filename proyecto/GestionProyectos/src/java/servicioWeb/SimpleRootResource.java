@@ -648,4 +648,15 @@ public class SimpleRootResource {
         paralel.setValor(paral);
         configFacade.edit(paralel);
     }
+    
+    @GET
+    @Path("/admin/newUser")
+    public void createUsuario(@QueryParam("nick") String nick, @QueryParam("pass") String pass, @QueryParam("cat") String cat){
+        Integer categoria = Integer.parseInt(cat);
+        Trabajador newUser = new Trabajador();
+        newUser.setNick(nick);
+        newUser.setPassword(pass);
+        newUser.setCategoria(categoria);
+        trabajadorFacade.create(newUser);
+    }
 }
