@@ -601,10 +601,9 @@ public class SimpleRootResource {
     @GET
     @Path("/admin/conf")
     public void setParalelos(@QueryParam("numP") String numP){
-        Integer paral = Integer.parseInt(numP);
-        System.out.print(numP+ "------------");
+        Integer paral = Integer.parseInt(numP);       
         Datosconfigurables paralel;
-        paralel = configFacade.find(0);
+        paralel = configFacade.findAll().get(0);
         paralel.setValor(paral);
         configFacade.edit(paralel);
     }

@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var numP = $("#numP").val();
+
 checkAdmin();
 jQuery("#submitBtn").click(function () {
+    var numP = $("#numP").val();
     window.alert(numP);
     jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin/conf", {
         numP: numP
