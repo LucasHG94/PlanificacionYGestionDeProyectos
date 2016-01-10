@@ -7,7 +7,6 @@
 checkAdmin();
 jQuery("#submitBtn").click(function () {
     var numP = $("#numP").val();
-    window.alert(numP);
     jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin/conf", {
         numP: numP
     }, function () {
