@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Establecer categoria</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/utilidades.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col col-md-6 col-md-offset-3">
+                    <div class="page-header"><h1>Establecer categoría</h1></div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span>Establecer categoría</span>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group" id="userformgroup">
+                                    <label for="user" class="col-sm-2 control-label">Usuario</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" id="user" class="form-control" placeholder="Usuario">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cat"  class="col-sm-2 control-label">Categoria</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="cat">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="button" id="asignarcat" class="btn btn-default">Asignar categoria</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <script type="text/javascript" src="js/establecer_categoria_empleado.js"></script>
+    </body>
+</html>
