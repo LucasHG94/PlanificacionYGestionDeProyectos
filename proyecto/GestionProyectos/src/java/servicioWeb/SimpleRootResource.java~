@@ -24,11 +24,8 @@ import javax.ws.rs.QueryParam;
 import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
-<<<<<<< HEAD
-=======
 import modelo.Categoriaroles;
 import modelo.CategoriarolesPK;
->>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
 import modelo.Datosconfigurables;
 import modelo.Dedicacion;
 import modelo.DedicacionPK;
@@ -44,10 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
-<<<<<<< HEAD
-=======
 import persistencia.CategoriarolesFacadeLocal;
->>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
 import persistencia.DatosconfigurablesFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.EtapaFacadeLocal;
@@ -92,10 +86,10 @@ public class SimpleRootResource {
     private DatosconfigurablesFacadeLocal configFacade;
 =======
     private DatosconfigurablesFacadeLocal datosFacade;
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
     
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
->>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -327,7 +321,11 @@ public class SimpleRootResource {
             
          }
          return true;*/
+<<<<<<< HEAD
+        Datosconfigurables datos = configFacade.find("ProyectosAlMismoTiempo");
+=======
         Datosconfigurables datos = datosFacade.find("ProyectosAlMismoTiempo");
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
         JSONObject response = new JSONObject();
         int maxPActivos = (datos!=null) ? datos.getValor() : 2;
         
