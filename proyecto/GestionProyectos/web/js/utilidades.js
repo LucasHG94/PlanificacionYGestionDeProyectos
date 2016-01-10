@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+var patronurl = '/GestionProyectos/webresources/SimpleRoot';
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -66,6 +67,14 @@ function checkSesionIniciada() {
         var pagina = 'http://localhost:8080/GestionProyectos/index.html';
         document.location.href = pagina;
     }
+}
+
+function deshabilitarElemento(id,b){
+    $("#"+id).prop("disabled", b);
+}
+
+function cambiarClase(id,clase,state){
+    $("#"+id).toggleClass(clase,state);
 }
 
 

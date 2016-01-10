@@ -82,7 +82,11 @@ public class SimpleRootResource {
     private EtapaFacadeLocal etapaFacade;
     
     @EJB
+<<<<<<< HEAD
     private DatosconfigurablesFacadeLocal configFacade;
+=======
+    private DatosconfigurablesFacadeLocal datosFacade;
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
     
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
@@ -317,7 +321,11 @@ public class SimpleRootResource {
             
          }
          return true;*/
+<<<<<<< HEAD
         Datosconfigurables datos = configFacade.find("ProyectosAlMismoTiempo");
+=======
+        Datosconfigurables datos = datosFacade.find("ProyectosAlMismoTiempo");
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
         JSONObject response = new JSONObject();
         int maxPActivos = (datos!=null) ? datos.getValor() : 2;
         
