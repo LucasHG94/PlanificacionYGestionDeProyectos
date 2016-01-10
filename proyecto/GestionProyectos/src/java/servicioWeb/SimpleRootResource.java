@@ -5,16 +5,12 @@
  */
 package servicioWeb;
 
-import com.owlike.genson.Genson;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -25,10 +21,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
+import modelo.Datosconfigurables;
 import modelo.Dedicacion;
 import modelo.DedicacionPK;
 import modelo.Etapa;
@@ -43,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import persistencia.ActividadFacadeLocal;
 import persistencia.AdministradorFacadeLocal;
+import persistencia.DatosconfigurablesFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.EtapaFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
@@ -80,6 +77,9 @@ public class SimpleRootResource {
 
     @EJB
     private EtapaFacadeLocal etapaFacade;
+    
+    @EJB
+    private DatosconfigurablesFacadeLocal configFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -172,7 +172,7 @@ public class SimpleRootResource {
             DateTime today = new DateTime(new Date());
             proyecto.setFechainicio(today.toDate());
             List<Actividad> actividades = new ArrayList<>();
-            Etapa etapa = new Etapa();
+            Etapa etapa;
             List<Etapa> etapas = new ArrayList<>();
             String nombre;
             int duracionEstimada;
@@ -200,7 +200,7 @@ public class SimpleRootResource {
                     for (int i = 0; i < pre.length(); i++) {
                         Actividad atmp = actividades.get(pre.getInt(i));
                         if (atmp.getActividadCollection() == null) {
-                            atmp.setActividadCollection(new ArrayList<>());
+                            atmp.setActividadCollection(new ArrayList<Actividad>());
                             System.out.println("ActividadCollection vacio.");
                         }
                         actividades.get(pre.getInt(i)).getActividadCollection().add(a);
@@ -253,8 +253,7 @@ public class SimpleRootResource {
                 System.out.println("Actividad guardada.");
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JSONException | NumberFormatException e) {
             return false;
         }
 
@@ -588,8 +587,8 @@ public class SimpleRootResource {
             }
         }
         int suma=0;
-        for(int i = 0; i<horas.size(); i++){
-            suma = suma +horas.get(i);
+        for (Integer hora : horas) {
+            suma = suma + hora;
         }
         if(suma >40){
             permitido = false;
@@ -597,5 +596,15 @@ public class SimpleRootResource {
         
         
         return permitido;
+    }
+    
+    @GET
+    @Path("/admin/conf")
+    public void setParalelos(@QueryParam("numP") String numP){
+        Integer paral = Integer.parseInt(numP);       
+        Datosconfigurables paralel;
+        paralel = configFacade.findAll().get(0);
+        paralel.setValor(paral);
+        configFacade.edit(paralel);
     }
 }

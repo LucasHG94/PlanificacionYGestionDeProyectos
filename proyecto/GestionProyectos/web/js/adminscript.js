@@ -5,16 +5,7 @@
  */
 
 var user = getCookie("username");
-jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin", {
-    user: user
-}, function (resultado) {
-    if (resultado != 1) {
-        window.alert("Acceso denegado");
-        var pagina = 'http://localhost:8080/GestionProyectos/index.html';
-        document.location.href = pagina;
-
-    }
-});
+checkAdmin();
 
 
 
