@@ -659,4 +659,22 @@ public class SimpleRootResource {
         newUser.setCategoria(categoria);
         trabajadorFacade.create(newUser);
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/trabajadores")
+    public List<Trabajador> getTrabajadores(){
+        List<Trabajador> workers;
+        workers = trabajadorFacade.findAll();
+        return workers;
+    }
+    
+    @GET
+    @Path("/admin/borrarUsuario")
+    public void deleteTrabajadores(@QueryParam("nick") String nick ){
+        Trabajador x = new Trabajador();
+        x.setNick(nick);
+        trabajadorFacade.remove(x);
+        
+    }
 }
