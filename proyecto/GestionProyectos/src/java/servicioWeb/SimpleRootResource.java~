@@ -17,6 +17,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -24,6 +25,7 @@ import modelo.Actividad;
 import modelo.ActividadPK;
 import modelo.Administrador;
 import modelo.Categoriaroles;
+import modelo.CategoriarolesPK;
 import modelo.Datosconfigurables;
 import modelo.Dedicacion;
 import modelo.DedicacionPK;
@@ -80,7 +82,11 @@ public class SimpleRootResource {
     private EtapaFacadeLocal etapaFacade;
     
     @EJB
+<<<<<<< HEAD
     private DatosconfigurablesFacadeLocal configFacade;
+=======
+    private DatosconfigurablesFacadeLocal datosFacade;
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
     
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
@@ -315,7 +321,11 @@ public class SimpleRootResource {
             
          }
          return true;*/
+<<<<<<< HEAD
         Datosconfigurables datos = configFacade.find("ProyectosAlMismoTiempo");
+=======
+        Datosconfigurables datos = datosFacade.find("ProyectosAlMismoTiempo");
+>>>>>>> 209f8b6e6aa2671b0c57d58de017d44a676dbff9
         JSONObject response = new JSONObject();
         int maxPActivos = (datos!=null) ? datos.getValor() : 2;
         
@@ -645,34 +655,5 @@ public class SimpleRootResource {
         paralel = configFacade.findAll().get(0);
         paralel.setValor(paral);
         configFacade.edit(paralel);
-    }
-    
-    @GET
-    @Path("/admin/newUser")
-    public void createUsuario(@QueryParam("nick") String nick, @QueryParam("pass") String pass, @QueryParam("cat") String cat){
-        Integer categoria = Integer.parseInt(cat);
-        Trabajador newUser = new Trabajador();
-        newUser.setNick(nick);
-        newUser.setPassword(pass);
-        newUser.setCategoria(categoria);
-        trabajadorFacade.create(newUser);
-    }
-    
-    @GET
-    @Produces("application/json")
-    @Path("/trabajadores")
-    public List<Trabajador> getTrabajadores(){
-        List<Trabajador> workers;
-        workers = trabajadorFacade.findAll();
-        return workers;
-    }
-    
-    @GET
-    @Path("/admin/borrarUsuario")
-    public void deleteTrabajadores(@QueryParam("nick") String nick ){
-        Trabajador x = new Trabajador();
-        x.setNick(nick);
-        trabajadorFacade.remove(x);
-        
     }
 }
