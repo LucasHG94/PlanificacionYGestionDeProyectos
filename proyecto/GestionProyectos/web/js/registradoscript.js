@@ -1,7 +1,5 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Script para presentar los proyectos en los que participas en de los que eres jefe
  */
 jQuery(function () {
     var user = getCookie("username");
@@ -16,27 +14,21 @@ jQuery(function () {
             var p = document.createElement("p");
             var t = document.createTextNode(resultado[j].nombre + " ");       
             p.appendChild(t);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "crear");
-            btn.setAttribute("href","http://localhost:8080/GestionProyectos/crearInforme.html?idP="+resultado[j].id);
+            btn.setAttribute("onClick","location.href="+"'"+"crearInforme.html?idP="+resultado[j].id+"'");
             var t = document.createTextNode("crearInforme,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            /*var btn = document.createElement("a");
-            btn.setAttribute("id", "modificar");
-            btn.setAttribute("href", "");
-            var t = document.createTextNode("modificarInforme,  ");
-            btn.appendChild(t);
-            p.appendChild(btn);*/
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "consultar");
-            btn.setAttribute("href","http://localhost:8080/GestionProyectos/consultarActividad.html?idP="+resultado[j].id);
+            btn.setAttribute("onClick","location.href="+ "'"+"consultarActividad.html?idP="+resultado[j].id+"'");
             var t = document.createTextNode("consultarActividades,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "escoger");
-            btn.setAttribute("href","http://localhost:8080/GestionProyectos/vacaciones.html");
+            btn.setAttribute("onClick","location.href='vacaciones.html'");
             var t = document.createTextNode("escogerVacaciones,  ");
             btn.appendChild(t);
             p.appendChild(btn);
@@ -55,39 +47,39 @@ jQuery(function () {
             var p = document.createElement("p");
             var t = document.createTextNode(resultado[j].nombre +" " );       
             p.appendChild(t);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "iniciar");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" iniciarProyecto,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "asiganar");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" asignarTrabajador,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "informe");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" obtenerInforme,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "planificar");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" planificarProyecto,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "cerrar");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" cerrarActividad,  ");
             btn.appendChild(t);
             p.appendChild(btn);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "datos");
-            btn.setAttribute("href","");
+            btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode(" consultarDatos,  ");
             btn.appendChild(t);
             p.appendChild(btn);
