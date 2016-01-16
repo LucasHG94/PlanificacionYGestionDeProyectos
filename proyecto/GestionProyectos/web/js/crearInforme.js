@@ -1,3 +1,8 @@
+/*
+ * Script para recoger los datos del informe rellenado por el desarrollador
+ * 
+ */
+
 jQuery(function () {
     var user = getCookie("username");
     var idP = location.search.split('idP=')[1];
