@@ -1,7 +1,6 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/*
+ * Funciones útiles para el manejo de las cookies y para extraer parámetros
+ * de una url
  */
 
 var patronurl = '/GestionProyectos/webresources/SimpleRoot';

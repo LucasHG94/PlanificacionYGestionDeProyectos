@@ -1,3 +1,6 @@
+/*
+ * Script para presentar las actividades de un usuario para un proyecto dado
+ */
 jQuery(function () {
     var user = getCookie("username");
     var idP = location.search.split('idP=')[1];
@@ -8,12 +11,12 @@ jQuery(function () {
             var p = document.createElement("p");
             var t = document.createTextNode(resultado[j].nombre + " ");       
             p.appendChild(t);
-            var btn = document.createElement("a");
+            var btn = document.createElement("button");
             btn.setAttribute("id", "crear");
-            btn.setAttribute("href","http://localhost:8080/GestionProyectos/actividad.html?id="
+            btn.setAttribute("OnClick","location.href='actividad.html?id="
                     +resultado[j].actividadPK.id+"&nombre="+resultado[j].nombre+"&rol="+resultado[j].rol+
                 "&fechaIni="+resultado[j].fechainicio+"&fechaFin="+resultado[j].fechafin+"&esf="
-                +resultado[j].esfuerzoestimado);
+                +resultado[j].esfuerzoestimado+"'");
             var t = document.createTextNode("consultar");
             btn.appendChild(t);
             p.appendChild(btn);

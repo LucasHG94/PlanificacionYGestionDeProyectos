@@ -1,4 +1,7 @@
-//TODO completar datos
+/*
+ * Presentación de los datos correspondientes a una actividad de un desarrollador
+ */
+
 jQuery(function (){
     var user = getCookie("username");
     var id = parametro("id",window.location.href );

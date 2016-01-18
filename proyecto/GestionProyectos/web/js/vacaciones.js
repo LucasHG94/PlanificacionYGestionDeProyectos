@@ -1,3 +1,8 @@
+/*
+ * 
+ * Script para seleccionar las vacaciones
+ */
+
 jQuery("#enviarDias").click(function () {
     var user = getCookie("username");
     var ano1 = jQuery("#ano1").val();
