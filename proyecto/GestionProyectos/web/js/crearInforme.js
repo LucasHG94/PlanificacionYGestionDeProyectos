@@ -3,13 +3,19 @@
  * 
  */
 
+/* global idPs, idActividades, idEtapas */
+
 jQuery(function () {
     var user = getCookie("username");
-    var idP = location.search.split('idP=')[1];
-    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/actividades"/*+"Semana"*/, {
+    idPs[0] = 1;
+    idP = idPs[0];
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/actividadesSemana", {
         user: user, idP:idP
     }, function (resultado) {
         for (j = 0; j < resultado.length; j++) {
+            idActividades[j] = resultado[j].actividadPK.id;
+            idEtapas[j] = resultado[j].actividadPK.idetapa;
+            idPs[j] = resultado[j].actividadPK.idproyecto;
             var p = document.createElement("p");
             var t = document.createTextNode(resultado[j].nombre + " ");       
             p.appendChild(t);
@@ -26,6 +32,22 @@ jQuery(function () {
             p.appendChild(inp);
             var inp = document.createElement("input");
             inp.setAttribute("id","hora2"+j);
+            inp.setAttribute("value",0);
+            inp.setAttribute("type","text");
+            p.appendChild(inp);
+            
+            var inp = document.createElement("input");
+            inp.setAttribute("id","hora3"+j);
+            inp.setAttribute("value",0);
+            inp.setAttribute("type","text");
+            p.appendChild(inp);
+            var inp = document.createElement("input");
+            inp.setAttribute("id","hora4"+j);
+            inp.setAttribute("value",0);
+            inp.setAttribute("type","text");
+            p.appendChild(inp);
+            var inp = document.createElement("input");
+            inp.setAttribute("id","hora5"+j);
             inp.setAttribute("value",0);
             inp.setAttribute("type","text");
             p.appendChild(inp);

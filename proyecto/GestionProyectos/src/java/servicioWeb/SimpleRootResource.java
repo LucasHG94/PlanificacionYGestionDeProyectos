@@ -29,6 +29,8 @@ import modelo.Dedicacion;
 import modelo.DedicacionPK;
 import modelo.Etapa;
 import modelo.EtapaPK;
+import modelo.Informesemanal;
+import modelo.InformesemanalPK;
 import modelo.Proyecto;
 import modelo.Trabajador;
 import modelo.Vacaciones;
@@ -43,6 +45,7 @@ import persistencia.CategoriarolesFacadeLocal;
 import persistencia.DatosconfigurablesFacadeLocal;
 import persistencia.DedicacionFacadeLocal;
 import persistencia.EtapaFacadeLocal;
+import persistencia.InformesemanalFacadeLocal;
 import persistencia.ProyectoFacadeLocal;
 import persistencia.TrabajadorFacadeLocal;
 import persistencia.VacacionesFacadeLocal;
@@ -84,6 +87,9 @@ public class SimpleRootResource {
     
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
+    
+    @EJB
+    private InformesemanalFacadeLocal informeSemanalFacade;
 
     /**
      * Creates a new instance of SimpleRootResource
@@ -522,13 +528,12 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/actividadesSemana")
-    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto){
+    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre){
         Trabajador t = trabajadorFacade.find(nombre);
-        Proyecto p = proyectoFacade.find(idProyecto);
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
         for(Actividad item : actividades){
-            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
+            if(item.getTrabajadorCollection().contains(t) & 
                     item.getEtapa().getProyecto().getFechafin().before(new Date())){
                 actividadesTrabajador.add(item);
             }
@@ -540,7 +545,7 @@ public class SimpleRootResource {
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
             }
         }
-        return actividadesSemana;
+        return actividadesTrabajador; //actividadesSemana;
     }
 
     @GET
@@ -607,19 +612,39 @@ public class SimpleRootResource {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/informeSemanal")
-    public boolean setInformeSemanal(@Context UriInfo info
-            /*@QueryParam("user") String nombre, 
-        @QueryParam("horas00") int horas00, @QueryParam("horas10") int horas10, @QueryParam("horas20") int horas20,
-        @QueryParam("horas01") int horas01, @QueryParam("horas11") int horas11, @QueryParam("horas21") int horas21*/){
+    public boolean setInformeSemanal(@Context UriInfo info){
+        System.out.println("Llego");
         boolean permitido = true;
         String user = info.getQueryParameters().getFirst("user");
         List<Integer> horas = new ArrayList<>();
         Map map = info.getQueryParameters();
-        for(int i=0; i<2;i++){
-            for(int j = 0; j<3; j++){
-                String s = map.get("hora"+j+""+i).toString();
-                String s1=s.substring(0,s.length()-1);
-                String s2=s1.substring(1, s1.length());
+        String s;
+        String s1;
+        String s2;
+        List<Integer> idPs = new ArrayList<>();
+        List<Integer> idActividades = new ArrayList<>();
+        List<Integer> idEtapas = new ArrayList<>();
+        int i;
+        for(i=0; i<4;i++){
+            s = map.get("idP"+i).toString();
+            s1=s.substring(0,s.length()-1);
+            s2=s1.substring(1, s1.length());
+            idPs.add(Integer.parseInt(s2));
+            System.out.println("idP="+i+" : "+idPs.get(i));
+            s = map.get("idP"+i).toString();
+            s1=s.substring(0,s.length()-1);
+            s2=s1.substring(1, s1.length());
+            idActividades.add(Integer.parseInt(s2));
+            System.out.println("idActividad="+i+" : "+idActividades.get(i));
+            s = map.get("idEtapa"+i).toString();
+            s1=s.substring(0,s.length()-1);
+            s2=s1.substring(1, s1.length());
+            idEtapas.add(Integer.parseInt(s2));
+            System.out.println("idEtapa="+i+" : "+idEtapas.get(i));
+            for(int j = 0; j<6; j++){
+                s = map.get("hora"+j+""+i).toString();
+                s1=s.substring(0,s.length()-1);
+                s2=s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
                 System.out.println("i="+i+";j="+j+" : "+s2);
                 
@@ -631,8 +656,21 @@ public class SimpleRootResource {
         }
         if(suma >40){
             permitido = false;
+        }else{
+            for(int k=0;k<i;k++){
+                InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
+                        idActividades.get(k),idEtapas.get(k),new Date());
+                Informesemanal informe = new Informesemanal(informePK,"PendienteAprobar");
+                informe.setHorastarea1(horas.get(0));
+                informe.setHorastarea2(horas.get(1));
+                informe.setHorastarea3(horas.get(2));
+                informe.setHorastarea4(horas.get(3));
+                informe.setHorastarea5(horas.get(4));
+                informe.setHorastarea6(horas.get(5));
+                informeSemanalFacade.create(informe);
+                System.out.println(informe.getInformesemanalPK().getFechasemana());
+            }
         }
-        
         
         return permitido;
     }
