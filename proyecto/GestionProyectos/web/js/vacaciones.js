@@ -24,7 +24,7 @@ jQuery("#enviarDias").click(function () {
     
          error: function (jqXHR, status) {}
     });*/
-    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/vacaciones", {
+    jQuery.get("/GestionProyectos/webresources/SimpleRoot/vacaciones", {
         user:user, ano1:ano1, mes1:mes1, dia1:dia1, ano2:ano2, mes2:mes2, dia2:dia2
     }, function (resultado) {
         if(resultado){window.alert("semanas de vacaciones guardadas");

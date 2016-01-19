@@ -40,7 +40,7 @@ jQuery(function (){
         p.appendChild(t);
         document.body.appendChild(p);
         
-    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/actividades", {
+    jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividades", {
         user: user, idP:idP
     }, function (resultado) {
         jQuery("#resultado span").text(resultado);
