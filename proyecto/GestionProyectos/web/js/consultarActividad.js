@@ -4,7 +4,7 @@
 jQuery(function () {
     var user = getCookie("username");
     var idP = location.search.split('idP=')[1];
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividades", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/actividades", {
         user: user, idP:idP
     }, function (resultado) {
         for (j = 0; j < resultado.length; j++) {

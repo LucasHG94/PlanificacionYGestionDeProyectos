@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author sturm
  */
 @Entity
-@Table(name = "Proyecto")
+@Table(name = "PROYECTO")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Proyecto.findAll", query = "SELECT p FROM Proyecto p"),
@@ -43,21 +43,21 @@ public class Proyecto implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "id")
+    @Column(name = "ID")
     private Integer id;
     @Size(max = 100)
-    @Column(name = "nombre")
+    @Column(name = "NOMBRE")
     private String nombre;
-    @Column(name = "fechainicio")
+    @Column(name = "FECHAINICIO")
     @Temporal(TemporalType.DATE)
     private Date fechainicio;
-    @Column(name = "fechafin")
+    @Column(name = "FECHAFIN")
     @Temporal(TemporalType.DATE)
     private Date fechafin;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "nickjefe")
+    @Column(name = "NICKJEFE")
     private String nickjefe;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "proyecto")
     private Collection<Etapa> etapaCollection;

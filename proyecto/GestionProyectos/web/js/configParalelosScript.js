@@ -7,11 +7,11 @@
 checkAdmin();
 jQuery("#submitBtn").click(function () {
     var numP = $("#numP").val();
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin/conf", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin/conf", {
         numP: numP
     }, function () {
         window.alert("Datos cambiados con exito");
-        var pagina = 'admin.html';
+        var pagina = 'http://localhost:8080/GestionProyectos/admin.html';
         document.location.href = pagina;
     });
 

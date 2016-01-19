@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author sturm
  */
 @Entity
-@Table(name = "Administrador")
+@Table(name = "ADMINISTRADOR")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Administrador.findAll", query = "SELECT a FROM Administrador a"),
@@ -34,12 +34,12 @@ public class Administrador implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "nick")
+    @Column(name = "NICK")
     private String nick;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "password")
+    @Column(name = "PASSWORD")
     private String password;
 
     public Administrador() {

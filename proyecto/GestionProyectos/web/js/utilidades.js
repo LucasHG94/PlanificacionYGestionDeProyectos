@@ -47,12 +47,12 @@ function parametro(name, url) {
 
 function checkAdmin() {
     var user = getCookie("username");
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin", {
         user: user
     }, function (resultado) {
         if (resultado != 1) {
             window.alert("Acceso denegado");
-            var pagina = 'index.html';
+            var pagina = 'http://localhost:8080/GestionProyectos/index.html';
             document.location.href = pagina;
 
         }
@@ -63,7 +63,7 @@ function checkSesionIniciada() {
     var user = getCookie("username");
     if (user === null) {
         window.alert("Inicio de sesion necesario");
-        var pagina = 'index.html';
+        var pagina = 'http://localhost:8080/GestionProyectos/index.html';
         document.location.href = pagina;
     }
 }
