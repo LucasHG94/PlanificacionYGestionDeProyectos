@@ -229,9 +229,59 @@ public class SimpleRootResource {
 
     @GET
     @Produces("application/json")
-    @Path("/proyecto/{numP}/informes/aa")
-    public String getDatosInformeAA() {
-        return null;
+    @Path("/proyecto/{numP}/informes/aa/{fecha}")
+    public String getDatosInformeAA(@PathParam("numP") String numP, @PathParam("fecha") String fecha) {
+        int idP = Integer.valueOf(numP);
+        DateTime comienzoPeriodo = new DateTime(fecha);
+        DateTime finPerido = comienzoPeriodo.plusWeeks(3);
+        List<Actividad> actividades = getActividadesProyecto(idP);
+        calcularFechasEstimadas(actividades);
+        List<Actividad> actividadesEnPeriodo = new ArrayList<>();
+        DateTime fechatmp;
+        for(Actividad a:actividades){
+            fechatmp = new DateTime(a.getFechaAproximada());
+            if(fechatmp.isAfter(comienzoPeriodo)&&fechatmp.isBefore(finPerido)){
+                actividadesEnPeriodo.add(a);
+            }
+        }
+        System.out.println("Num actividades en periodo: " + actividadesEnPeriodo.size());
+        
+        JSONArray result = new JSONArray();
+        JSONObject trabajador;
+        JSONArray lista;
+        List<Trabajador> trabajadores;
+        JSONObject tmp;
+        JSONObject tmpa;
+        for(Actividad a:actividadesEnPeriodo){
+            trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+            for(Trabajador t:trabajadores){
+                boolean nuevo = true;
+                for(int i=0; i<result.length(); i++){
+                    tmp = result.getJSONObject(i);
+                    if(tmp.getString("nick").equals(t.getNick())){
+                        tmpa = new JSONObject();
+                        tmpa.put("nombre", a.getNombre());
+                        tmpa.put("date", a.getFechaAproximada().toString());
+                        tmp.getJSONArray("actividades").put(tmpa);
+                        nuevo = false;
+                        break;
+                    }
+                }
+                if(nuevo){
+                    tmpa = new JSONObject();
+                    JSONObject tmpb = new JSONObject();
+                    tmpa.put("nick", t.getNick());
+                    tmpa.put("actividades", new JSONArray());
+                    tmpb.put("nombre", a.getNombre());
+                    tmpb.put("date", a.getFechaAproximada());
+                    tmpa.getJSONArray("actividades").put(tmpb);
+                    result.put(tmpa);
+                }
+            }
+        }
+        
+        
+        return result.toString();
     }
 
     @GET
@@ -399,6 +449,8 @@ public class SimpleRootResource {
 
         return true;
     }
+    
+    
 
     @GET
     @Produces("application/json")
@@ -561,6 +613,13 @@ public class SimpleRootResource {
             pFiltrado.add(item.getProyecto());
         }
         return pFiltrado;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/todos")
+    public List<Proyecto> getProyectosJefe2(@PathParam("nick") String nick){
+        return getProyectosJefe(nick);
     }
 
     @GET
