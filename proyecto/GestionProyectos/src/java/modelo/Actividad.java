@@ -64,7 +64,7 @@ public class Actividad implements Serializable {
     @Column(name = "rol")
     private String rol;
     @JoinTable(name = "Precedencia", joinColumns = {
-        @JoinColumn(name = "idproyectoprecedente", referencedColumnName = "idproyect"),
+        @JoinColumn(name = "idproyectoprecedente", referencedColumnName = "idproyecto"),
         @JoinColumn(name = "idetapaprecedente", referencedColumnName = "idetapa"),
         @JoinColumn(name = "idactividadprecedente", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "idproyectoprecedida", referencedColumnName = "idproyecto"),
