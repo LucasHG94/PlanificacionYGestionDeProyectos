@@ -23,13 +23,13 @@ import javax.validation.constraints.Size;
 public class VacacionesPK implements Serializable {
     @Basic(optional = false)
     @NotNull
-    @Column(name = "fechasemana")
+    @Column(name = "FECHASEMANA")
     @Temporal(TemporalType.DATE)
     private Date fechasemana;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "nicktrabajador")
+    @Column(name = "NICKTRABAJADOR")
     private String nicktrabajador;
 
     public VacacionesPK() {

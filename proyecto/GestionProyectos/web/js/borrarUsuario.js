@@ -1,6 +1,6 @@
 checkAdmin();
 jQuery(function () {
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/Trabajadores", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/Trabajadores", {
          
     }, function (resultado) {
         var h = document.createElement("h4");
@@ -13,7 +13,7 @@ jQuery(function () {
             p.appendChild(t);
             var btn = document.createElement("a");
             btn.setAttribute("id", "crear");
-            btn.setAttribute("href","borrarUsuario.html?idP="+resultado[j].id);
+            btn.setAttribute("href","http://localhost:8080/GestionProyectos/borrarUsuario.html?idP="+resultado[j].id);
             var t = document.createTextNode("crearInforme,  ");
             btn.appendChild(t);
             p.appendChild(btn);
