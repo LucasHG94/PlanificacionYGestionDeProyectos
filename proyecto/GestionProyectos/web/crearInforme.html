@@ -41,7 +41,7 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
                     uriH = uriH+"&hora5"+j+"="+hora5;
                 }
                 
-                jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/informeSemanal?user="+user+""+uriH, {
+                jQuery.get("/GestionProyectos/webresources/SimpleRoot/informeSemanal?user="+user+""+uriH, {
                 }, function (resultado) {
                     if(resultado){window.alert("informe cerado");
                 }

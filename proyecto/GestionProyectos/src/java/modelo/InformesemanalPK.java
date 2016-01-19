@@ -24,23 +24,23 @@ public class InformesemanalPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "NICKTRABAJADOR")
+    @Column(name = "nicktrabajador")
     private String nicktrabajador;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDPROYECTO")
+    @Column(name = "idproyecto")
     private int idproyecto;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDETAPA")
+    @Column(name = "idetapa")
     private int idetapa;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDACTIVIDAD")
+    @Column(name = "idactividad")
     private int idactividad;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "FECHASEMANA")
+    @Column(name = "fechasemana")
     @Temporal(TemporalType.DATE)
     private Date fechasemana;
 
