@@ -7,6 +7,7 @@ package servicioWeb;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,8 @@ public class SimpleRootResource {
         System.out.println("Resultado: " + actividades.size());
         List<Actividad> precedidaspora;
         Actividad a = getActividad(actividades, 1, 1);
+        Collection<Actividad> tmp = a.getActividadCollection();
+        List<Actividad> tmp12 = new ArrayList<>(tmp);
         precedidaspora = new ArrayList<>(a.getActividadCollection());
         a.setFechaAproximada(fechaIniciotmp);
         calcularFechasRecursivo(a, precedidaspora);
