@@ -7,11 +7,11 @@
 checkAdmin();
 jQuery("#submitBtn").click(function () {
     var numP = $("#numP").val();
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin/conf", {
+    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/admin/conf", {
         numP: numP
     }, function () {
         window.alert("Datos cambiados con exito");
-        var pagina = '/GestionProyectos/admin.html';
+        var pagina = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/admin.html';
         document.location.href = pagina;
     });
 

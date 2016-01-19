@@ -8,13 +8,13 @@ var c1=false;
 var c2=false;
 
 function nombreDisponible(nombre, callback) {
-    var url = "/GestionProyectos/webresources/SimpleRoot/proyectos/nombreDisponible";
+    var url = "http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos/nombreDisponible";
     $.getJSON(url, {nombre: nombre},
             callback);
 }
 
 function jefeDisponible(nick, callback){
-    var url = "/GestionProyectos/webresources/SimpleRoot/trabajador/"+nick+"/disponibleParaJefe";
+    var url = "http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/trabajador/"+nick+"/disponibleParaJefe";
     $.getJSON(url,callback);
 }
 
@@ -77,7 +77,7 @@ function setValidation(b){
 
 function crearProyecto(){
     //alert("Creando.");
-    var url = "/GestionProyectos/webresources/SimpleRoot/proyectos/nuevo";
+    var url = "http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos/nuevo";
     $.getJSON(url,{nombre: $("#pname").val(), nickjefe:$("#pnick").val()},function(json){
         alert("Proyecto creado con exito.");
     });

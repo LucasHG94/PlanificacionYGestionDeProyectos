@@ -3,7 +3,7 @@ Script para presentar los proyectos en los que participas en de los que eres jef
  */
 jQuery(function () {
     var user = getCookie("username");
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/proyectos", {
+    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos", {
         user: user
     }, function (resultado) {
         var h = document.createElement("h4");
@@ -39,7 +39,7 @@ jQuery(function () {
         document.body.appendChild(p);
     });
     
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/proyectosjefe", {
+    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectosjefe", {
         user: user
     }, function (resultado) {
         var h = document.createElement("h4");

@@ -20,12 +20,12 @@ import javax.validation.constraints.Size;
 public class CategoriarolesPK implements Serializable {
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CATEGORIA")
+    @Column(name = "categoria")
     private int categoria;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "ROL")
+    @Column(name = "rol")
     private String rol;
 
     public CategoriarolesPK() {

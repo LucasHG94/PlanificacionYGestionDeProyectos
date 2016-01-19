@@ -3,7 +3,7 @@
  * de una url
  */
 
-var patronurl = '/GestionProyectos/webresources/SimpleRoot';
+var patronurl = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot';
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -47,12 +47,12 @@ function parametro(name, url) {
 
 function checkAdmin() {
     var user = getCookie("username");
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin", {
+    jQuery.get("http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/admin", {
         user: user
     }, function (resultado) {
         if (resultado != 1) {
             window.alert("Acceso denegado");
-            var pagina = '/GestionProyectos/index.html';
+            var pagina = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/index.html';
             document.location.href = pagina;
 
         }
@@ -63,7 +63,7 @@ function checkSesionIniciada() {
     var user = getCookie("username");
     if (user === null) {
         window.alert("Inicio de sesion necesario");
-        var pagina = '/GestionProyectos/index.html';
+        var pagina = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/index.html';
         document.location.href = pagina;
     }
 }

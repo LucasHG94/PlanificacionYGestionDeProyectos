@@ -29,7 +29,7 @@ function showPlanUpload() {
 }
 
 function cargarProyectos() {
-    $.getJSON('/GestionProyectos/webresources/SimpleRoot/proyectos/jefe/' + getCookie("username") + '/noiniciados',
+    $.getJSON('http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos/jefe/' + getCookie("username") + '/noiniciados',
             function (data) {
                 var selectProject = $("#selectproject").get(0);
                 var b;
@@ -50,7 +50,7 @@ function cargarProyectos() {
 function prepareProjectPlanUpload() {
     var selectproject = document.getElementById("selectproject");
     var pjId = selectproject.options[selectproject.selectedIndex].getAttribute("projectid");
-    var url = '/GestionProyectos/webresources/SimpleRoot/proyectos/' + pjId + '/plan';
+    var url = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos/' + pjId + '/plan';
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
@@ -84,7 +84,7 @@ function asignarTrabajador() {
     var pjId = selectproject.options[selectproject.selectedIndex].getAttribute("projectid");
     var nickt = $("#nickt").val();
     var porpar = $("#porpar").val();
-    var url = '/GestionProyectos/webresources/SimpleRoot/proyectos/' + pjId + '/asignarParticipacion/' + nickt;
+    var url = 'http://virtual.lab.inf.uva.es:27092/GestionProyectos/webresources/SimpleRoot/proyectos/' + pjId + '/asignarParticipacion/' + nickt;
     $.getJSON(url,
             {por: porpar},
     function (data) {
@@ -113,7 +113,7 @@ $(function () {
     $("#selectproject").change(prepareProjectPlanUpload);
     $("#addWorker").click(asignarTrabajador);
     $("#botonTerminar").click(function(){
-        document.location.href="/GestionProyectos/index.html";
+        document.location.href="http://virtual.lab.inf.uva.es:27092/GestionProyectos/index.html";
     });
 
 });
