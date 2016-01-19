@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author sturm
  */
 @Entity
-@Table(name = "ACTIVIDAD")
+@Table(name = "Actividad")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Actividad.findAll", query = "SELECT a FROM Actividad a"),
@@ -50,26 +50,26 @@ public class Actividad implements Serializable {
     @EmbeddedId
     protected ActividadPK actividadPK;
     @Size(max = 100)
-    @Column(name = "NOMBRE")
+    @Column(name = "nombre")
     private String nombre;
-    @Column(name = "FECHAINICIO")
+    @Column(name = "fechainicio")
     @Temporal(TemporalType.DATE)
     private Date fechainicio;
-    @Column(name = "FECHAFIN")
+    @Column(name = "fechafin")
     @Temporal(TemporalType.DATE)
     private Date fechafin;
-    @Column(name = "ESFUERZOESTIMADO")
+    @Column(name = "esfuerzoestimado")
     private Integer esfuerzoestimado;
     @Size(max = 20)
-    @Column(name = "ROL")
+    @Column(name = "rol")
     private String rol;
-    @JoinTable(name = "PRECEDENCIA", joinColumns = {
-        @JoinColumn(name = "IDPROYECTOPRECEDENTE", referencedColumnName = "IDPROYECTO"),
-        @JoinColumn(name = "IDETAPAPRECEDENTE", referencedColumnName = "IDETAPA"),
-        @JoinColumn(name = "IDACTIVIDADPRECEDENTE", referencedColumnName = "ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "IDPROYECTOPRECEDIDA", referencedColumnName = "IDPROYECTO"),
-        @JoinColumn(name = "IDETAPAPRECEDIDA", referencedColumnName = "IDETAPA"),
-        @JoinColumn(name = "IDACTIVIDADPRECEDIDA", referencedColumnName = "ID")})
+    @JoinTable(name = "Precedencia", joinColumns = {
+        @JoinColumn(name = "idproyectoprecedente", referencedColumnName = "idproyect"),
+        @JoinColumn(name = "idetapaprecedente", referencedColumnName = "idetapa"),
+        @JoinColumn(name = "idactividadprecedente", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "idproyectoprecedida", referencedColumnName = "idproyecto"),
+        @JoinColumn(name = "idetapaprecedida", referencedColumnName = "idetapa"),
+        @JoinColumn(name = "idactividadprecedida", referencedColumnName = "id")})
     @ManyToMany
     private Collection<Actividad> actividadCollection;
     @ManyToMany(mappedBy = "actividadCollection")
@@ -77,8 +77,8 @@ public class Actividad implements Serializable {
     @ManyToMany(mappedBy = "actividadCollection")
     private Collection<Trabajador> trabajadorCollection;
     @JoinColumns({
-        @JoinColumn(name = "IDETAPA", referencedColumnName = "ID", insertable = false, updatable = false),
-        @JoinColumn(name = "IDPROYECTO", referencedColumnName = "IDPROYECTO", insertable = false, updatable = false)})
+        @JoinColumn(name = "idetapa", referencedColumnName = "id", insertable = false, updatable = false),
+        @JoinColumn(name = "idproyecto", referencedColumnName = "idproyecto", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Etapa etapa;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "actividad")

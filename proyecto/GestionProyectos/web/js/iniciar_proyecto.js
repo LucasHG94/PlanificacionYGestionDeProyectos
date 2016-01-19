@@ -113,7 +113,7 @@ $(function () {
     $("#selectproject").change(prepareProjectPlanUpload);
     $("#addWorker").click(asignarTrabajador);
     $("#botonTerminar").click(function(){
-        document.location.href="/GestionProyectos/index.html";
+        document.location.href="index.html";
     });
 
 });
