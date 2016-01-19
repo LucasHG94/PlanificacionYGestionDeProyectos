@@ -6,7 +6,7 @@
 checkAdmin();
 
 jQuery("#cancelBtn").click(function () {
-        var pagina = 'http://localhost:8080/GestionProyectos/admin.html';
+        var pagina = 'admin.html';
         document.location.href = pagina;
 });
 
@@ -17,18 +17,18 @@ jQuery("#confirmBtn").click(function () {
     var cat = $("#categoria").val();
     if(pass != pass2){
         window.alert("Las contraseñas no coinciden");
-        var pagina = 'http://localhost:8080/GestionProyectos/alta_Usuario.html';
+        var pagina = 'alta_Usuario.html';
         document.location.href = pagina;
     }
     if(cat<1 && cat>4){
         window.alert("La categoria debe estar entre 1 y 4");
-        var pagina = 'http://localhost:8080/GestionProyectos/alta_Usuario.html';
+        var pagina = 'alta_Usuario.html';
         document.location.href = pagina;
     }
-    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/admin/newUser", {
+    jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin/newUser", {
         nick: nick, pass:pass, cat:cat
     }, function () {      
-        var pagina = 'http://localhost:8080/GestionProyectos/admin.html';
+        var pagina = 'admin.html';
         document.location.href = pagina;
     });
 

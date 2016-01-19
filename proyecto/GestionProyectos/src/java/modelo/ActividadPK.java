@@ -19,15 +19,15 @@ import javax.validation.constraints.NotNull;
 public class ActividadPK implements Serializable {
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDPROYECTO")
+    @Column(name = "idproyecto")
     private int idproyecto;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IDETAPA")
+    @Column(name = "idetapa")
     private int idetapa;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ID")
+    @Column(name = "id")
     private int id;
 
     public ActividadPK() {

@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author sturm
  */
 @Entity
-@Table(name = "VACACIONES")
+@Table(name = "Vacaciones")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Vacaciones.findAll", query = "SELECT v FROM Vacaciones v"),
@@ -31,7 +31,7 @@ public class Vacaciones implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected VacacionesPK vacacionesPK;
-    @JoinColumn(name = "NICKTRABAJADOR", referencedColumnName = "NICK", insertable = false, updatable = false)
+    @JoinColumn(name = "nicktrabajador", referencedColumnName = "nick", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Trabajador trabajador;
 
