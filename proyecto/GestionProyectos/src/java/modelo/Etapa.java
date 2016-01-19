@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author sturm
  */
 @Entity
-@Table(name = "ETAPA")
+@Table(name = "Etapa")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Etapa.findAll", query = "SELECT e FROM Etapa e"),
@@ -38,9 +38,9 @@ public class Etapa implements Serializable {
     @EmbeddedId
     protected EtapaPK etapaPK;
     @Size(max = 100)
-    @Column(name = "NOMBRE")
+    @Column(name = "nombre")
     private String nombre;
-    @JoinColumn(name = "IDPROYECTO", referencedColumnName = "ID", insertable = false, updatable = false)
+    @JoinColumn(name = "idproyecto", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Proyecto proyecto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "etapa")
