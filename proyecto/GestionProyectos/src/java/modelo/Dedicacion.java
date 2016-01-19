@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author sturm
  */
 @Entity
-@Table(name = "Dedicacion")
+@Table(name = "DEDICACION")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Dedicacion.findAll", query = "SELECT d FROM Dedicacion d"),
@@ -36,12 +36,12 @@ public class Dedicacion implements Serializable {
     protected DedicacionPK dedicacionPK;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "porcentaje")
+    @Column(name = "PORCENTAJE")
     private int porcentaje;
-    @JoinColumn(name = "idproyecto", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "IDPROYECTO", referencedColumnName = "ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Proyecto proyecto;
-    @JoinColumn(name = "nicktrabajador", referencedColumnName = "nick", insertable = false, updatable = false)
+    @JoinColumn(name = "NICKTRABAJADOR", referencedColumnName = "NICK", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Trabajador trabajador;
 

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author sturm
  */
 @Entity
-@Table(name = "Datosconfigurables")
+@Table(name = "DATOSCONFIGURABLES")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Datosconfigurables.findAll", query = "SELECT d FROM Datosconfigurables d"),
@@ -34,11 +34,11 @@ public class Datosconfigurables implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
-    @Column(name = "nombrevariable")
+    @Column(name = "NOMBREVARIABLE")
     private String nombrevariable;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "valor")
+    @Column(name = "VALOR")
     private int valor;
 
     public Datosconfigurables() {

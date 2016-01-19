@@ -40,7 +40,7 @@ jQuery(function (){
         p.appendChild(t);
         document.body.appendChild(p);
         
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividades", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/actividades", {
         user: user, idP:idP
     }, function (resultado) {
         jQuery("#resultado span").text(resultado);

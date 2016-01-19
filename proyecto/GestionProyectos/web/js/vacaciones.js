@@ -14,7 +14,7 @@ jQuery("#enviarDias").click(function () {
     var dia2 = jQuery("#dia2").val();
     /*jQuery.ajax({
          type: "PUT",
-         url: "/GestionProyectos/webresources/SimpleRoot/vacaciones",
+         url: "http://localhost:8080/GestionProyectos/webresources/SimpleRoot/vacaciones",
          contentType: "application/json; charset=utf-8",
          data: {user:user, ano1:ano1, mes1:mes1, dia1:dia1, ano2:ano2, mes2:mes2, dia2:dia2},
          dataType: "json",
@@ -24,7 +24,7 @@ jQuery("#enviarDias").click(function () {
     
          error: function (jqXHR, status) {}
     });*/
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/vacaciones", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/vacaciones", {
         user:user, ano1:ano1, mes1:mes1, dia1:dia1, ano2:ano2, mes2:mes2, dia2:dia2
     }, function (resultado) {
         if(resultado){window.alert("semanas de vacaciones guardadas");

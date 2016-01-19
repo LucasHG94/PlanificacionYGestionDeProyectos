@@ -9,7 +9,7 @@ jQuery(function () {
     var user = getCookie("username");
     idPs[0] = 1;
     idP = idPs[0];
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividadesSemana", {
+    jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/actividadesSemana", {
         user: user, idP:idP
     }, function (resultado) {
         for (j = 0; j < resultado.length; j++) {

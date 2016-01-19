@@ -21,11 +21,11 @@ public class DedicacionPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "nicktrabajador")
+    @Column(name = "NICKTRABAJADOR")
     private String nicktrabajador;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "idproyecto")
+    @Column(name = "IDPROYECTO")
     private int idproyecto;
 
     public DedicacionPK() {

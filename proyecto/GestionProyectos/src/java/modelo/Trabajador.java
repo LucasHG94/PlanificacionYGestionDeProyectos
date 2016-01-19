@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author sturm
  */
 @Entity
-@Table(name = "Trabajador")
+@Table(name = "TRABAJADOR")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Trabajador.findAll", query = "SELECT t FROM Trabajador t"),
@@ -42,18 +42,18 @@ public class Trabajador implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "nick")
+    @Column(name = "NICK")
     private String nick;
     @Size(max = 20)
-    @Column(name = "password")
+    @Column(name = "PASSWORD")
     private String password;
-    @Column(name = "categoria")
+    @Column(name = "CATEGORIA")
     private Integer categoria;
-    @JoinTable(name = "Asignacion", joinColumns = {
-        @JoinColumn(name = "nicktrabajador", referencedColumnName = "nick")}, inverseJoinColumns = {
-        @JoinColumn(name = "idproyecto", referencedColumnName = "idproyecto"),
-        @JoinColumn(name = "idetapa", referencedColumnName = "idetapa"),
-        @JoinColumn(name = "idactividad", referencedColumnName = "id")})
+    @JoinTable(name = "ASIGNACION", joinColumns = {
+        @JoinColumn(name = "NICKTRABAJADOR", referencedColumnName = "NICK")}, inverseJoinColumns = {
+        @JoinColumn(name = "IDPROYECTO", referencedColumnName = "IDPROYECTO"),
+        @JoinColumn(name = "IDETAPA", referencedColumnName = "IDETAPA"),
+        @JoinColumn(name = "IDACTIVIDAD", referencedColumnName = "ID")})
     @ManyToMany
     private Collection<Actividad> actividadCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "trabajador")

@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author sturm
  */
 @Entity
-@Table(name = "Informesemanal")
+@Table(name = "INFORMESEMANAL")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Informesemanal.findAll", query = "SELECT i FROM Informesemanal i"),
@@ -46,30 +46,30 @@ public class Informesemanal implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InformesemanalPK informesemanalPK;
-    @Column(name = "horastarea1")
+    @Column(name = "HORASTAREA1")
     private Integer horastarea1;
-    @Column(name = "horastarea2")
+    @Column(name = "HORASTAREA2")
     private Integer horastarea2;
-    @Column(name = "horastarea3")
+    @Column(name = "HORASTAREA3")
     private Integer horastarea3;
-    @Column(name = "horastarea4")
+    @Column(name = "HORASTAREA4")
     private Integer horastarea4;
-    @Column(name = "horastarea5")
+    @Column(name = "HORASTAREA5")
     private Integer horastarea5;
-    @Column(name = "horastarea6")
+    @Column(name = "HORASTAREA6")
     private Integer horastarea6;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "estado")
+    @Column(name = "ESTADO")
     private String estado;
     @JoinColumns({
-        @JoinColumn(name = "idproyecto", referencedColumnName = "idproyecto", insertable = false, updatable = false),
-        @JoinColumn(name = "idetapa", referencedColumnName = "idetapa", insertable = false, updatable = false),
-        @JoinColumn(name = "idactividad", referencedColumnName = "id", insertable = false, updatable = false)})
+        @JoinColumn(name = "IDPROYECTO", referencedColumnName = "IDPROYECTO", insertable = false, updatable = false),
+        @JoinColumn(name = "IDETAPA", referencedColumnName = "IDETAPA", insertable = false, updatable = false),
+        @JoinColumn(name = "IDACTIVIDAD", referencedColumnName = "ID", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Actividad actividad;
-    @JoinColumn(name = "nicktrabajador", referencedColumnName = "nick", insertable = false, updatable = false)
+    @JoinColumn(name = "NICKTRABAJADOR", referencedColumnName = "NICK", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Trabajador trabajador;
 
