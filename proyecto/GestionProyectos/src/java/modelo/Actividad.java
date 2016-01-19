@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -82,6 +83,9 @@ public class Actividad implements Serializable {
     private Etapa etapa;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "actividad")
     private Collection<Informesemanal> informesemanalCollection;
+    
+    @Transient
+    private Date fechaAproximada;
 
     public Actividad() {
     }
@@ -124,6 +128,14 @@ public class Actividad implements Serializable {
 
     public void setFechafin(Date fechafin) {
         this.fechafin = fechafin;
+    }
+    
+    public Date getFechaAproximada(){
+        return this.fechaAproximada;
+    }
+    
+    public void setFechaAproximada(Date d){
+        this.fechaAproximada = d;
     }
 
     public Integer getEsfuerzoestimado() {

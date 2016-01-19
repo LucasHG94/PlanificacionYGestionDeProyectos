@@ -78,10 +78,10 @@ public class SimpleRootResource {
 
     @EJB
     private EtapaFacadeLocal etapaFacade;
-    
+
     @EJB
     private DatosconfigurablesFacadeLocal configFacade;
-    
+
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
 
@@ -122,24 +122,126 @@ public class SimpleRootResource {
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
     }
+
     
-    @GET
-    @Produces("application/json")
-    @Path("/trabajador/{nick}/existe")
-    public boolean isTrabajador(@PathParam("nick") String nick){
-        Trabajador t = trabajadorFacade.find(nick);
-        return t!=null;
+    public List<Actividad> calcularFechasEstimadas(List<Actividad> actividades) {
+        List<Actividad> resultado = new ArrayList<>();
+        //List<Actividad> actividades = getActividadesProyecto(5);
+
+        if (actividades.size() <= 0) {
+            return null;
+        }
+        Date fechaIniciotmp = proyectoFacade.find(actividades.get(0).getActividadPK().getIdproyecto()).getFechainicio();
+        System.out.println("Resultado: " + actividades.size());
+
+        if (fechaIniciotmp == null) {
+            return null;
+        }
+        System.out.println("Resultado: " + actividades.size());
+        List<Actividad> precedidaspora;
+        Actividad a = getActividad(actividades, 1, 1);
+        precedidaspora = new ArrayList<>(a.getActividadCollection());
+        a.setFechaAproximada(fechaIniciotmp);
+        calcularFechasRecursivo(a, precedidaspora);
+        return actividades;
+
     }
     
     @GET
     @Produces("application/json")
+    @Path("/test/infact")
+    public List<Actividad> calcularFechasEstimadasTest(/*List<Actividad> actividades*/) {
+        List<Actividad> resultado = new ArrayList<>();
+        List<Actividad> actividades = getActividadesProyecto(5);
+
+        if (actividades.size() <= 0) {
+            return null;
+        }
+        Date fechaIniciotmp = proyectoFacade.find(actividades.get(0).getActividadPK().getIdproyecto()).getFechainicio();
+        System.out.println("Resultado: " + actividades.size());
+
+        if (fechaIniciotmp == null) {
+            return null;
+        }
+        System.out.println("Resultado: " + actividades.size());
+        List<Actividad> precedidaspora;
+        Actividad a = getActividad(actividades, 1, 1);
+        precedidaspora = new ArrayList<>(a.getActividadCollection());
+        a.setFechaAproximada(fechaIniciotmp);
+        calcularFechasRecursivo(a, precedidaspora);
+        return actividades;
+
+    }
+
+    public void calcularFechasRecursivo(Actividad a, List<Actividad> precedidas) {
+        if(precedidas.size()<=0) return;
+        DateTime fechaAproximadaA = new DateTime(a.getFechaAproximada());
+        DateTime fechaAproximadaP = fechaAproximadaA.plusDays(a.getEsfuerzoestimado());
+        DateTime fechaAproximadaPActual;
+        
+
+        for (Actividad p : precedidas) {
+            if (p.getFechaAproximada() != null) {
+                fechaAproximadaPActual = new DateTime(p.getFechaAproximada());
+                if(fechaAproximadaPActual.isBefore(fechaAproximadaP)){
+                    p.setFechaAproximada(fechaAproximadaP.toDate());
+                    calcularFechasRecursivo(p, new ArrayList<>(p.getActividadCollection()));
+                }
+            } else {
+                p.setFechaAproximada(fechaAproximadaP.toDate());
+                calcularFechasRecursivo(p, new ArrayList<>(p.getActividadCollection()));
+            }
+
+        }
+    }
+
+    public Actividad getActividad(List<Actividad> actividades, int etapa, int id) {
+        ActividadPK pk;
+        for (Actividad a : actividades) {
+            pk = a.getActividadPK();
+            if (pk.getId() == id && pk.getIdetapa() == etapa) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public List<Actividad> getActividadesProyecto(int idproyecto) {
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> resultado = new ArrayList<>();
+        for (Actividad a : actividades) {
+            if (a.getActividadPK().getIdproyecto() == idproyecto) {
+                resultado.add(a);
+            }
+        }
+
+        return resultado;
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/proyecto/{numP}/informes/aa")
+    public String getDatosInformeAA() {
+        return null;
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/trabajador/{nick}/existe")
+    public boolean isTrabajador(@PathParam("nick") String nick) {
+        Trabajador t = trabajadorFacade.find(nick);
+        return t != null;
+    }
+
+    @GET
+    @Produces("application/json")
     @Path("/trabajador/{nick}/{categoria}")
-    public boolean asignarCategoriaTrabajador(@PathParam("categoria") int cat, @PathParam("nick") String nick){
+    public boolean asignarCategoriaTrabajador(@PathParam("categoria") int cat, @PathParam("nick") String nick) {
         List<Categoriaroles> categorias = categoriaFacade.findAll();
         Trabajador t = trabajadorFacade.find(nick);
-        for(Categoriaroles c:categorias){
-            
-            if(c.getCategoriarolesPK().getCategoria()==cat){
+        for (Categoriaroles c : categorias) {
+
+            if (c.getCategoriarolesPK().getCategoria() == cat) {
                 t.setCategoria(cat);
                 trabajadorFacade.edit(t);
                 return true;
@@ -317,8 +419,8 @@ public class SimpleRootResource {
          return true;*/
         Datosconfigurables datos = configFacade.find("ProyectosAlMismoTiempo");
         JSONObject response = new JSONObject();
-        int maxPActivos = (datos!=null) ? datos.getValor() : 2;
-        
+        int maxPActivos = (datos != null) ? datos.getValor() : 2;
+
         try {
             int idProyecto = Integer.valueOf(id);
             int porActual = 0;
@@ -344,13 +446,13 @@ public class SimpleRootResource {
             }
             System.out.println("Num proyectos activos: " + numPActivos);
             System.out.println("Por actual: " + porActual);
-            
-            if(numPActivos>=maxPActivos){
+
+            if (numPActivos >= maxPActivos) {
                 response.put("error", true);
                 response.put("mensaje", "Este trabajador ya se encuentra trabajando en el numero maximo de proyectos permitido.");
                 return response.toString();
             }
-            
+
             if (porActual + porSolicitado > 100) {
                 response.put("error", true);
                 response.put("mensaje", "El porcentaje de participacion total superaria el permitido. Introduce un pocrcentaje menor.");
@@ -510,32 +612,32 @@ public class SimpleRootResource {
         Proyecto p = proyectoFacade.find(idProyecto);
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
-        for(Actividad item : actividades){
-            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
-                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+        for (Actividad item : actividades) {
+            if (item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)
+                    & item.getEtapa().getProyecto().getFechafin().before(new Date())) {
                 actividadesTrabajador.add(item);
             }
         }
         return actividadesTrabajador;
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/actividadesSemana")
-    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto){
+    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre, @QueryParam("idP") int idProyecto) {
         Trabajador t = trabajadorFacade.find(nombre);
         Proyecto p = proyectoFacade.find(idProyecto);
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
-        for(Actividad item : actividades){
-            if(item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p) &
-                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+        for (Actividad item : actividades) {
+            if (item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)
+                    & item.getEtapa().getProyecto().getFechafin().before(new Date())) {
                 actividadesTrabajador.add(item);
             }
         }
-        List<Actividad> actividadesSemana= new ArrayList<>();
-        for(Actividad item : actividadesTrabajador){
-            if(item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())){
+        List<Actividad> actividadesSemana = new ArrayList<>();
+        for (Actividad item : actividadesTrabajador) {
+            if (item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())) {
                 actividadesSemana.add(item);
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
             }
@@ -547,14 +649,14 @@ public class SimpleRootResource {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/vacaciones")
-    public boolean setVacaciones(@QueryParam("user") String nombre, 
+    public boolean setVacaciones(@QueryParam("user") String nombre,
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2) {
         Trabajador t = trabajadorFacade.find(nombre);
 
-        Date fecha1 = new Date(ano1-1900,mes1-1,dia1);
-        Date fecha2 = new Date(ano2-1900,mes2-1,dia2);
-        
+        Date fecha1 = new Date(ano1 - 1900, mes1 - 1, dia1);
+        Date fecha2 = new Date(ano2 - 1900, mes2 - 1, dia2);
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
@@ -562,36 +664,33 @@ public class SimpleRootResource {
         cal.setTime(fecha3);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha3Fin = cal.getTime();
-        
+
         cal.setTime(fecha2);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha4 = cal.getTime();
         cal.setTime(fecha4);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha4Fin = cal.getTime();
-        
+
         boolean permitido = true;
         List<Actividad> actividades = actividadFacade.findAll();
-        for(Actividad item : actividades){
-            if(t.getActividadCollection().contains(item)){
-                if(item.getFechainicio().after(fecha1) && item.getFechainicio().before(fecha3Fin)){
+        for (Actividad item : actividades) {
+            if (t.getActividadCollection().contains(item)) {
+                if (item.getFechainicio().after(fecha1) && item.getFechainicio().before(fecha3Fin)) {
                     permitido = false;
-                }
-                else if(item.getFechainicio().after(fecha2) && item.getFechainicio().before(fecha4Fin)){
+                } else if (item.getFechainicio().after(fecha2) && item.getFechainicio().before(fecha4Fin)) {
                     permitido = false;
                 }
             }
         }
-        
-        
-        if(permitido){
+
+        if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
-            Vacaciones v1 = new Vacaciones(vpk1);       
+            Vacaciones v1 = new Vacaciones(vpk1);
             vacacionesFacade.create(v1);
             VacacionesPK vpk2 = new VacacionesPK(fecha3, t.getNick());
             Vacaciones v2 = new Vacaciones(vpk2);
             vacacionesFacade.create(v2);
-
 
             VacacionesPK vpk3 = new VacacionesPK(fecha2, t.getNick());
             Vacaciones v3 = new Vacaciones(vpk3);
@@ -602,54 +701,53 @@ public class SimpleRootResource {
         }
         return permitido;
     }
-    
+
     @GET
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/informeSemanal")
     public boolean setInformeSemanal(@Context UriInfo info
-            /*@QueryParam("user") String nombre, 
-        @QueryParam("horas00") int horas00, @QueryParam("horas10") int horas10, @QueryParam("horas20") int horas20,
-        @QueryParam("horas01") int horas01, @QueryParam("horas11") int horas11, @QueryParam("horas21") int horas21*/){
+    /*@QueryParam("user") String nombre, 
+     @QueryParam("horas00") int horas00, @QueryParam("horas10") int horas10, @QueryParam("horas20") int horas20,
+     @QueryParam("horas01") int horas01, @QueryParam("horas11") int horas11, @QueryParam("horas21") int horas21*/) {
         boolean permitido = true;
         String user = info.getQueryParameters().getFirst("user");
         List<Integer> horas = new ArrayList<>();
         Map map = info.getQueryParameters();
-        for(int i=0; i<2;i++){
-            for(int j = 0; j<3; j++){
-                String s = map.get("hora"+j+""+i).toString();
-                String s1=s.substring(0,s.length()-1);
-                String s2=s1.substring(1, s1.length());
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                String s = map.get("hora" + j + "" + i).toString();
+                String s1 = s.substring(0, s.length() - 1);
+                String s2 = s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
-                System.out.println("i="+i+";j="+j+" : "+s2);
-                
+                System.out.println("i=" + i + ";j=" + j + " : " + s2);
+
             }
         }
-        int suma=0;
+        int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
-        if(suma >40){
+        if (suma > 40) {
             permitido = false;
         }
-        
-        
+
         return permitido;
     }
-    
+
     @GET
     @Path("/admin/conf")
-    public void setParalelos(@QueryParam("numP") String numP){
-        Integer paral = Integer.parseInt(numP);       
+    public void setParalelos(@QueryParam("numP") String numP) {
+        Integer paral = Integer.parseInt(numP);
         Datosconfigurables paralel;
         paralel = configFacade.findAll().get(0);
         paralel.setValor(paral);
         configFacade.edit(paralel);
     }
-    
+
     @GET
     @Path("/admin/newUser")
-    public void createUsuario(@QueryParam("nick") String nick, @QueryParam("pass") String pass, @QueryParam("cat") String cat){
+    public void createUsuario(@QueryParam("nick") String nick, @QueryParam("pass") String pass, @QueryParam("cat") String cat) {
         Integer categoria = Integer.parseInt(cat);
         Trabajador newUser = new Trabajador();
         newUser.setNick(nick);
@@ -657,22 +755,22 @@ public class SimpleRootResource {
         newUser.setCategoria(categoria);
         trabajadorFacade.create(newUser);
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/trabajadores")
-    public List<Trabajador> getTrabajadores(){
+    public List<Trabajador> getTrabajadores() {
         List<Trabajador> workers;
         workers = trabajadorFacade.findAll();
         return workers;
     }
-    
+
     @GET
     @Path("/admin/borrarUsuario")
-    public void deleteTrabajadores(@QueryParam("nick") String nick ){
+    public void deleteTrabajadores(@QueryParam("nick") String nick) {
         Trabajador x = new Trabajador();
         x.setNick(nick);
         trabajadorFacade.remove(x);
-        
+
     }
 }
