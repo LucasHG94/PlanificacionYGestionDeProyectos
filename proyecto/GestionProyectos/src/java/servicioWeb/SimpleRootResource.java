@@ -37,6 +37,8 @@ import modelo.Trabajador;
 import modelo.Vacaciones;
 import modelo.VacacionesPK;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,6 +130,36 @@ public class SimpleRootResource {
          actividadFacade.create(b);
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/usuario/{nick}/informes/ia/{fecha1}/{fecha2}")
+    public String obtenerInformesDeActividades(@PathParam("nick") String nick, @PathParam("fecha1")String f1, @PathParam("fecha2") String f2){
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("EEEE MMM d yyyy");
+        DateTime fecha1 = new DateTime(f1);
+        DateTime fecha2 = new DateTime(f2);
+        System.out.println("fecha1: " + fecha1);
+        System.out.println("fecha2: " + fecha2);
+        Trabajador t = trabajadorFacade.find(nick);
+        List<Informesemanal> informes = new ArrayList<>(t.getInformesemanalCollection());
+        List<Informesemanal> resultado = new ArrayList<>();
+        for(Informesemanal i:informes){
+            DateTime fechaSemana = new DateTime(i.getInformesemanalPK().getFechasemana());
+            if(fechaSemana.isAfter(fecha1)&&fechaSemana.isBefore(fecha2)){
+                resultado.add(i);
+            }
+        }
+        JSONArray result = new JSONArray();
+        for(Informesemanal i:resultado){
+            JSONObject inf = new JSONObject();
+            inf.put("nombre", i.getActividad().getNombre());
+            inf.put("fecha", dtfOut.print(new DateTime(i.getInformesemanalPK().getFechasemana())));
+            inf.put("estado", i.getEstado());
+            result.put(inf);
+        }
+        
+        return result.toString();
     }
 
     
