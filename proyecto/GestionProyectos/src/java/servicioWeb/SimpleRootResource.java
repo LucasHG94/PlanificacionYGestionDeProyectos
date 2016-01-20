@@ -56,7 +56,7 @@ import persistencia.VacacionesFacadeLocal;
  *
  * @author sturm
  */
-@Path("SimpleRoot") //http://localhost:8080/GestionProyectos/webresources/SimpleRoot
+@Path("SimpleRoot") ///GestionProyectos/webresources/SimpleRoot
 public class SimpleRootResource {
 
     @Context
@@ -111,7 +111,6 @@ public class SimpleRootResource {
      * PUT method for updating or creating an instance of SimpleRootResource
      *
      * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
      */
     @GET
     //@Consumes("application/xml")
@@ -543,7 +542,7 @@ public class SimpleRootResource {
             response.put("por", porSolicitado + "%");
             response.put("mensaje", "Trabajador añadido al proyecto");
             return response.toString();
-        } catch (Exception e) {
+        } catch (NumberFormatException | JSONException e) {
             response.put("error", true);
             response.put("mensaje", "Error desconocido.");
             return response.toString();
@@ -866,11 +865,32 @@ public class SimpleRootResource {
     }
 
     @GET
-    @Path("/admin/borrarUsuario")
-    public void deleteTrabajadores(@QueryParam("nick") String nick) {
-        Trabajador x = new Trabajador();
-        x.setNick(nick);
-        trabajadorFacade.remove(x);
-
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/cerrar")
+    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
+        System.out.println("-------" + nombre);
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for(Proyecto p: proyectos){
+            System.out.println(t.getNick());
+            System.out.println(p.getNickjefe());
+            if(t.getNick().compareTo(p.getNickjefe()) == 0){
+                List<Actividad> actividades = actividadFacade.findAll();               
+                List<Actividad> actividadesProyecto = new ArrayList<>();
+                for (Actividad item : actividades) {
+                    int idP = item.getActividadPK().getIdproyecto();
+                    if(idP == p.getId()){
+                        actividadesProyecto.add(item);
+                    }
+                }
+                System.out.print("holaaaa");
+                return actividadesProyecto;
+            }
+        }
+        return null;
     }
+        
+       
+        
+    
 }

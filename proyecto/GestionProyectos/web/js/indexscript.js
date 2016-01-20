@@ -8,9 +8,9 @@ jQuery("#loguearBtn").click(function () {
                     user: user, password: password
                 }, function (resultado) {
                     //jQuery("#resultado span").text(resultado);
-                    if (resultado != 0) {
+                    if (resultado !== 0) {
                         setCookie("username", user, 1);
-                        if (resultado == 1) {
+                        if (resultado === 1) {
                             var pagina = 'admin.html';
                             document.location.href = pagina;
                         } else {
