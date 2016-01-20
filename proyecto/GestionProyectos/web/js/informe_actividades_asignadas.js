@@ -73,7 +73,13 @@ function getDatosInforme() {
 $(function () {
     var a = [{nombre: "blabla", date: "1999-1-2"}, {nombre: "blabla", date: "2015-1-2"}];
     cargarProyectos();
-    $("#startdate").change(function () {
+    $('#startdateb').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#startdateb').on("dp.change",function(e){
         getDatosInforme();
     });
+    /*$("#startdate").change(function () {
+        getDatosInforme();
+    });*/
 });
