@@ -50,7 +50,7 @@ function checkAdmin() {
     jQuery.get("/GestionProyectos/webresources/SimpleRoot/admin", {
         user: user
     }, function (resultado) {
-        if (resultado != 1) {
+        if (resultado !== 1) {
             window.alert("Acceso denegado");
             var pagina = 'index.html';
             document.location.href = pagina;

@@ -15,7 +15,7 @@ jQuery("#confirmBtn").click(function () {
     var pass = $("#password").val();
     var pass2 = $("#password").val();
     var cat = $("#categoria").val();
-    if(pass != pass2){
+    if(pass !== pass2){
         window.alert("Las contraseñas no coinciden");
         var pagina = 'alta_Usuario.html';
         document.location.href = pagina;
