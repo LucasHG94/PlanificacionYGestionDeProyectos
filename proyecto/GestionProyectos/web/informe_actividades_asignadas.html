@@ -13,8 +13,12 @@ and open the template in the editor.
         <script type="text/javascript" src="js/utilidades.js"></script>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
         <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="js/vendor/moment-with-locales.js"></script>
+        <script type="text/javascript" src="js/vendor/bootstrap-datetimepicker.js"></script>
     </head>
     <body>
         <div class="container">
@@ -22,7 +26,7 @@ and open the template in the editor.
                 <div class="col col-md-10 col-md-offset-1">
                     <div class="page-header"><h1>INFORME: Lista de actividades asignadas por semana</h1></div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">1. Seleccionar proyecto</div>
+                        <div class="panel-heading">Seleccionar proyecto</div>
                         <div class="panel-body">
                             <form>
                                 <div class="form-group">
@@ -36,11 +40,18 @@ and open the template in the editor.
                     <form>
                         <div class="form-group">
                             <label for="startdate">Comienzo del periodo (semanal):</label>
-                            <input type='date' id="startdate" class="form-control" />
+                            <div class='input-group date' id='startdateb'>
+                                <input type='text' class="form-control" id="startdate" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
                     </form>
+
+
                     <div id="workercontainer">
-                        
+
                     </div>
 
                 </div>
