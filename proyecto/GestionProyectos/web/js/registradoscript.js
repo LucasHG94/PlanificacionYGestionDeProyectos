@@ -76,7 +76,7 @@ jQuery(function () {
             p.appendChild(btn);
             var btn = document.createElement("button");
             btn.setAttribute("id", "cerrar");
-            btn.setAttribute("onClick","location.href=''");
+            btn.setAttribute("onClick","location.href='cerrarActividades.html'");
             var t = document.createTextNode(" cerrarActividad");
             btn.appendChild(t);
             p.appendChild(btn);
