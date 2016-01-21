@@ -90,7 +90,7 @@ public class SimpleRootResource {
 
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
-    
+
     @EJB
     private InformesemanalFacadeLocal informeSemanalFacade;
 
@@ -130,11 +130,11 @@ public class SimpleRootResource {
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/usuario/{nick}/informes/ia/{fecha1}/{fecha2}")
-    public String obtenerInformesDeActividades(@PathParam("nick") String nick, @PathParam("fecha1")String f1, @PathParam("fecha2") String f2){
+    public String obtenerInformesDeActividades(@PathParam("nick") String nick, @PathParam("fecha1") String f1, @PathParam("fecha2") String f2) {
         DateTimeFormatter dtfOut = DateTimeFormat.forPattern("EEEE MMM d yyyy");
         DateTime fecha1 = new DateTime(f1);
         DateTime fecha2 = new DateTime(f2);
@@ -143,25 +143,24 @@ public class SimpleRootResource {
         Trabajador t = trabajadorFacade.find(nick);
         List<Informesemanal> informes = new ArrayList<>(t.getInformesemanalCollection());
         List<Informesemanal> resultado = new ArrayList<>();
-        for(Informesemanal i:informes){
+        for (Informesemanal i : informes) {
             DateTime fechaSemana = new DateTime(i.getInformesemanalPK().getFechasemana());
-            if(fechaSemana.isAfter(fecha1)&&fechaSemana.isBefore(fecha2)){
+            if (fechaSemana.isAfter(fecha1) && fechaSemana.isBefore(fecha2)) {
                 resultado.add(i);
             }
         }
         JSONArray result = new JSONArray();
-        for(Informesemanal i:resultado){
+        for (Informesemanal i : resultado) {
             JSONObject inf = new JSONObject();
             inf.put("nombre", i.getActividad().getNombre());
             inf.put("fecha", dtfOut.print(new DateTime(i.getInformesemanalPK().getFechasemana())));
             inf.put("estado", i.getEstado());
             result.put(inf);
         }
-        
+
         return result.toString();
     }
 
-    
     public List<Actividad> calcularFechasEstimadas(List<Actividad> actividades) {
         List<Actividad> resultado = new ArrayList<>();
         //List<Actividad> actividades = getActividadesProyecto(5);
@@ -184,7 +183,7 @@ public class SimpleRootResource {
         return actividades;
 
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/test/infact")
@@ -214,16 +213,31 @@ public class SimpleRootResource {
     }
 
     public void calcularFechasRecursivo(Actividad a, List<Actividad> precedidas) {
-        if(precedidas.size()<=0) return;
+        if (precedidas.size() <= 0) {
+            return;
+        }
+        Date fechaReal = a.getFechainicio();
+        Date fechaFinReal = a.getFechafin();
         DateTime fechaAproximadaA = new DateTime(a.getFechaAproximada());
-        DateTime fechaAproximadaP = fechaAproximadaA.plusDays(a.getEsfuerzoestimado());
+        DateTime fechaAproximadaP;
+
+        if (fechaFinReal != null) {
+            fechaAproximadaP = new DateTime(fechaFinReal);
+        } else {
+            if (fechaReal == null) {
+                fechaAproximadaP = getFechaAproximada(fechaAproximadaA, a);/*fechaAproximadaA.plusDays(a.getEsfuerzoestimado());*/
+
+            } else {
+                fechaAproximadaP = getFechaAproximada(new DateTime(fechaReal), a);
+            }
+        }
+
         DateTime fechaAproximadaPActual;
-        
 
         for (Actividad p : precedidas) {
             if (p.getFechaAproximada() != null) {
                 fechaAproximadaPActual = new DateTime(p.getFechaAproximada());
-                if(fechaAproximadaPActual.isBefore(fechaAproximadaP)){
+                if (fechaAproximadaPActual.isBefore(fechaAproximadaP)) {
                     p.setFechaAproximada(fechaAproximadaP.toDate());
                     calcularFechasRecursivo(p, new ArrayList<>(p.getActividadCollection()));
                 }
@@ -233,6 +247,24 @@ public class SimpleRootResource {
             }
 
         }
+    }
+
+    public DateTime getFechaAproximada(DateTime fechaInicio, Actividad a) {
+        List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+        int idProyecto = a.getActividadPK().getIdproyecto();
+        float hombres = 0;
+        for(Trabajador t:trabajadores){
+            Dedicacion d = dedicacionFacade.find(new DedicacionPK(t.getNick(), idProyecto));
+            hombres = hombres + (d.getPorcentaje()/100f);
+        }
+        float duracionEstimada;
+        if(hombres<=0){
+            duracionEstimada = a.getEsfuerzoestimado();
+        }else{
+            duracionEstimada = a.getEsfuerzoestimado()/hombres;
+        }
+        int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada/8));
+        return fechaInicio.plusDays(diasEstimados);
     }
 
     public Actividad getActividad(List<Actividad> actividades, int etapa, int id) {
@@ -269,27 +301,27 @@ public class SimpleRootResource {
         calcularFechasEstimadas(actividades);
         List<Actividad> actividadesEnPeriodo = new ArrayList<>();
         DateTime fechatmp;
-        for(Actividad a:actividades){
+        for (Actividad a : actividades) {
             fechatmp = new DateTime(a.getFechaAproximada());
-            if(fechatmp.isAfter(comienzoPeriodo)&&fechatmp.isBefore(finPerido)){
+            if (fechatmp.isAfter(comienzoPeriodo) && fechatmp.isBefore(finPerido)) {
                 actividadesEnPeriodo.add(a);
             }
         }
         System.out.println("Num actividades en periodo: " + actividadesEnPeriodo.size());
-        
+
         JSONArray result = new JSONArray();
         JSONObject trabajador;
         JSONArray lista;
         List<Trabajador> trabajadores;
         JSONObject tmp;
         JSONObject tmpa;
-        for(Actividad a:actividadesEnPeriodo){
+        for (Actividad a : actividadesEnPeriodo) {
             trabajadores = new ArrayList<>(a.getTrabajadorCollection());
-            for(Trabajador t:trabajadores){
+            for (Trabajador t : trabajadores) {
                 boolean nuevo = true;
-                for(int i=0; i<result.length(); i++){
+                for (int i = 0; i < result.length(); i++) {
                     tmp = result.getJSONObject(i);
-                    if(tmp.getString("nick").equals(t.getNick())){
+                    if (tmp.getString("nick").equals(t.getNick())) {
                         tmpa = new JSONObject();
                         tmpa.put("nombre", a.getNombre());
                         tmpa.put("date", a.getFechaAproximada().toString());
@@ -298,7 +330,7 @@ public class SimpleRootResource {
                         break;
                     }
                 }
-                if(nuevo){
+                if (nuevo) {
                     tmpa = new JSONObject();
                     JSONObject tmpb = new JSONObject();
                     tmpa.put("nick", t.getNick());
@@ -310,8 +342,7 @@ public class SimpleRootResource {
                 }
             }
         }
-        
-        
+
         return result.toString();
     }
 
@@ -402,6 +433,7 @@ public class SimpleRootResource {
             int etapaidcont = 1;
             int actividadidcont = 1;
             etapa = new Etapa(new EtapaPK(proyecto.getId(), etapaidcont++));
+            boolean primera = true;
             for (Object j : plan) {
                 actividad = (JSONObject) j;
                 nombre = actividad.getString("nombre");
@@ -413,6 +445,10 @@ public class SimpleRootResource {
                 }
 
                 Actividad a = new Actividad(new ActividadPK(proyecto.getId(), etapa.getEtapaPK().getId(), actividadidcont++));
+                if(primera){
+                    a.setFechainicio(today.toDate());
+                    primera = false;
+                }
                 a.setNombre(nombre);
                 a.setRol(actividad.getString("rol"));
                 a.setEsfuerzoestimado(duracionEstimada);
@@ -480,8 +516,6 @@ public class SimpleRootResource {
 
         return true;
     }
-    
-    
 
     @GET
     @Produces("application/json")
@@ -645,11 +679,11 @@ public class SimpleRootResource {
         }
         return pFiltrado;
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/todos")
-    public List<Proyecto> getProyectosJefe2(@PathParam("nick") String nick){
+    public List<Proyecto> getProyectosJefe2(@PathParam("nick") String nick) {
         return getProyectosJefe(nick);
     }
 
@@ -723,13 +757,13 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/actividadesSemana")
-    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre){
+    public List<Actividad> getActividadesSemana(@QueryParam("user") String nombre) {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
-        for(Actividad item : actividades){
-            if(item.getTrabajadorCollection().contains(t) & 
-                    item.getEtapa().getProyecto().getFechafin().before(new Date())){
+        for (Actividad item : actividades) {
+            if (item.getTrabajadorCollection().contains(t)
+                    & item.getEtapa().getProyecto().getFechafin().before(new Date())) {
                 actividadesTrabajador.add(item);
             }
         }
@@ -804,7 +838,7 @@ public class SimpleRootResource {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/informeSemanal")
-    public boolean setInformeSemanal(@Context UriInfo info){
+    public boolean setInformeSemanal(@Context UriInfo info) {
         System.out.println("Llego");
         boolean permitido = true;
         String user = info.getQueryParameters().getFirst("user");
@@ -817,26 +851,26 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
-        for(i=0; i<4;i++){
-            s = map.get("idP"+i).toString();
-            s1=s.substring(0,s.length()-1);
-            s2=s1.substring(1, s1.length());
+        for (i = 0; i < 4; i++) {
+            s = map.get("idP" + i).toString();
+            s1 = s.substring(0, s.length() - 1);
+            s2 = s1.substring(1, s1.length());
             idPs.add(Integer.parseInt(s2));
-            System.out.println("idP="+i+" : "+idPs.get(i));
-            s = map.get("idP"+i).toString();
-            s1=s.substring(0,s.length()-1);
-            s2=s1.substring(1, s1.length());
+            System.out.println("idP=" + i + " : " + idPs.get(i));
+            s = map.get("idP" + i).toString();
+            s1 = s.substring(0, s.length() - 1);
+            s2 = s1.substring(1, s1.length());
             idActividades.add(Integer.parseInt(s2));
-            System.out.println("idActividad="+i+" : "+idActividades.get(i));
-            s = map.get("idEtapa"+i).toString();
-            s1=s.substring(0,s.length()-1);
-            s2=s1.substring(1, s1.length());
+            System.out.println("idActividad=" + i + " : " + idActividades.get(i));
+            s = map.get("idEtapa" + i).toString();
+            s1 = s.substring(0, s.length() - 1);
+            s2 = s1.substring(1, s1.length());
             idEtapas.add(Integer.parseInt(s2));
-            System.out.println("idEtapa="+i+" : "+idEtapas.get(i));
-            for(int j = 0; j<6; j++){
-                s = map.get("hora"+j+""+i).toString();
-                s1=s.substring(0,s.length()-1);
-                s2=s1.substring(1, s1.length());
+            System.out.println("idEtapa=" + i + " : " + idEtapas.get(i));
+            for (int j = 0; j < 6; j++) {
+                s = map.get("hora" + j + "" + i).toString();
+                s1 = s.substring(0, s.length() - 1);
+                s2 = s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
                 System.out.println("i=" + i + ";j=" + j + " : " + s2);
 
@@ -848,11 +882,11 @@ public class SimpleRootResource {
         }
         if (suma > 40) {
             permitido = false;
-        }else{
-            for(int k=0;k<i;k++){
-                InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
-                        idActividades.get(k),idEtapas.get(k),new Date());
-                Informesemanal informe = new Informesemanal(informePK,"PendienteAprobar");
+        } else {
+            for (int k = 0; k < i; k++) {
+                InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
+                        idActividades.get(k), idEtapas.get(k), new Date());
+                Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
                 informe.setHorastarea1(horas.get(0));
                 informe.setHorastarea2(horas.get(1));
                 informe.setHorastarea3(horas.get(2));
@@ -899,19 +933,19 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
-    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
+    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre) {
         System.out.println("-------" + nombre);
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
-        for(Proyecto p: proyectos){
+        for (Proyecto p : proyectos) {
             System.out.println(t.getNick());
             System.out.println(p.getNickjefe());
-            if(t.getNick().compareTo(p.getNickjefe()) == 0){
-                List<Actividad> actividades = actividadFacade.findAll();               
+            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                List<Actividad> actividades = actividadFacade.findAll();
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    if(idP == p.getId()){
+                    if (idP == p.getId()) {
                         actividadesProyecto.add(item);
                     }
                 }
@@ -921,8 +955,5 @@ public class SimpleRootResource {
         }
         return null;
     }
-        
-       
-        
-    
+
 }
