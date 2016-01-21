@@ -900,12 +900,9 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
     public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
-        System.out.println("-------" + nombre);
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for(Proyecto p: proyectos){
-            System.out.println(t.getNick());
-            System.out.println(p.getNickjefe());
             if(t.getNick().compareTo(p.getNickjefe()) == 0){
                 List<Actividad> actividades = actividadFacade.findAll();               
                 List<Actividad> actividadesProyecto = new ArrayList<>();
@@ -915,7 +912,6 @@ public class SimpleRootResource {
                         actividadesProyecto.add(item);
                     }
                 }
-                System.out.print("holaaaa");
                 return actividadesProyecto;
             }
         }
