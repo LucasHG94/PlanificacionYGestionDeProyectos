@@ -32,6 +32,8 @@ function cargarActividades() {
                         b = document.createElement("option");
                         b.text = data[i].nombre + "";
                         b.setAttribute("activityId", data[i].id);
+                        b.setAttribute("phaseId", data[i].idetapa);
+                        b.setAttribute("proyectId", data[i].idproyecto);
                         selectActivity.appendChild(b);
                     }
                 }
@@ -39,17 +41,40 @@ function cargarActividades() {
             });
 }
 
+function getFechaFin() {
+    var selectact = document.getElementById("selectactivity");
+    var actId = selectactivity.options[selectactivity.selectedIndex].getAttribute("activityId");
+    var phId = selectactivity.options[selectactivity.selectedIndex].getAttribute("phaseId");
+    var prId = selectactivity.options[selectactivity.selectedIndex].getAttribute("proyectId");
+    $.getJSON(patronurl + '/proyectos/' + prId + '/etapas/' + phId + '/actividades/'+ actId + '/fechaCierre/'+ $("#enddate").val(),
+            function (data) {
+                
+            });
+}
+
 
 cargarActividades();
 
-$(function () {
-    var a = [{nombre: "blabla", date: "1999-1-2"}, {nombre: "blabla", date: "2015-1-2"}];
-    
+jQuery("#cancelBtn").click(function () {
+        var pagina = 'registrado.html';
+        document.location.href = pagina;
+});
+
+jQuery("#confirmBtn").click(function () {
+    var fechaFin = $("#enddate").val();
     $('#enddateb').datetimepicker({
         format: 'YYYY-MM-DD'
     });
     
-    $('#startdateb').on("dp.change",function(e){
-        
+    $('#enddateb').on("dp.change",function(e){
+        getFechaFin();
     });
+       
+});
+
+
+$(function () {
+    var a = [{nombre: "blabla", date: "1999-1-2"}, {nombre: "blabla", date: "2015-1-2"}];
+    
+    
 });

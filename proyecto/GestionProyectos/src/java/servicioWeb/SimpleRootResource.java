@@ -815,6 +815,11 @@ public class SimpleRootResource {
                 }
             }
         }
+        List<Vacaciones> vacaciones = vacacionesFacade.findAll();
+        for(Vacaciones item: vacaciones){
+            if(item.getTrabajador().getNick().equals(t.getNick())){
+                permitido=false;}
+        }
 
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
@@ -876,17 +881,36 @@ public class SimpleRootResource {
 
             }
         }
+        List<Informesemanal> informeSem=informeSemanalFacade.findAll();
+        for(Informesemanal item:informeSem){
+            if(item.getTrabajador().getNick().equals(user) 
+                    & item.getInformesemanalPK().getFechasemana().equals(new Date())){
+                permitido=false;
+            }
+        }
         int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
         if (suma > 40) {
+<<<<<<< HEAD
             permitido = false;
         } else {
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
                 Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
+=======
+            permitido = false;   
+        }
+        
+        if(permitido){
+            try{
+            for(int k=0;k<i;k++){
+                InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
+                        idActividades.get(k),idEtapas.get(k),new Date());
+                Informesemanal informe = new Informesemanal(informePK,"PendienteAprobar");
+>>>>>>> master
                 informe.setHorastarea1(horas.get(0));
                 informe.setHorastarea2(horas.get(1));
                 informe.setHorastarea3(horas.get(2));
@@ -896,6 +920,7 @@ public class SimpleRootResource {
                 informeSemanalFacade.create(informe);
                 System.out.println(informe.getInformesemanalPK().getFechasemana());
             }
+        }catch(Exception E){permitido=false;}   
         }
         return permitido;
     }
@@ -933,6 +958,7 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
+<<<<<<< HEAD
     public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre) {
         System.out.println("-------" + nombre);
         Trabajador t = trabajadorFacade.find(nombre);
@@ -947,13 +973,54 @@ public class SimpleRootResource {
                     int idP = item.getActividadPK().getIdproyecto();
                     if (idP == p.getId()) {
                         actividadesProyecto.add(item);
+=======
+    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for(Proyecto p: proyectos){
+            if(t.getNick().compareTo(p.getNickjefe()) == 0){
+                List<Actividad> actividades = actividadFacade.findAll();               
+                List<Actividad> actividadesProyecto = new ArrayList<>();
+                for (Actividad item : actividades) {
+                    int idP = item.getActividadPK().getIdproyecto();
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
+                    if(idP == p.getId() && null == item.getFechafin()){
+                        for(Actividad pred: predecesoras){
+                            if(pred.getFechafin()!=null){
+                                 actividadesProyecto.add(item);
+                            }
+                        }
+                       
+>>>>>>> master
                     }
                 }
-                System.out.print("holaaaa");
                 return actividadesProyecto;
             }
         }
         return null;
     }
+<<<<<<< HEAD
 
+=======
+    
+    
+    @GET
+    @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
+    public void setFechaFin(@PathParam ("idP") String idP, @PathParam ("idE") String idE, @PathParam ("idA") String idA, @PathParam ("fechaFin") String fechaFin){
+        int numP = Integer.valueOf(idP);
+        int numE = Integer.valueOf(idE);
+        int numA = Integer.valueOf(idA);
+        Date fechaCierre = new Date(fechaFin);
+        System.out.println(fechaCierre);
+        List<Actividad> actividades = getActividadesProyecto(numP);
+        for(Actividad item: actividades){
+            if(numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()){
+                item.setFechafin(fechaCierre);
+            }
+        }
+    }
+       
+        
+    
+>>>>>>> master
 }

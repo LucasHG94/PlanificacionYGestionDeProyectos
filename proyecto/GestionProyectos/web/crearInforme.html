@@ -7,18 +7,41 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
         <title>TODO supply a title</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <script type="text/javascript" src="js/utilidades.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/jquery.fileupload.css">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        <div class="container" style="margin-bottom:50">
+            <div class="row">
+                <div class="col col-md-10 col-md-offset-1">
+                    <div class="page-header" id="titulo">
+                        <h1 id="titulo">Inrforme semanal</h1>
+                        <p>Introduzca las horas de las seis tareas de cada actividad</p>
+                    </div>                  
+                    <div class="panel panel-default" id="datos">
+                        <ul class="list-group" id="lista-asignacion">
+                            
+                        </ul>
+                    </div>
+                    <button type="button" id="crear" class="btn btn-info">Enviar informes</button>
+                    <div  style="display:none" id="asignarAlertBad" class="alert alert-danger" role="alert">
+                                <strong>Error!</strong> <span id="aAlertBadText"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             var idPs= new Array();
             var idActividades = new Array();
             var idEtapas = new Array();
         </script>
-        <h2>Crea tus informes de esta semana</h2>
         <script type="text/javascript" src="js/crearInforme.js"></script>
-        <button type="button" id="crear">Prueba aquí</button> 
         <script>
             jQuery("#crear").click(function () {
                 var user = getCookie("username");
@@ -43,9 +66,16 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
                 
                 jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/informeSemanal?user="+user+""+uriH, {
                 }, function (resultado) {
-                    if(resultado){window.alert("informe cerado");
+                    if(resultado){
+                        $("#asignarAlertBad").hide();
+                        $("#asignarAlertGood").show(500);
+                        $("#aAlertGoodText").text("Informes enviados");
                 }
-                    else{window.alert("datos incorrectos");}
+                    else{
+                        $("#asignarAlertGood").hide();
+                        $("#asignarAlertBad").show(500);
+                        $("#aAlertBadText").text("Datos inválidos");
+                    }
                 });
             });
         </script>
