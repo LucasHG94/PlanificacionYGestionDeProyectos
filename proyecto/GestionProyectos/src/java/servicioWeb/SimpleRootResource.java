@@ -916,28 +916,46 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
     public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
-        System.out.println("-------" + nombre);
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for(Proyecto p: proyectos){
-            System.out.println(t.getNick());
-            System.out.println(p.getNickjefe());
             if(t.getNick().compareTo(p.getNickjefe()) == 0){
                 List<Actividad> actividades = actividadFacade.findAll();               
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    if(idP == p.getId()){
-                        actividadesProyecto.add(item);
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
+                    if(idP == p.getId() && null == item.getFechafin()){
+                        for(Actividad pred: predecesoras){
+                            if(pred.getFechafin()!=null){
+                                 actividadesProyecto.add(item);
+                            }
+                        }
+                       
                     }
                 }
-                System.out.print("holaaaa");
                 return actividadesProyecto;
             }
         }
         return null;
     }
-        
+    
+    
+    @GET
+    @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
+    public void setFechaFin(@PathParam ("idP") String idP, @PathParam ("idE") String idE, @PathParam ("idA") String idA, @PathParam ("fechaFin") String fechaFin){
+        int numP = Integer.valueOf(idP);
+        int numE = Integer.valueOf(idE);
+        int numA = Integer.valueOf(idA);
+        Date fechaCierre = new Date(fechaFin);
+        System.out.println(fechaCierre);
+        List<Actividad> actividades = getActividadesProyecto(numP);
+        for(Actividad item: actividades){
+            if(numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()){
+                item.setFechafin(fechaCierre);
+            }
+        }
+    }
        
         
     
