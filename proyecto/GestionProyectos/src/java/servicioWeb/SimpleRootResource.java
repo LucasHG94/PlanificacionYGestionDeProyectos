@@ -908,7 +908,7 @@ public class SimpleRootResource {
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    if(idP == p.getId()){
+                    if(idP == p.getId() && null == p.getFechafin()){
                         actividadesProyecto.add(item);
                     }
                 }
@@ -917,7 +917,23 @@ public class SimpleRootResource {
         }
         return null;
     }
-        
+    
+    
+    @GET
+    @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
+    public void setFechaFin(@PathParam ("idP") String idP, @PathParam ("idE") String idE, @PathParam ("idA") String idA, @PathParam ("fechaFin") String fechaFin){
+        int numP = Integer.valueOf(idP);
+        int numE = Integer.valueOf(idE);
+        int numA = Integer.valueOf(idA);
+        Date fechaCierre = new Date(fechaFin);
+        System.out.println(fechaCierre);
+        List<Actividad> actividades = getActividadesProyecto(numP);
+        for(Actividad item: actividades){
+            if(numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()){
+                item.setFechafin(fechaCierre);
+            }
+        }
+    }
        
         
     
