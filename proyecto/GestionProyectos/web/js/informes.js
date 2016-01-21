@@ -20,7 +20,7 @@ jQuery(function () {
     btn.setAttribute("onclick", "location.href=''");
     
     var btn = document.getElementById("b6");
-    btn.setAttribute("onclick", "location.href=''");
+    btn.setAttribute("onclick", "location.href='informe_actividades_proyecto.html?idP="+idP+"'");
     
     var btn = document.getElementById("b7");
     btn.setAttribute("onclick", "location.href=''");

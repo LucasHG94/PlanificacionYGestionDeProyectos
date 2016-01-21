@@ -39,6 +39,13 @@ jQuery(function () {
         var t = document.createTextNode("Escoger vacaciones");
         btn.appendChild(t);
         p.appendChild(btn);
+        var btn = document.createElement("button");
+        btn.setAttribute("id", "escoger");
+        btn.setAttribute("class", "badge");
+        btn.setAttribute("onClick","location.href='informe_informes_desarrollador.html'");
+        var t = document.createTextNode("Informe de las actividades");
+        btn.appendChild(t);
+        p.appendChild(btn);
         titulo.appendChild(p);
     });
     
