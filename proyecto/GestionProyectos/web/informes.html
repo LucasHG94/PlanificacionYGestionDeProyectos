@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+Página para escoger las vacaciones
+-->
+<html>
+    <head>
+        <title>Informes</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/utilidades.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/jquery.fileupload.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container" style="margin-bottom:50">
+            <div class="row">
+                <div class="col col-md-10 col-md-offset-1">
+                    <div class="page-header" id="titulo">
+                        <h1 id="titulo">Selecciona el informe a consultar</h1></div>                  
+                    <div class="panel panel-default" id="datos">
+                        <ul class="list-group" id="lista-asignacion">
+                            <li id="inf1" class="list-group-item">
+                                <p>Informe global
+                                <button type="button" id="b1" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf2" class="list-group-item">
+                                <p>Informe de una actividad
+                                <button type="button" id="b2" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf3" class="list-group-item">
+                                <p>Relación de trabajadores y sus actividades
+                                <button type="button" id="b3" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf4" class="list-group-item">
+                                <p>Trabajadores con informes de actividad pendientes de envio
+                                <button type="button" id="b4" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf5" class="list-group-item">
+                                <p>Trabajadores con informes de actividad pendientes de aprobación
+                                <button type="button" id="b5" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf6" class="list-group-item">
+                                <p>Actividades activas o finalizadas en una fecha determinada
+                                <button type="button" id="b6" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf7" class="list-group-item">
+                                <p>Actividades que están consumiendo más tiempo
+                                <button type="button" id="b7" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf8" class="list-group-item">
+                                <p>Actividades a relizar y recursos asignados durante un periodo de tiempo
+                                <button type="button" id="b8" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                            <li id="inf9" class="list-group-item">
+                                <p>Trabajadores, actividades y tiempos de trabajo
+                                <button type="button" id="b8" class="badge">Consultar</button>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script type="text/javascript" src="js/informes.js"></script>
+    </body>
+</html>

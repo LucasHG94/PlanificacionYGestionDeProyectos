@@ -37,6 +37,7 @@ import modelo.Trabajador;
 import modelo.Vacaciones;
 import modelo.VacacionesPK;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -129,6 +130,76 @@ public class SimpleRootResource {
          actividadFacade.create(b);
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/usuario/{nick}/informes/iap/{nump}/{fecha1}/{fecha2}")
+    public String getDatosInformeActividadesProyectos(@PathParam("nick") String nick, @PathParam("nump") String nump, @PathParam("fecha1") String f1, @PathParam("fecha2") String f2) {
+        DateTime fecha1 = new DateTime(f1);
+        DateTime fecha2 = new DateTime(f2);
+        System.out.println("iap");
+        System.out.println("fecha1: " + fecha1);
+        System.out.println("fecha2: " + fecha2);
+        int numP = Integer.valueOf(nump);
+        List<Actividad> actividades = getActividadesProyecto(numP);
+        System.out.println("numactpro: " + actividades.size());
+        actividades = calcularFechasEstimadas(actividades);
+        List<Actividad> resultado = new ArrayList<>();
+        for (Actividad a : actividades) {
+            DateTime fechaInicio = null;
+            DateTime fechaFin = null;
+            if (a.getFechainicio() != null) {
+                fechaInicio = new DateTime(a.getFechainicio());
+                if (a.getFechafin() != null) {
+                    fechaFin = new DateTime(a.getFechafin());
+                }
+                if (fechaInicio.isBefore(fecha2)) {
+                    if (fechaFin == null) {
+                        resultado.add(a);
+                    } else if (fechaFin.isAfter(fecha1)) {
+                        resultado.add(a);
+                    }
+                }
+            }
+
+        }
+
+        System.out.println("numactresult: " + resultado.size());
+
+        JSONObject result = new JSONObject();
+        JSONArray activas = new JSONArray();
+        JSONArray finalizadas = new JSONArray();
+
+        for (Actividad a : resultado) {
+            JSONObject ajson = new JSONObject();
+            ajson.put("nombre", a.getNombre());
+            ajson.put("duracionestimada", getDuracionEstimadaDias(a) + " dias.");
+            int d = Days.daysBetween(new DateTime(a.getFechainicio()).withTimeAtStartOfDay(), new DateTime().withTimeAtStartOfDay()).getDays();
+            if (a.getFechafin() != null) {
+                d = Days.daysBetween(new DateTime(a.getFechainicio()).withTimeAtStartOfDay(), new DateTime(a.getFechafin()).withTimeAtStartOfDay()).getDays();
+            }
+            ajson.put("duracionreal", d);
+            if (d > getDuracionEstimadaDias(a)) {
+                ajson.put("excedido", true);
+            } else {
+                ajson.put("excedido", false);
+            }
+            int progreso = Math.round(d * 1.0f / getDuracionEstimadaDias(a) * 100);
+            ajson.put("progreso", progreso);
+            if (a.getFechafin() == null) {
+                activas.put(ajson);
+                System.out.println("a");
+            } else {
+                finalizadas.put(ajson);
+                System.out.println("b");
+            }
+        }
+
+        result.put("activas", activas);
+        result.put("finalizadas", finalizadas);
+
+        return result.toString();
     }
 
     @GET
@@ -265,6 +336,24 @@ public class SimpleRootResource {
         }
         int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
         return fechaInicio.plusDays(diasEstimados);
+    }
+
+    public int getDuracionEstimadaDias(Actividad a) {
+        List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+        int idProyecto = a.getActividadPK().getIdproyecto();
+        float hombres = 0;
+        for (Trabajador t : trabajadores) {
+            Dedicacion d = dedicacionFacade.find(new DedicacionPK(t.getNick(), idProyecto));
+            hombres = hombres + (d.getPorcentaje() / 100f);
+        }
+        float duracionEstimada;
+        if (hombres <= 0) {
+            duracionEstimada = a.getEsfuerzoestimado();
+        } else {
+            duracionEstimada = a.getEsfuerzoestimado() / hombres;
+        }
+        int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
+        return diasEstimados;
     }
 
     public Actividad getActividad(List<Actividad> actividades, int etapa, int id) {
@@ -423,6 +512,7 @@ public class SimpleRootResource {
             Proyecto proyecto = proyectoFacade.find(Integer.valueOf(id));
             DateTime today = new DateTime(new Date());
             proyecto.setFechainicio(today.toDate());
+            proyectoFacade.edit(proyecto);
             List<Actividad> actividades = new ArrayList<>();
             Etapa etapa;
             List<Etapa> etapas = new ArrayList<>();
@@ -821,6 +911,9 @@ public class SimpleRootResource {
                 permitido = false;
             }
         }
+        
+        if((new Date()).before(fecha1)){permitido=false;}
+        if((new Date()).before(fecha2)){permitido=false;}
 
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
@@ -857,70 +950,69 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
+        System.out.println(map.get("idActividad1").toString());
+        List<Double> tiempos = new ArrayList<>();
         for (i = 0; i < 4; i++) {
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idPs.add(Integer.parseInt(s2));
             System.out.println("idP=" + i + " : " + idPs.get(i));
-            s = map.get("idP" + i).toString();
+            
+            s = map.get("idActividad" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idActividades.add(Integer.parseInt(s2));
             System.out.println("idActividad=" + i + " : " + idActividades.get(i));
+            
             s = map.get("idEtapa" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idEtapas.add(Integer.parseInt(s2));
             System.out.println("idEtapa=" + i + " : " + idEtapas.get(i));
+            tiempos.add(0.0);
             for (int j = 0; j < 6; j++) {
                 s = map.get("hora" + j + "" + i).toString();
                 s1 = s.substring(0, s.length() - 1);
                 s2 = s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
-                System.out.println("i=" + i + ";j=" + j + " : " + s2);
-
-            }
-        }
-        List<Informesemanal> informeSem = informeSemanalFacade.findAll();
-        for (Informesemanal item : informeSem) {
-            if (item.getTrabajador().getNick().equals(user)
-                    & item.getInformesemanalPK().getFechasemana().equals(new Date())) {
-                permitido = false;
+                tiempos.set(i, tiempos.get(i)+Integer.parseInt(s2));
             }
         }
         int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
+        for(int m=0;m<tiempos.size();m++){
+            int procentaje = 40;
+            Collection<Dedicacion> col = proyectoFacade.find(idPs.get(m)).getDedicacionCollection();
+            for (Dedicacion d : col) {
+                if(d.getProyecto().getId()==idPs.get(m)){
+                    procentaje=d.getPorcentaje();System.out.println(procentaje);
+                }
+            }
+            if(tiempos.get(m)<suma*procentaje/100){
+                permitido=false;
+            }
+        }
         if (suma > 40) {
             permitido = false;
-        } else {
+        } 
+        if(permitido){
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
-                Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                permitido = false;
-            }
-        }
-
-        if (permitido) {
-            try {
-                for (int k = 0; k < i; k++) {
-                    InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
-                            idActividades.get(k), idEtapas.get(k), new Date());
-                    Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                    informe.setHorastarea1(horas.get(0));
-                    informe.setHorastarea2(horas.get(1));
-                    informe.setHorastarea3(horas.get(2));
-                    informe.setHorastarea4(horas.get(3));
-                    informe.setHorastarea5(horas.get(4));
-                    informe.setHorastarea6(horas.get(5));
+                Informesemanal informe = new Informesemanal(informePK, "PENDIENTE-APROBAR");
+                informe.setHorastarea1(horas.get(0));
+                informe.setHorastarea2(horas.get(1));
+                informe.setHorastarea3(horas.get(2));
+                informe.setHorastarea4(horas.get(3));
+                informe.setHorastarea5(horas.get(4));
+                informe.setHorastarea6(horas.get(5));
+                try{
                     informeSemanalFacade.create(informe);
-                    System.out.println(informe.getInformesemanalPK().getFechasemana());
-                }
-            } catch (Exception E) {
-                permitido = false;
+                } catch (Exception E) {}
+                System.out.println(informe.getInformesemanalPK().getFechasemana());
             }
         }
         return permitido;
@@ -1017,6 +1109,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {
             if (numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()) {
                 item.setFechafin(fechaCierre);
+                actividadFacade.edit(item);
             }
         }
     }

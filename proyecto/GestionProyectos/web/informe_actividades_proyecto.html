@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Informe</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/utilidades.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="js/vendor/moment-with-locales.js"></script>
+        <script type="text/javascript" src="js/vendor/bootstrap-datetimepicker.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.tmpl.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col col-md-10 col-md-offset-1">
+                    <div class="page-header">
+                        <h1>INFORME: Informes por semanas</h1>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Elige el periodo. (Fecha inicio y fin)</div>
+                        <div class="panel-body">
+                            <div class='col-md-5'>
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker6'>
+                                        <input type='text' id="fecha1" class="form-control" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-md-5'>
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker7'>
+                                        <input type='text' id="fecha2" class="form-control" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Actividades activas:
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group" id="aactivas">
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Actividades finalizadas
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group" id="afinalizadas">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="js/informe_actividades_proyecto.js"></script>
+    </body>
+</html>

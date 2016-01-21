@@ -20,13 +20,6 @@ jQuery(function () {
             var t = document.createTextNode("Consultar actividades");
             btn.appendChild(t);
             itemlista.appendChild(btn);
-            var btn = document.createElement("button");
-            btn.setAttribute("id", "escoger");
-            btn.setAttribute("class", "badge");
-            btn.setAttribute("onClick","location.href='vacaciones.html'");
-            var t = document.createTextNode("Escoger vacaciones");
-            btn.appendChild(t);
-            itemlista.appendChild(btn);
             lista.appendChild(itemlista);
             $(itemlista).show(500);
         }
@@ -34,10 +27,17 @@ jQuery(function () {
         var p = document.createElement("p");
         var btn = document.createElement("button");
         btn.setAttribute("id", "crear");
-        btn.setAttribute("class", "btn btn-info");
+        btn.setAttribute("class", "badge");
         btn.setAttribute("onClick","location.href='crearInforme.html'");
         var t2 = document.createTextNode("Crear informe");
         btn.appendChild(t2);
+        p.appendChild(btn); 
+        var btn = document.createElement("button");
+        btn.setAttribute("id", "escoger");
+        btn.setAttribute("class", "badge");
+        btn.setAttribute("onClick","location.href='vacaciones.html'");
+        var t = document.createTextNode("Escoger vacaciones");
+        btn.appendChild(t);
         p.appendChild(btn);
         titulo.appendChild(p);
     });
@@ -68,7 +68,7 @@ jQuery(function () {
             var btn = document.createElement("button");
             btn.setAttribute("id", "informe");
             btn.setAttribute("class", "badge");
-            btn.setAttribute("onClick","location.href=''");
+            btn.setAttribute("onClick","location.href='informes.html?idP="+resultado[j].id+"'");
             var t = document.createTextNode("Informes");
             btn.appendChild(t);
             itemlista.appendChild(btn);
@@ -93,13 +93,13 @@ jQuery(function () {
             var t = document.createTextNode("Iniciar actividad");
             btn.appendChild(t);
             itemlista.appendChild(btn);
-            var btn = document.createElement("button");
+            /*var btn = document.createElement("button");
             btn.setAttribute("id", "datos");
             btn.setAttribute("class", "badge");
             btn.setAttribute("onClick","location.href=''");
             var t = document.createTextNode("Consultar");
             btn.appendChild(t);
-            itemlista.appendChild(btn);
+            itemlista.appendChild(btn);*/
             
             lista.appendChild(itemlista);
             $(itemlista).show(500);
