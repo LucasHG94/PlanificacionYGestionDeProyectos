@@ -75,7 +75,7 @@ jQuery(function () {
             var btn = document.createElement("button");
             btn.setAttribute("id", "planificar");
             btn.setAttribute("class", "badge");
-            btn.setAttribute("onClick","location.href=''");
+            btn.setAttribute("onClick","location.href='asignarDesarrolladorActividad.html'");
             var t = document.createTextNode("Planificar");
             btn.appendChild(t);
             itemlista.appendChild(btn);
