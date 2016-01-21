@@ -10,35 +10,47 @@ jQuery(function (){
     var fechaIni = parametro("fechaIni",window.location.href);
     var fechaFin = parametro("fechaFin",window.location.href);
     var esf = parametro("esf",window.location.href);
-        var p = document.createElement("p");
-        var t = document.createTextNode("identificador: "+id);       
-        p.appendChild(t);
-        document.body.appendChild(p);
-        
-        var p = document.createElement("p");
-        var t = document.createTextNode("nombre: "+nombre);       
-        p.appendChild(t);
-        document.body.appendChild(p);
-        
-        var p = document.createElement("p");
-        var t = document.createTextNode("rol: "+rol);       
-        p.appendChild(t);
-        document.body.appendChild(p);
-        
-        var p = document.createElement("p");
-        var t = document.createTextNode("fecha de inicio: "+fechaIni);       
-        p.appendChild(t);
-        document.body.appendChild(p);
-        
-        var p = document.createElement("p");
-        var t = document.createTextNode("fecha de finalizacion: "+fechaFin);       
-        p.appendChild(t);
-        document.body.appendChild(p);
-        
-        var p = document.createElement("p");
-        var t = document.createTextNode("esfuerzo estimado: "+esf);       
-        p.appendChild(t);
-        document.body.appendChild(p);
+    
+    var titulo = document.getElementById("titulo");
+    var lista = document.getElementById("lista-asignacion");
+    
+    var replaced = nombre.replace(/%20/g, " ");
+    titulo.textContent = replaced;
+    
+    var itemlista = document.createElement("li");
+    itemlista.setAttribute("class", "list-group-item");
+    itemlista.setAttribute("style", "display:none");
+    itemlista.textContent = "identificador: "+id;
+    lista.appendChild(itemlista);
+    $(itemlista).show(500);
+    
+    var itemlista = document.createElement("li");
+    itemlista.setAttribute("class", "list-group-item");
+    itemlista.setAttribute("style", "display:none");
+    itemlista.textContent = "rol: "+rol;
+    lista.appendChild(itemlista);
+    $(itemlista).show(500);
+    
+    var itemlista = document.createElement("li");
+    itemlista.setAttribute("class", "list-group-item");
+    itemlista.setAttribute("style", "display:none");
+    itemlista.textContent = "fecha de inicio: "+fechaIni;
+    lista.appendChild(itemlista);
+    $(itemlista).show(500);
+    
+    var itemlista = document.createElement("li");
+    itemlista.setAttribute("class", "list-group-item");
+    itemlista.setAttribute("style", "display:none");
+    itemlista.textContent = "fecha de finalizacion: "+fechaFin;
+    lista.appendChild(itemlista);
+    $(itemlista).show(500);
+    
+    var itemlista = document.createElement("li");
+    itemlista.setAttribute("class", "list-group-item");
+    itemlista.setAttribute("style", "display:none");
+    itemlista.textContent = "esfuerzo estimado: "+esf;
+    lista.appendChild(itemlista);
+    $(itemlista).show(500);
         
     jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividades", {
         user: user, idP:idP
