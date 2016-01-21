@@ -781,6 +781,11 @@ public class SimpleRootResource {
                 }
             }
         }
+        List<Vacaciones> vacaciones = vacacionesFacade.findAll();
+        for(Vacaciones item: vacaciones){
+            if(item.getTrabajador().getNick().equals(t.getNick())){
+                permitido=false;}
+        }
 
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
@@ -842,13 +847,23 @@ public class SimpleRootResource {
 
             }
         }
+        List<Informesemanal> informeSem=informeSemanalFacade.findAll();
+        for(Informesemanal item:informeSem){
+            if(item.getTrabajador().getNick().equals(user) 
+                    & item.getInformesemanalPK().getFechasemana().equals(new Date())){
+                permitido=false;
+            }
+        }
         int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
         if (suma > 40) {
-            permitido = false;
-        }else{
+            permitido = false;   
+        }
+        
+        if(permitido){
+            try{
             for(int k=0;k<i;k++){
                 InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
                         idActividades.get(k),idEtapas.get(k),new Date());
@@ -862,6 +877,7 @@ public class SimpleRootResource {
                 informeSemanalFacade.create(informe);
                 System.out.println(informe.getInformesemanalPK().getFechasemana());
             }
+        }catch(Exception E){permitido=false;}   
         }
         return permitido;
     }
