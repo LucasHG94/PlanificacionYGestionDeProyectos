@@ -731,7 +731,7 @@ public class SimpleRootResource {
         List<Proyecto> proyectos = getProyectosJefe(nick);
         Date hoy = new Date();
         for (Proyecto p : proyectos) {
-            if (p.getFechafin() != null && p.getFechafin().compareTo(hoy) >= 0) {
+            if (p.getFechafin() == null || p.getFechafin().compareTo(hoy) >= 0) {
                 return false;
             }
         }
