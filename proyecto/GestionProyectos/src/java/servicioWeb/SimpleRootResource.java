@@ -253,17 +253,17 @@ public class SimpleRootResource {
         List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
         int idProyecto = a.getActividadPK().getIdproyecto();
         float hombres = 0;
-        for(Trabajador t:trabajadores){
+        for (Trabajador t : trabajadores) {
             Dedicacion d = dedicacionFacade.find(new DedicacionPK(t.getNick(), idProyecto));
-            hombres = hombres + (d.getPorcentaje()/100f);
+            hombres = hombres + (d.getPorcentaje() / 100f);
         }
         float duracionEstimada;
-        if(hombres<=0){
+        if (hombres <= 0) {
             duracionEstimada = a.getEsfuerzoestimado();
-        }else{
-            duracionEstimada = a.getEsfuerzoestimado()/hombres;
+        } else {
+            duracionEstimada = a.getEsfuerzoestimado() / hombres;
         }
-        int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada/8));
+        int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
         return fechaInicio.plusDays(diasEstimados);
     }
 
@@ -445,7 +445,7 @@ public class SimpleRootResource {
                 }
 
                 Actividad a = new Actividad(new ActividadPK(proyecto.getId(), etapa.getEtapaPK().getId(), actividadidcont++));
-                if(primera){
+                if (primera) {
                     a.setFechainicio(today.toDate());
                     primera = false;
                 }
@@ -816,9 +816,10 @@ public class SimpleRootResource {
             }
         }
         List<Vacaciones> vacaciones = vacacionesFacade.findAll();
-        for(Vacaciones item: vacaciones){
-            if(item.getTrabajador().getNick().equals(t.getNick())){
-                permitido=false;}
+        for (Vacaciones item : vacaciones) {
+            if (item.getTrabajador().getNick().equals(t.getNick())) {
+                permitido = false;
+            }
         }
 
         if (permitido) {
@@ -881,11 +882,11 @@ public class SimpleRootResource {
 
             }
         }
-        List<Informesemanal> informeSem=informeSemanalFacade.findAll();
-        for(Informesemanal item:informeSem){
-            if(item.getTrabajador().getNick().equals(user) 
-                    & item.getInformesemanalPK().getFechasemana().equals(new Date())){
-                permitido=false;
+        List<Informesemanal> informeSem = informeSemanalFacade.findAll();
+        for (Informesemanal item : informeSem) {
+            if (item.getTrabajador().getNick().equals(user)
+                    & item.getInformesemanalPK().getFechasemana().equals(new Date())) {
+                permitido = false;
             }
         }
         int suma = 0;
@@ -899,29 +900,32 @@ public class SimpleRootResource {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
                 Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-            permitido = false;
+                permitido = false;
             }
         }
-        
-        if(permitido){
-            try{
-            for(int k=0;k<i;k++){
-                InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
-                        idActividades.get(k),idEtapas.get(k),new Date());
-                Informesemanal informe = new Informesemanal(informePK,"PendienteAprobar");
-                informe.setHorastarea1(horas.get(0));
-                informe.setHorastarea2(horas.get(1));
-                informe.setHorastarea3(horas.get(2));
-                informe.setHorastarea4(horas.get(3));
-                informe.setHorastarea5(horas.get(4));
-                informe.setHorastarea6(horas.get(5));
-                informeSemanalFacade.create(informe);
-                System.out.println(informe.getInformesemanalPK().getFechasemana());
+
+        if (permitido) {
+            try {
+                for (int k = 0; k < i; k++) {
+                    InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
+                            idActividades.get(k), idEtapas.get(k), new Date());
+                    Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
+                    informe.setHorastarea1(horas.get(0));
+                    informe.setHorastarea2(horas.get(1));
+                    informe.setHorastarea3(horas.get(2));
+                    informe.setHorastarea4(horas.get(3));
+                    informe.setHorastarea5(horas.get(4));
+                    informe.setHorastarea6(horas.get(5));
+                    informeSemanalFacade.create(informe);
+                    System.out.println(informe.getInformesemanalPK().getFechasemana());
+                }
+            } catch (Exception E) {
+                permitido = false;
             }
-        }catch(Exception E){permitido=false;}   
         }
         return permitido;
     }
+
     @GET
     @Path("/admin/conf")
     public void setParalelos(@QueryParam("numP") String numP) {
@@ -955,46 +959,45 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
-    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
+    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre) {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
-        for(Proyecto p: proyectos){
-            if(t.getNick().compareTo(p.getNickjefe()) == 0){
-                List<Actividad> actividades = actividadFacade.findAll();               
+        for (Proyecto p : proyectos) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                List<Actividad> actividades = actividadFacade.findAll();
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
                     List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
-                    if(idP == p.getId() && null == item.getFechafin()){
-                        for(Actividad pred: predecesoras){
-                            if(pred.getFechafin()!=null){
-                                 actividadesProyecto.add(item);
+                    if (idP == p.getId() && null == item.getFechafin()) {
+                        for (Actividad pred : predecesoras) {
+                            if (pred.getFechafin() != null) {
+                                actividadesProyecto.add(item);
                             }
                         }
-                       
-                      }
-                 }
-                 return actividadesProyecto;
-             }
-         }
-         return null;
-     }
-    
+
+                    }
+                }
+                return actividadesProyecto;
+            }
+        }
+        return null;
+    }
+
     @GET
     @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
-    public void setFechaFin(@PathParam ("idP") String idP, @PathParam ("idE") String idE, @PathParam ("idA") String idA, @PathParam ("fechaFin") String fechaFin){
+    public void setFechaFin(@PathParam("idP") String idP, @PathParam("idE") String idE, @PathParam("idA") String idA, @PathParam("fechaFin") String fechaFin) {
         int numP = Integer.valueOf(idP);
         int numE = Integer.valueOf(idE);
         int numA = Integer.valueOf(idA);
         Date fechaCierre = new Date(fechaFin);
         System.out.println(fechaCierre);
         List<Actividad> actividades = getActividadesProyecto(numP);
-        for(Actividad item: actividades){
-            if(numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()){
+        for (Actividad item : actividades) {
+            if (numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()) {
                 item.setFechafin(fechaCierre);
             }
         }
     }
 
-    
 }
