@@ -32,7 +32,7 @@ function Enviar(idP,idA, idE) {
     jQuery.get("/GestionProyectos/webresources/SimpleRoot/setFechaInicio", {
         idP:idP, idA:idA, idE:idE
     }, function (resultado) {
-        if(resultado){window.alert(resultado);
+        if(resultado){window.location.reload();
         $("#asignarAlertBad").hide();
         $("#asignarAlertGood").show(500);
         $("#aAlertGoodText").text("Facha guardada");

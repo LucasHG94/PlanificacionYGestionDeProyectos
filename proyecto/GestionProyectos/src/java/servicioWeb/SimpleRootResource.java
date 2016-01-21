@@ -857,70 +857,69 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
+        System.out.println(map.get("idActividad1").toString());
+        List<Double> tiempos = new ArrayList<>();
         for (i = 0; i < 4; i++) {
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idPs.add(Integer.parseInt(s2));
             System.out.println("idP=" + i + " : " + idPs.get(i));
-            s = map.get("idP" + i).toString();
+            
+            s = map.get("idActividad" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idActividades.add(Integer.parseInt(s2));
             System.out.println("idActividad=" + i + " : " + idActividades.get(i));
+            
             s = map.get("idEtapa" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idEtapas.add(Integer.parseInt(s2));
             System.out.println("idEtapa=" + i + " : " + idEtapas.get(i));
+            tiempos.add(0.0);
             for (int j = 0; j < 6; j++) {
                 s = map.get("hora" + j + "" + i).toString();
                 s1 = s.substring(0, s.length() - 1);
                 s2 = s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
-                System.out.println("i=" + i + ";j=" + j + " : " + s2);
-
-            }
-        }
-        List<Informesemanal> informeSem = informeSemanalFacade.findAll();
-        for (Informesemanal item : informeSem) {
-            if (item.getTrabajador().getNick().equals(user)
-                    & item.getInformesemanalPK().getFechasemana().equals(new Date())) {
-                permitido = false;
+                tiempos.set(i, tiempos.get(i)+Integer.parseInt(s2));
             }
         }
         int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
+        for(int m=0;m<tiempos.size();m++){
+            int procentaje = 40;
+            Collection<Dedicacion> col = proyectoFacade.find(idPs.get(m)).getDedicacionCollection();
+            for (Dedicacion d : col) {
+                if(d.getProyecto().getId()==idPs.get(m)){
+                    procentaje=d.getPorcentaje();System.out.println(procentaje);
+                }
+            }
+            if(tiempos.get(m)<suma*procentaje/100){
+                permitido=false;
+            }
+        }
         if (suma > 40) {
             permitido = false;
-        } else {
+        } 
+        if(permitido){
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
-                Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                permitido = false;
-            }
-        }
-
-        if (permitido) {
-            try {
-                for (int k = 0; k < i; k++) {
-                    InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
-                            idActividades.get(k), idEtapas.get(k), new Date());
-                    Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                    informe.setHorastarea1(horas.get(0));
-                    informe.setHorastarea2(horas.get(1));
-                    informe.setHorastarea3(horas.get(2));
-                    informe.setHorastarea4(horas.get(3));
-                    informe.setHorastarea5(horas.get(4));
-                    informe.setHorastarea6(horas.get(5));
+                Informesemanal informe = new Informesemanal(informePK, "PENDIENTE-APROBAR");
+                informe.setHorastarea1(horas.get(0));
+                informe.setHorastarea2(horas.get(1));
+                informe.setHorastarea3(horas.get(2));
+                informe.setHorastarea4(horas.get(3));
+                informe.setHorastarea5(horas.get(4));
+                informe.setHorastarea6(horas.get(5));
+                try{
                     informeSemanalFacade.create(informe);
-                    System.out.println(informe.getInformesemanalPK().getFechasemana());
-                }
-            } catch (Exception E) {
-                permitido = false;
+                } catch (Exception E) {}
+                System.out.println(informe.getInformesemanalPK().getFechasemana());
             }
         }
         return permitido;
@@ -1017,6 +1016,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {
             if (numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()) {
                 item.setFechafin(fechaCierre);
+                actividadFacade.edit(item);
             }
         }
     }
