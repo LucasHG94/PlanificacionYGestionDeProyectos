@@ -353,7 +353,7 @@ INSERT INTO Proyecto VALUES(3, 'Proyecto sin terminar', '2016-01-18' , NULL, 'Tr
 INSERT INTO Etapa VALUES(3, 1, 'Etapa unica');
 INSERT INTO Actividad VALUES(3, 1, 1, 'Actividad1','2016-01-18', '2016-01-19', 24, 'ANALISTA');
 INSERT INTO Actividad VALUES(3, 1, 2, 'Actividad2', '2016-01-20', '2015-10-22', 36, 'ANALISTA');
-INSERT INTO Actividad VALUES(3, 1, 3, 'Actividad3', '2016-01-20', NULL, 60, 'PROGRAMADOR'); /* hito */
+INSERT INTO Actividad VALUES(3, 1, 3, 'Actividad3', '2016-01-20', NULL, 60, 'PROGRAMADOR');
 INSERT INTO Actividad VALUES(3, 1, 4, 'Actividad4', NULL, NULL, 48, 'ANALISTA');
 INSERT INTO Actividad VALUES(3, 1, 5, 'Actividad5', NULL, NULL, 57, 'ANALISTA');
 INSERT INTO Actividad VALUES(3, 1, 6, 'Actividad6HITO', NULL, NULL, 0, NULL);
