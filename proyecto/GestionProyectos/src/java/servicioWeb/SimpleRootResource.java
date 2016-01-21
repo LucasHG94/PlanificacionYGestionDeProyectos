@@ -983,6 +983,27 @@ public class SimpleRootResource {
         }
         return null;
     }
+    
+        
+    @GET
+    @Produces("application/json")
+    @Path("/actividadesDisponibles")
+    public List<Actividad> getActividadesDisponibles(@QueryParam("idP") int idProyecto) {
+        Proyecto p = proyectoFacade.find(idProyecto);
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> actividadesFiltradas = new ArrayList<>();
+        for (Actividad item : actividades) {
+            if (item.getEtapa().getProyecto().equals(p) & item.getFechainicio()==null) {
+                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();     
+                for (Actividad pred : predecesoras) {
+                    if (pred.getFechafin() != null) {
+                        actividadesFiltradas.add(item);
+                    }
+                }
+            }
+        }
+        return actividadesFiltradas;
+    }
 
     @GET
     @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
@@ -999,5 +1020,28 @@ public class SimpleRootResource {
             }
         }
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/setFechaInicio")
+    public boolean setFechaInicio(@QueryParam("idP") int idP, @QueryParam("idA") int idA,
+            @QueryParam("idE") int idE) {
+        boolean permitido = true;
+        List<Actividad> actividades = actividadFacade.findAll();
+        Actividad a = null;
+        for (Actividad item : actividades) {
+            if(item.getActividadPK().getId()==idA & item.getActividadPK().getIdproyecto()==idP
+                    & item.getActividadPK().getIdetapa()==idE){
+                a = item;
+            }
+        }
+        try{
+            a.setFechainicio(new Date());
+            actividadFacade.edit(a);
+        }catch(Exception E){
+            permitido=false;
+        }
 
+        return permitido;
+    }
 }
