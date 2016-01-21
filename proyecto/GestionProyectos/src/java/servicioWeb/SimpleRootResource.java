@@ -37,6 +37,8 @@ import modelo.Trabajador;
 import modelo.Vacaciones;
 import modelo.VacacionesPK;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +58,7 @@ import persistencia.VacacionesFacadeLocal;
  *
  * @author sturm
  */
-@Path("SimpleRoot") //http://localhost:8080/GestionProyectos/webresources/SimpleRoot
+@Path("SimpleRoot") ///GestionProyectos/webresources/SimpleRoot
 public class SimpleRootResource {
 
     @Context
@@ -111,7 +113,6 @@ public class SimpleRootResource {
      * PUT method for updating or creating an instance of SimpleRootResource
      *
      * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
      */
     @GET
     //@Consumes("application/xml")
@@ -128,6 +129,36 @@ public class SimpleRootResource {
          actividadFacade.create(b);
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/usuario/{nick}/informes/ia/{fecha1}/{fecha2}")
+    public String obtenerInformesDeActividades(@PathParam("nick") String nick, @PathParam("fecha1")String f1, @PathParam("fecha2") String f2){
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("EEEE MMM d yyyy");
+        DateTime fecha1 = new DateTime(f1);
+        DateTime fecha2 = new DateTime(f2);
+        System.out.println("fecha1: " + fecha1);
+        System.out.println("fecha2: " + fecha2);
+        Trabajador t = trabajadorFacade.find(nick);
+        List<Informesemanal> informes = new ArrayList<>(t.getInformesemanalCollection());
+        List<Informesemanal> resultado = new ArrayList<>();
+        for(Informesemanal i:informes){
+            DateTime fechaSemana = new DateTime(i.getInformesemanalPK().getFechasemana());
+            if(fechaSemana.isAfter(fecha1)&&fechaSemana.isBefore(fecha2)){
+                resultado.add(i);
+            }
+        }
+        JSONArray result = new JSONArray();
+        for(Informesemanal i:resultado){
+            JSONObject inf = new JSONObject();
+            inf.put("nombre", i.getActividad().getNombre());
+            inf.put("fecha", dtfOut.print(new DateTime(i.getInformesemanalPK().getFechasemana())));
+            inf.put("estado", i.getEstado());
+            result.put(inf);
+        }
+        
+        return result.toString();
     }
 
     
@@ -543,7 +574,7 @@ public class SimpleRootResource {
             response.put("por", porSolicitado + "%");
             response.put("mensaje", "Trabajador añadido al proyecto");
             return response.toString();
-        } catch (Exception e) {
+        } catch (NumberFormatException | JSONException e) {
             response.put("error", true);
             response.put("mensaje", "Error desconocido.");
             return response.toString();
@@ -866,11 +897,32 @@ public class SimpleRootResource {
     }
 
     @GET
-    @Path("/admin/borrarUsuario")
-    public void deleteTrabajadores(@QueryParam("nick") String nick) {
-        Trabajador x = new Trabajador();
-        x.setNick(nick);
-        trabajadorFacade.remove(x);
-
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/cerrar")
+    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
+        System.out.println("-------" + nombre);
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for(Proyecto p: proyectos){
+            System.out.println(t.getNick());
+            System.out.println(p.getNickjefe());
+            if(t.getNick().compareTo(p.getNickjefe()) == 0){
+                List<Actividad> actividades = actividadFacade.findAll();               
+                List<Actividad> actividadesProyecto = new ArrayList<>();
+                for (Actividad item : actividades) {
+                    int idP = item.getActividadPK().getIdproyecto();
+                    if(idP == p.getId()){
+                        actividadesProyecto.add(item);
+                    }
+                }
+                System.out.print("holaaaa");
+                return actividadesProyecto;
+            }
+        }
+        return null;
     }
+        
+       
+        
+    
 }
