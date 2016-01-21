@@ -1,25 +1,4 @@
 
-//checkSesionIniciada();
-/*jQuery(function () {
-    var user = getCookie("username");   
-    jQuery.get("/GestionProyectos/webresources/SimpleRoot/cerrarActividad", {
-        user: user
-    }, function (resultado) {
-        for (j = 0; j < resultado.length; j++) {
-            var p = document.createElement("p");
-            var t = document.createTextNode(resultado[j].nombre + " ");       
-            p.appendChild(t);
-            var btn = document.createElement("button");
-            btn.setAttribute("id", "crear");
-            btn.setAttribute("OnClick","location.href='formularioCierre.html'");
-            var t = document.createTextNode("Cerrar");
-            btn.appendChild(t);
-            p.appendChild(btn);
-            
-            document.body.appendChild(p);
-        }
-    });
-});*/
 
 
 function cargarActividades() {

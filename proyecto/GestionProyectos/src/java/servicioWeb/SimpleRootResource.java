@@ -1044,4 +1044,54 @@ public class SimpleRootResource {
 
         return permitido;
     }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/actividadesAsignables")
+    public List<Actividad> getActividadesAsignables(@PathParam("nick") String nombre) {
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for (Proyecto p : proyectos) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                List<Actividad> actividades = actividadFacade.findAll();
+                List<Actividad> actividadesProyecto = new ArrayList<>();
+                for (Actividad item : actividades) {
+                    int idP = item.getActividadPK().getIdproyecto();
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
+                    if (idP == p.getId() && null == item.getFechainicio()) {
+                        for (Actividad pred : predecesoras) {
+                            if (pred.getFechafin() != null) {
+                                actividadesProyecto.add(item);
+                            }
+                        }
+
+                    }
+                }
+                return actividadesProyecto;
+            }
+        }
+        return null;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/desarrolladoresAsignables")
+    public List<Trabajador> getDesarrolladoresAsignables(@PathParam("nick") String nombre) {
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        List<Trabajador> disponibles = null;
+        for (Proyecto p : proyectos) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                List<Dedicacion> dedicaciones = (List<Dedicacion>) p.getDedicacionCollection();
+                for(Dedicacion d: dedicaciones){
+                    Trabajador worker = d.getTrabajador();
+                    if(worker.getDedicacionCollection().size()<4){
+                        disponibles.add(worker);
+                    }
+                }
+            }
+        }
+        return disponibles;
+    }
+    
 }
