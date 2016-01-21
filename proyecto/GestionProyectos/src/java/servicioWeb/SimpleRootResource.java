@@ -911,6 +911,9 @@ public class SimpleRootResource {
                 permitido = false;
             }
         }
+        
+        if((new Date()).before(fecha1)){permitido=false;}
+        if((new Date()).before(fecha2)){permitido=false;}
 
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
