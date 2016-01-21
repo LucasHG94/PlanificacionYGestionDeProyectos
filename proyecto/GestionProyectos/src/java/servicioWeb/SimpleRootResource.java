@@ -899,7 +899,8 @@ public class SimpleRootResource {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
                 Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-            permitido = false;   
+            permitido = false;
+            }
         }
         
         if(permitido){
@@ -921,7 +922,6 @@ public class SimpleRootResource {
         }
         return permitido;
     }
-
     @GET
     @Path("/admin/conf")
     public void setParalelos(@QueryParam("numP") String numP) {
@@ -972,11 +972,13 @@ public class SimpleRootResource {
                             }
                         }
                        
-                    }
-                }
-                return actividadesProyecto;
-    }
-    
+                      }
+                 }
+                 return actividadesProyecto;
+             }
+         }
+         return null;
+     }
     
     @GET
     @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
@@ -994,4 +996,5 @@ public class SimpleRootResource {
         }
     }
 
+    
 }
