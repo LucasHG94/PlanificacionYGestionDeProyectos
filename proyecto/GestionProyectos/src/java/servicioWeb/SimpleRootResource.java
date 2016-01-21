@@ -908,8 +908,14 @@ public class SimpleRootResource {
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    if(idP == p.getId() && null == p.getFechafin()){
-                        actividadesProyecto.add(item);
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
+                    if(idP == p.getId() && null == item.getFechafin()){
+                        for(Actividad pred: predecesoras){
+                            if(pred.getFechafin()!=null){
+                                 actividadesProyecto.add(item);
+                            }
+                        }
+                       
                     }
                 }
                 return actividadesProyecto;
