@@ -1055,15 +1055,15 @@ public class SimpleRootResource {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for (Proyecto p : proyectos) {
-            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0 && p.getFechafin()==null) {
                 List<Actividad> actividades = actividadFacade.findAll();
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
-                    if (idP == p.getId() && null == item.getFechafin()) {
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();                   
+                    if (idP == p.getId() && item.getFechafin() == null) {
                         for (Actividad pred : predecesoras) {
-                            if (pred.getFechafin() != null) {
+                            if (pred.getFechafin() != null) {                          
                                 actividadesProyecto.add(item);
                             }
                         }
@@ -1098,20 +1098,24 @@ public class SimpleRootResource {
     }
 
     @GET
-    @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
-    public void setFechaFin(@PathParam("idP") String idP, @PathParam("idE") String idE, @PathParam("idA") String idA, @PathParam("fechaFin") String fechaFin) {
-        int numP = Integer.valueOf(idP);
-        int numE = Integer.valueOf(idE);
-        int numA = Integer.valueOf(idA);
-        Date fechaCierre = new Date(fechaFin);
-        System.out.println(fechaCierre);
-        List<Actividad> actividades = getActividadesProyecto(numP);
-        for (Actividad item : actividades) {
-            if (numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()) {
-                item.setFechafin(fechaCierre);
-                actividadFacade.edit(item);
+    @Path("/cerrarActividad/{nombre}/fechaFin/{fechaFin}")
+    public boolean setFechaFin(@PathParam("nombre") String nombre,  @PathParam("fechaFin") String fechaFin) {       
+        String nombreAct = nombre;
+        DateTime ahora = new DateTime();
+        DateTime fechaCierre = new DateTime(fechaFin);
+        List<Actividad> actividades = actividadFacade.findAll();
+        for (Actividad item : actividades) {           
+            if (nombreAct.compareTo(item.getNombre()) == 0) {
+                System.out.println(item.getNombre()+"dsadasdasd");
+                DateTime fechaIni = new DateTime(item.getFechainicio());
+                if(fechaCierre.isAfter(fechaIni) && fechaCierre.isBefore(ahora)){
+                item.setFechafin(fechaCierre.toDate());
+                actividadFacade.edit(item);             
+                return true;
+                }
             }
         }
+        return false;
     }
     
     @GET
