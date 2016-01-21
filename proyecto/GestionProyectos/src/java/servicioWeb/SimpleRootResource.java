@@ -893,14 +893,12 @@ public class SimpleRootResource {
             suma = suma + hora;
         }
         if (suma > 40) {
-<<<<<<< HEAD
             permitido = false;
         } else {
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
                 Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-=======
             permitido = false;   
         }
         
@@ -910,7 +908,6 @@ public class SimpleRootResource {
                 InformesemanalPK informePK = new InformesemanalPK(user,idPs.get(k),
                         idActividades.get(k),idEtapas.get(k),new Date());
                 Informesemanal informe = new Informesemanal(informePK,"PendienteAprobar");
->>>>>>> master
                 informe.setHorastarea1(horas.get(0));
                 informe.setHorastarea2(horas.get(1));
                 informe.setHorastarea3(horas.get(2));
@@ -958,22 +955,6 @@ public class SimpleRootResource {
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
-<<<<<<< HEAD
-    public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre) {
-        System.out.println("-------" + nombre);
-        Trabajador t = trabajadorFacade.find(nombre);
-        List<Proyecto> proyectos = proyectoFacade.findAll();
-        for (Proyecto p : proyectos) {
-            System.out.println(t.getNick());
-            System.out.println(p.getNickjefe());
-            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
-                List<Actividad> actividades = actividadFacade.findAll();
-                List<Actividad> actividadesProyecto = new ArrayList<>();
-                for (Actividad item : actividades) {
-                    int idP = item.getActividadPK().getIdproyecto();
-                    if (idP == p.getId()) {
-                        actividadesProyecto.add(item);
-=======
     public List<Actividad> getActividadesCierre(@PathParam("nick") String nombre){
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
@@ -991,17 +972,10 @@ public class SimpleRootResource {
                             }
                         }
                        
->>>>>>> master
                     }
                 }
                 return actividadesProyecto;
-            }
-        }
-        return null;
     }
-<<<<<<< HEAD
-
-=======
     
     
     @GET
@@ -1019,8 +993,5 @@ public class SimpleRootResource {
             }
         }
     }
-       
-        
-    
->>>>>>> master
+
 }
