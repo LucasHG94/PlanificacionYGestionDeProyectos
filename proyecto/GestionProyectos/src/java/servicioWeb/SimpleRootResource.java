@@ -37,6 +37,7 @@ import modelo.Trabajador;
 import modelo.Vacaciones;
 import modelo.VacacionesPK;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -129,6 +130,76 @@ public class SimpleRootResource {
          actividadFacade.create(b);
          System.out.println("Esta o que");*/
         System.out.println("aaaah");
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/usuario/{nick}/informes/iap/{nump}/{fecha1}/{fecha2}")
+    public String getDatosInformeActividadesProyectos(@PathParam("nick") String nick, @PathParam("nump") String nump, @PathParam("fecha1") String f1, @PathParam("fecha2") String f2) {
+        DateTime fecha1 = new DateTime(f1);
+        DateTime fecha2 = new DateTime(f2);
+        System.out.println("iap");
+        System.out.println("fecha1: " + fecha1);
+        System.out.println("fecha2: " + fecha2);
+        int numP = Integer.valueOf(nump);
+        List<Actividad> actividades = getActividadesProyecto(numP);
+        System.out.println("numactpro: " + actividades.size());
+        actividades = calcularFechasEstimadas(actividades);
+        List<Actividad> resultado = new ArrayList<>();
+        for (Actividad a : actividades) {
+            DateTime fechaInicio = null;
+            DateTime fechaFin = null;
+            if (a.getFechainicio() != null) {
+                fechaInicio = new DateTime(a.getFechainicio());
+                if (a.getFechafin() != null) {
+                    fechaFin = new DateTime(a.getFechafin());
+                }
+                if (fechaInicio.isBefore(fecha2)) {
+                    if (fechaFin == null) {
+                        resultado.add(a);
+                    } else if (fechaFin.isAfter(fecha1)) {
+                        resultado.add(a);
+                    }
+                }
+            }
+
+        }
+
+        System.out.println("numactresult: " + resultado.size());
+
+        JSONObject result = new JSONObject();
+        JSONArray activas = new JSONArray();
+        JSONArray finalizadas = new JSONArray();
+
+        for (Actividad a : resultado) {
+            JSONObject ajson = new JSONObject();
+            ajson.put("nombre", a.getNombre());
+            ajson.put("duracionestimada", getDuracionEstimadaDias(a) + " dias.");
+            int d = Days.daysBetween(new DateTime(a.getFechainicio()).withTimeAtStartOfDay(), new DateTime().withTimeAtStartOfDay()).getDays();
+            if (a.getFechafin() != null) {
+                d = Days.daysBetween(new DateTime(a.getFechainicio()).withTimeAtStartOfDay(), new DateTime(a.getFechafin()).withTimeAtStartOfDay()).getDays();
+            }
+            ajson.put("duracionreal", d);
+            if (d > getDuracionEstimadaDias(a)) {
+                ajson.put("excedido", true);
+            } else {
+                ajson.put("excedido", false);
+            }
+            int progreso = Math.round(d * 1.0f / getDuracionEstimadaDias(a) * 100);
+            ajson.put("progreso", progreso);
+            if (a.getFechafin() == null) {
+                activas.put(ajson);
+                System.out.println("a");
+            } else {
+                finalizadas.put(ajson);
+                System.out.println("b");
+            }
+        }
+
+        result.put("activas", activas);
+        result.put("finalizadas", finalizadas);
+
+        return result.toString();
     }
 
     @GET
@@ -265,6 +336,24 @@ public class SimpleRootResource {
         }
         int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
         return fechaInicio.plusDays(diasEstimados);
+    }
+
+    public int getDuracionEstimadaDias(Actividad a) {
+        List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+        int idProyecto = a.getActividadPK().getIdproyecto();
+        float hombres = 0;
+        for (Trabajador t : trabajadores) {
+            Dedicacion d = dedicacionFacade.find(new DedicacionPK(t.getNick(), idProyecto));
+            hombres = hombres + (d.getPorcentaje() / 100f);
+        }
+        float duracionEstimada;
+        if (hombres <= 0) {
+            duracionEstimada = a.getEsfuerzoestimado();
+        } else {
+            duracionEstimada = a.getEsfuerzoestimado() / hombres;
+        }
+        int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
+        return diasEstimados;
     }
 
     public Actividad getActividad(List<Actividad> actividades, int etapa, int id) {
@@ -423,6 +512,7 @@ public class SimpleRootResource {
             Proyecto proyecto = proyectoFacade.find(Integer.valueOf(id));
             DateTime today = new DateTime(new Date());
             proyecto.setFechainicio(today.toDate());
+            proyectoFacade.edit(proyecto);
             List<Actividad> actividades = new ArrayList<>();
             Etapa etapa;
             List<Etapa> etapas = new ArrayList<>();
