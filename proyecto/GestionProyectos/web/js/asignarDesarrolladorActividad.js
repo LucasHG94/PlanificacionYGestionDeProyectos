@@ -10,9 +10,7 @@ function cargarActividades() {
                 var selectActivity = $("#selectactivity").get(0);
                 var b;
 
-                alert(data);
                 if (data.length > 0) {
-                    alert(data);
                     for (i = 0; i < data.length; i++) {
                         b = document.createElement("option");
                         b.text = data[i].nombre + "";
@@ -50,16 +48,17 @@ cargarDesarrolladores();
 function asignarDesarrollador() {
     var selectproject = document.getElementById("selectactivity");
     var aId = selectproject.options[selectproject.selectedIndex].getAttribute("activityId");
-    alert(aId);
     var eid = selectproject.options[selectproject.selectedIndex].getAttribute("phaseId");
-    alert(eid);
     var pId = selectproject.options[selectproject.selectedIndex].getAttribute("proyectId");
-    alert(pId);
     var selectprojectp = document.getElementById("selectworker");
     var nickk = selectprojectp.options[selectproject.selectedIndex].getAttribute("nick");
     $.getJSON(patronurl + '/asignar/desarrollador/actividad/'+nickk+'/'+pId+'/'+eid+'/'+aId+'',
             function (data) {
-                alert(data);
+                var b = Boolean(data);
+                if(b){
+                    document.location.href = "registrado.html";
+                }
+                    
             });
 
 }
