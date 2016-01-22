@@ -59,13 +59,6 @@ jQuery(function () {
             itemlista.setAttribute("style", "display:none");
             itemlista.textContent = resultado[j].nombre + " ";
             var btn = document.createElement("button");
-            btn.setAttribute("id", "asiganar");
-            btn.setAttribute("class", "badge");
-            btn.setAttribute("onClick","location.href=''");
-            var t = document.createTextNode("Asignar trabajador");
-            btn.appendChild(t);
-            itemlista.appendChild(btn);
-            var btn = document.createElement("button");
             btn.setAttribute("id", "informe");
             btn.setAttribute("class", "badge");
             btn.setAttribute("onClick","location.href='informes.html?idP="+resultado[j].id+"'");
@@ -76,7 +69,7 @@ jQuery(function () {
             btn.setAttribute("id", "planificar");
             btn.setAttribute("class", "badge");
             btn.setAttribute("onClick","location.href='asignarDesarrolladorActividad.html'");
-            var t = document.createTextNode("Planificar");
+            var t = document.createTextNode("Asignar trabajador");
             btn.appendChild(t);
             itemlista.appendChild(btn);
             var btn = document.createElement("button");

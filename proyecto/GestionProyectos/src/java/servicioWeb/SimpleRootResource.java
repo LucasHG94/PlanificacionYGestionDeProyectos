@@ -59,37 +59,37 @@ import persistencia.VacacionesFacadeLocal;
  */
 @Path("SimpleRoot") ///GestionProyectos/webresources/SimpleRoot
 public class SimpleRootResource {
-    
+
     @Context
     private UriInfo context;
-    
+
     @EJB
     private ProyectoFacadeLocal proyectoFacade;
-    
+
     @EJB
     private TrabajadorFacadeLocal trabajadorFacade;
-    
+
     @EJB
     private DedicacionFacadeLocal dedicacionFacade;
-    
+
     @EJB
     private AdministradorFacadeLocal administradorFacade;
-    
+
     @EJB
     private ActividadFacadeLocal actividadFacade;
-    
+
     @EJB
     private VacacionesFacadeLocal vacacionesFacade;
-    
+
     @EJB
     private EtapaFacadeLocal etapaFacade;
-    
+
     @EJB
     private DatosconfigurablesFacadeLocal configFacade;
-    
+
     @EJB
     private CategoriarolesFacadeLocal categoriaFacade;
-    
+
     @EJB
     private InformesemanalFacadeLocal informeSemanalFacade;
 
@@ -168,15 +168,15 @@ public class SimpleRootResource {
                     }
                 }
             }
-            
+
         }
-        
+
         System.out.println("numactresult: " + resultado.size());
-        
+
         JSONObject result = new JSONObject();
         JSONArray activas = new JSONArray();
         JSONArray finalizadas = new JSONArray();
-        
+
         for (Actividad a : resultado) {
             JSONObject ajson = new JSONObject();
             ajson.put("nombre", a.getNombre());
@@ -201,10 +201,10 @@ public class SimpleRootResource {
                 System.out.println("b");
             }
         }
-        
+
         result.put("activas", activas);
         result.put("finalizadas", finalizadas);
-        
+
         return result.toString();
     }
     
@@ -241,7 +241,7 @@ public class SimpleRootResource {
             inf.put("estado", i.getEstado());
             result.put(inf);
         }
-        
+
         return result.toString();
     }
     
@@ -259,7 +259,7 @@ public class SimpleRootResource {
         }
         Date fechaIniciotmp = proyectoFacade.find(actividades.get(0).getActividadPK().getIdproyecto()).getFechainicio();
         System.out.println("Resultado: " + actividades.size());
-        
+
         if (fechaIniciotmp == null) {
             return null;
         }
@@ -270,7 +270,7 @@ public class SimpleRootResource {
         a.setFechaAproximada(fechaIniciotmp);
         calcularFechasRecursivo(a, precedidaspora);
         return actividades;
-        
+
     }
     
     /**
@@ -283,13 +283,13 @@ public class SimpleRootResource {
     public List<Actividad> calcularFechasEstimadasTest(/*List<Actividad> actividades*/) {
         List<Actividad> resultado = new ArrayList<>();
         List<Actividad> actividades = getActividadesProyecto(5);
-        
+
         if (actividades.size() <= 0) {
             return null;
         }
         Date fechaIniciotmp = proyectoFacade.find(actividades.get(0).getActividadPK().getIdproyecto()).getFechainicio();
         System.out.println("Resultado: " + actividades.size());
-        
+
         if (fechaIniciotmp == null) {
             return null;
         }
@@ -302,7 +302,7 @@ public class SimpleRootResource {
         a.setFechaAproximada(fechaIniciotmp);
         calcularFechasRecursivo(a, precedidaspora);
         return actividades;
-        
+
     }
     
     /**
@@ -318,20 +318,20 @@ public class SimpleRootResource {
         Date fechaFinReal = a.getFechafin();
         DateTime fechaAproximadaA = new DateTime(a.getFechaAproximada());
         DateTime fechaAproximadaP;
-        
+
         if (fechaFinReal != null) {
             fechaAproximadaP = new DateTime(fechaFinReal);
         } else {
             if (fechaReal == null) {
                 fechaAproximadaP = getFechaAproximada(fechaAproximadaA, a);/*fechaAproximadaA.plusDays(a.getEsfuerzoestimado());*/
-                
+
             } else {
                 fechaAproximadaP = getFechaAproximada(new DateTime(fechaReal), a);
             }
         }
-        
+
         DateTime fechaAproximadaPActual;
-        
+
         for (Actividad p : precedidas) {
             if (p.getFechaAproximada() != null) {
                 fechaAproximadaPActual = new DateTime(p.getFechaAproximada());
@@ -343,10 +343,9 @@ public class SimpleRootResource {
                 p.setFechaAproximada(fechaAproximadaP.toDate());
                 calcularFechasRecursivo(p, new ArrayList<>(p.getActividadCollection()));
             }
-            
+
         }
     }
-    
     /**
      * Obtenemos la fecha aproximada teniendo la duración
      * @param fechaInicio
@@ -370,7 +369,7 @@ public class SimpleRootResource {
         int diasEstimados = (int) Math.round(Math.ceil(duracionEstimada / 8));
         return fechaInicio.plusDays(diasEstimados);
     }
-    
+
     public int getDuracionEstimadaDias(Actividad a) {
         List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
         int idProyecto = a.getActividadPK().getIdproyecto();
@@ -406,7 +405,7 @@ public class SimpleRootResource {
         }
         return null;
     }
-    
+
     public List<Actividad> getActividadesProyecto(int idproyecto) {
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> resultado = new ArrayList<>();
@@ -415,7 +414,7 @@ public class SimpleRootResource {
                 resultado.add(a);
             }
         }
-        
+
         return resultado;
     }
     
@@ -443,7 +442,7 @@ public class SimpleRootResource {
             }
         }
         System.out.println("Num actividades en periodo: " + actividadesEnPeriodo.size());
-        
+
         JSONArray result = new JSONArray();
         JSONObject trabajador;
         JSONArray lista;
@@ -477,7 +476,7 @@ public class SimpleRootResource {
                 }
             }
         }
-        
+
         return result.toString();
     }
     
@@ -507,7 +506,7 @@ public class SimpleRootResource {
         List<Categoriaroles> categorias = categoriaFacade.findAll();
         Trabajador t = trabajadorFacade.find(nick);
         for (Categoriaroles c : categorias) {
-            
+
             if (c.getCategoriarolesPK().getCategoria() == cat) {
                 t.setCategoria(cat);
                 trabajadorFacade.edit(t);
@@ -516,19 +515,18 @@ public class SimpleRootResource {
         }
         return false;
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/test/test1")
     public boolean test1(@QueryParam("testdata") String test) {
-        
         Actividad una = actividadFacade.find(new ActividadPK(3, 1, 1));
         Actividad otra = actividadFacade.find(new ActividadPK(3, 1, 2));
         //una.getActividadCollection().add(otra);
         //actividadFacade.edit(una);
 
         System.out.println(una.getActividadCollection().size());
-        
+
         System.out.println(test);
         return true;
     }
@@ -590,7 +588,7 @@ public class SimpleRootResource {
                 if (duracionEstimada > 0) {
                     System.out.println(actividad.get("rol"));
                 }
-                
+
                 Actividad a = new Actividad(new ActividadPK(proyecto.getId(), etapa.getEtapaPK().getId(), actividadidcont++));
                 if (primera) {
                     a.setFechainicio(today.toDate());
@@ -613,7 +611,7 @@ public class SimpleRootResource {
                     //a.setFechainicio(today.toDate());
                     //a.setFechafin(new DateTime(a.getFechainicio()).plusDays(duracionEstimada));
                 }
-                
+
                 if (actividad.getInt("duracion_estimada") == 0) {
                     System.out.println("Etapa encontrada.");
                     etapa.setNombre(nombre);
@@ -621,14 +619,14 @@ public class SimpleRootResource {
                     etapa = new Etapa(new EtapaPK(proyecto.getId(), etapaidcont++));
                     actividadidcont = 1;
                 }
-                
+
                 actividades.add(a);
-                
+
                 System.out.println();
                 System.out.println("pre: " + pre.length());
-                
+
             }
-            
+
             for (Etapa eTest : etapas) {
                 System.out.println("Etapa: " + eTest.getNombre());
                 System.out.println("Id: " + eTest.getEtapaPK().getId());
@@ -636,7 +634,7 @@ public class SimpleRootResource {
                 etapaFacade.create(eTest);
                 System.out.println("Etapa guardada.");
             }
-            
+
             for (int i = actividades.size() - 1; i >= 0; i--) {
                 Actividad aTest = actividades.get(i);
                 System.out.println("----------");
@@ -656,11 +654,11 @@ public class SimpleRootResource {
                 actividadFacade.create(aTest);
                 System.out.println("Actividad guardada.");
             }
-            
+
         } catch (JSONException | NumberFormatException e) {
             return false;
         }
-        
+
         return true;
     }
     
@@ -705,7 +703,7 @@ public class SimpleRootResource {
         Datosconfigurables datos = configFacade.find("ProyectosAlMismoTiempo");
         JSONObject response = new JSONObject();
         int maxPActivos = (datos != null) ? datos.getValor() : 2;
-        
+
         try {
             int idProyecto = Integer.valueOf(id);
             int porActual = 0;
@@ -720,9 +718,9 @@ public class SimpleRootResource {
                 response.put("mensaje", "Este nick no corresponde a ningun trabajador");
                 return response.toString();
             }
-            
+
             List<Dedicacion> dedicaciones = new ArrayList<>(t.getDedicacionCollection());
-            
+
             for (Dedicacion d : dedicaciones) {
                 if (d.getProyecto().getFechafin() == null || d.getProyecto().getFechafin().compareTo(new Date()) >= 0) {
                     porActual += d.getPorcentaje();
@@ -731,19 +729,19 @@ public class SimpleRootResource {
             }
             System.out.println("Num proyectos activos: " + numPActivos);
             System.out.println("Por actual: " + porActual);
-            
+
             if (numPActivos >= maxPActivos) {
                 response.put("error", true);
                 response.put("mensaje", "Este trabajador ya se encuentra trabajando en el numero maximo de proyectos permitido.");
                 return response.toString();
             }
-            
+
             if (porActual + porSolicitado > 100) {
                 response.put("error", true);
                 response.put("mensaje", "El porcentaje de participacion total superaria el permitido. Introduce un pocrcentaje menor.");
                 return response.toString();
             }
-            
+
             if (jefeActualmente(nick) != null) {
                 int idPJefe = jefeActualmente(nick).getId();
                 System.out.println("Jefe del proyecto: " + idPJefe);
@@ -758,7 +756,7 @@ public class SimpleRootResource {
                     }
                 }
             }
-            
+
             Dedicacion nueva = new Dedicacion(new DedicacionPK(nick, idProyecto));
             nueva.setPorcentaje(porSolicitado);
             dedicacionFacade.create(nueva);
@@ -772,8 +770,9 @@ public class SimpleRootResource {
             response.put("mensaje", "Error desconocido.");
             return response.toString();
         }
-        
+
     }
+    
     
     /**
      * Obtenemos el proyecto de dado un jefe
@@ -852,14 +851,14 @@ public class SimpleRootResource {
                 dedicFilt.add(item);
             }
         }
-        
+
         List<Proyecto> pFiltrado = new ArrayList<>();
         for (Dedicacion item : dedicFilt) {
             pFiltrado.add(item.getProyecto());
         }
         return pFiltrado;
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/todos")
@@ -949,8 +948,8 @@ public class SimpleRootResource {
         List<Actividad> actividadesTrabajador = new ArrayList<>();
         for (Actividad item : actividades) {
             if (item.getTrabajadorCollection().contains(t) && item.getEtapa().getProyecto().equals(p)
-                    && item.getEtapa().getProyecto().getFechafin()!=null
-                && item.getEtapa().getProyecto().getFechafin().before(new Date())) {
+                    && item.getEtapa().getProyecto().getFechafin() != null
+                    && item.getEtapa().getProyecto().getFechafin().before(new Date())) {
                 actividadesTrabajador.add(item);
             }
         }
@@ -977,7 +976,7 @@ public class SimpleRootResource {
         }
         List<Actividad> actividadesSemana = new ArrayList<>();
         for (Actividad item : actividadesTrabajador) {//TODO
-            if (item.getFechainicio().before(new Date()) & item.getFechafin()==null) {//.after(new Date())
+            if (item.getFechainicio().before(new Date()) & item.getFechafin() == null) {//.after(new Date())
                 actividadesSemana.add(item);
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
             }
@@ -1004,10 +1003,10 @@ public class SimpleRootResource {
             @QueryParam("ano1") int ano1, @QueryParam("mes1") int mes1, @QueryParam("dia1") int dia1,
             @QueryParam("ano2") int ano2, @QueryParam("mes2") int mes2, @QueryParam("dia2") int dia2) {
         Trabajador t = trabajadorFacade.find(nombre);
-        
+
         Date fecha1 = new Date(ano1 - 1900, mes1 - 1, dia1);
         Date fecha2 = new Date(ano2 - 1900, mes2 - 1, dia2);
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(fecha1);
         cal.add(Calendar.DAY_OF_MONTH, 7);
@@ -1015,14 +1014,14 @@ public class SimpleRootResource {
         cal.setTime(fecha3);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha3Fin = cal.getTime();
-        
+
         cal.setTime(fecha2);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha4 = cal.getTime();
         cal.setTime(fecha4);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date fecha4Fin = cal.getTime();
-        
+
         boolean permitido = true;
         List<Actividad> actividades = actividadFacade.findAll();
         for (Actividad item : actividades) {
@@ -1040,14 +1039,14 @@ public class SimpleRootResource {
                 permitido = false;
             }
         }
-        
+
         if ((new Date()).before(fecha1)) {
             permitido = false;
         }
         if ((new Date()).before(fecha2)) {
             permitido = false;
         }
-        
+
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
             Vacaciones v1 = new Vacaciones(vpk1);
@@ -1055,7 +1054,7 @@ public class SimpleRootResource {
             VacacionesPK vpk2 = new VacacionesPK(fecha3, t.getNick());
             Vacaciones v2 = new Vacaciones(vpk2);
             vacacionesFacade.create(v2);
-            
+
             VacacionesPK vpk3 = new VacacionesPK(fecha2, t.getNick());
             Vacaciones v3 = new Vacaciones(vpk3);
             vacacionesFacade.create(v3);
@@ -1089,21 +1088,21 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
-        System.out.println("-------->"+map.size());
+        System.out.println("-------->" + map.size());
         List<Double> tiempos = new ArrayList<>();
-        for (i = 0; i < (map.size()-1)/9; i++) {//TODO
+        for (i = 0; i < (map.size() - 1) / 9; i++) {//TODO
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idPs.add(Integer.parseInt(s2));
             System.out.println("idP=" + i + " : " + idPs.get(i));
-            
+
             s = map.get("idActividad" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idActividades.add(Integer.parseInt(s2));
             System.out.println("idActividad=" + i + " : " + idActividades.get(i));
-            
+
             s = map.get("idEtapa" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
@@ -1137,7 +1136,7 @@ public class SimpleRootResource {
         }
         if (suma > 40) {
             permitido = false;
-        }        
+        }
         if (permitido) {
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
@@ -1158,6 +1157,7 @@ public class SimpleRootResource {
         }
         return permitido;
     }
+
     
     /**
      * Cambia el valor de los proyectos paralelos
@@ -1172,6 +1172,7 @@ public class SimpleRootResource {
         paralel.setValor(paral);
         configFacade.edit(paralel);
     }
+
     
     /**
      * Crea un nuevo usuario en la base de datos
@@ -1202,6 +1203,7 @@ public class SimpleRootResource {
         workers = trabajadorFacade.findAll();
         return workers;
     }
+
     
     /**
      * Devuelve las actividades listas para su cierre
@@ -1222,18 +1224,18 @@ public class SimpleRootResource {
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();                    
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();
                     if (idP == p.getId() && item.getFechainicio() != null && item.getFechafin() == null) {
                         if (predecesoras.size() != 0) {
                             for (Actividad pred : predecesoras) {
-                                if (pred.getFechafin() != null) {                                    
+                                if (pred.getFechafin() != null) {
                                     actividadesProyecto.add(item);
                                 }
                             }
                         } else {
                             actividadesProyecto.add(item);
                         }
-                        
+
                     }
                 }
                 return actividadesProyecto;
@@ -1241,6 +1243,7 @@ public class SimpleRootResource {
         }
         return null;
     }
+
     
     /**
      * Devuele las actividades que se pueden iniciar actualmente
@@ -1257,7 +1260,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {
             if (item.getEtapa().getProyecto().equals(p) & item.getFechainicio() == null
                     & item.getEsfuerzoestimado() != 0) {
-                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();                
+                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();
                 for (Actividad pred : predecesoras) {
                     if (pred.getFechafin() != null) {
                         actividadesFiltradas.add(item);
@@ -1267,6 +1270,7 @@ public class SimpleRootResource {
         }
         return actividadesFiltradas;
     }
+
     
     /**
      * Guarda la fecha de finalización de la actividad
@@ -1276,12 +1280,12 @@ public class SimpleRootResource {
      */
     @GET
     @Path("/cerrarActividad/{nombre}/fechaFin/{fechaFin}")
-    public boolean setFechaFin(@PathParam("nombre") String nombre, @PathParam("fechaFin") String fechaFin) {        
+    public boolean setFechaFin(@PathParam("nombre") String nombre, @PathParam("fechaFin") String fechaFin) {
         String nombreAct = nombre;
         DateTime ahora = new DateTime();
         DateTime fechaCierre = new DateTime(fechaFin);
         List<Actividad> actividades = actividadFacade.findAll();
-        for (Actividad item : actividades) {            
+        for (Actividad item : actividades) {
             if (nombreAct.compareTo(item.getNombre()) == 0) {
                 DateTime fechaIni = new DateTime(item.getFechainicio());
                 if ((fechaCierre.isAfter(fechaIni) || fechaCierre.isEqual(fechaIni))) {
@@ -1298,6 +1302,7 @@ public class SimpleRootResource {
         }
         return false;
     }
+
     
     /**
      * Guarda la fecha de inicio de la actividad
@@ -1326,7 +1331,7 @@ public class SimpleRootResource {
         } catch (Exception E) {
             permitido = false;
         }
-        
+
         return permitido;
     }
     
@@ -1342,19 +1347,25 @@ public class SimpleRootResource {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for (Proyecto p : proyectos) {
+            System.out.println("p: " + p.getNombre());
             if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                System.out.println("Ah ");
                 List<Actividad> actividades = actividadFacade.findAll();
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
-                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
-                    if (idP == p.getId() && null == item.getFechainicio()) {
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();
+                    System.out.println("Item: " + item.getNombre());
+                    if (idP == p.getId() /*&& item.getFechainicio()!=null*/) {
+
+                        System.out.println("Item:if1 " + item.getNombre());
                         for (Actividad pred : predecesoras) {
                             if (pred.getFechafin() != null) {
+                                System.out.println("Item:if2 " + item.getNombre());
                                 actividadesProyecto.add(item);
                             }
                         }
-                        
+
                     }
                 }
                 return actividadesProyecto;
@@ -1362,19 +1373,47 @@ public class SimpleRootResource {
         }
         return null;
     }
-    
+
+    @GET
+    @Produces("application/json")
+    @Path("/asignar/desarrollador/actividad/{nick}/{idp}/{ide}/{id}")
+    public boolean asignarDesarroladorActividaad(@PathParam("nick") String nick, @PathParam("idp") String sidp, @PathParam("ide") String side, @PathParam("id") String sid) {
+        boolean resultado = false;
+        try {
+            int idp = Integer.valueOf(sidp);
+            int ide = Integer.valueOf(side);
+            int id = Integer.valueOf(sid);
+            System.out.println("IDP, IDE,ID: "+idp+" "+ide+" "+id);
+            Actividad a = actividadFacade.find(new ActividadPK(idp, ide, id));
+            Trabajador t = trabajadorFacade.find(nick);
+            System.out.println("Nick: " + t.getNick());
+            List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+            trabajadores.add(t);
+            a.setTrabajadorCollection(trabajadores);
+            t.getActividadCollection().add(a);
+            trabajadorFacade.edit(t);
+            actividadFacade.edit(a);
+            resultado = true;
+        } catch (Exception e) {
+            resultado = false;
+        }
+        return resultado;
+
+    }
+
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/desarrolladoresAsignables")
     public List<Trabajador> getDesarrolladoresAsignables(@PathParam("nick") String nombre) {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
-        List<Trabajador> disponibles = null;
+        List<Trabajador> disponibles = new ArrayList<>();
         for (Proyecto p : proyectos) {
             if (t.getNick().compareTo(p.getNickjefe()) == 0) {
                 List<Dedicacion> dedicaciones = (List<Dedicacion>) p.getDedicacionCollection();
                 for (Dedicacion d : dedicaciones) {
                     Trabajador worker = d.getTrabajador();
+
                     if (worker.getDedicacionCollection().size() < 4) {
                         disponibles.add(worker);
                     }
@@ -1401,9 +1440,10 @@ public class SimpleRootResource {
                 item.getInformesemanalPK().getFechasemana();
             }
         }
-        
+
         return informesFiltrados;
     }
+
     
     /**
      * Informes que están pendientes de enviar
@@ -1422,10 +1462,10 @@ public class SimpleRootResource {
                 item.getInformesemanalPK().getFechasemana();
             }
         }
-        
+
         return informesFiltrados;
     }
-    
+
     @GET
     @Produces("application/json")
     @Path("/aprobar")
@@ -1443,5 +1483,5 @@ public class SimpleRootResource {
         }
         return permitido;
     }
-    
+
 }
