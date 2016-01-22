@@ -836,8 +836,9 @@ public class SimpleRootResource {
         List<Actividad> actividades = actividadFacade.findAll();
         List<Actividad> actividadesTrabajador = new ArrayList<>();
         for (Actividad item : actividades) {
-            if (item.getTrabajadorCollection().contains(t) & item.getEtapa().getProyecto().equals(p)
-                    & item.getEtapa().getProyecto().getFechafin().before(new Date())) {
+            if (item.getTrabajadorCollection().contains(t) && item.getEtapa().getProyecto().equals(p)
+                    && item.getEtapa().getProyecto().getFechafin()!=null
+                && item.getEtapa().getProyecto().getFechafin().before(new Date())) {
                 actividadesTrabajador.add(item);
             }
         }
@@ -859,7 +860,7 @@ public class SimpleRootResource {
         }
         List<Actividad> actividadesSemana = new ArrayList<>();
         for (Actividad item : actividadesTrabajador) {//TODO
-            if (item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())) {
+            if (item.getFechainicio().before(new Date()) & item.getFechafin()==null) {//.after(new Date())
                 actividadesSemana.add(item);
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
             }
@@ -950,9 +951,9 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
-        System.out.println(map.get("idActividad1").toString());
+        System.out.println("-------->"+map.size());
         List<Double> tiempos = new ArrayList<>();
-        for (i = 0; i < 2; i++) {//TODO
+        for (i = 0; i < (map.size()-1)/9; i++) {//TODO
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());

@@ -17,6 +17,9 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        <script>
+            var longitud=0;
+        </script>
         <div class="container" style="margin-bottom:50">
             <div class="row">
                 <div class="col col-md-10 col-md-offset-1">
@@ -46,7 +49,7 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
             jQuery("#crear").click(function () {
                 var user = getCookie("username");
                 var uriH = "";
-                for (j = 0; j < 4; j++) { 
+                for (j = 0; j < longitud; j++) { 
                     var hora0 = jQuery("#hora0"+j).val();
                     var hora1 = jQuery("#hora1"+j).val();
                     var hora2 = jQuery("#hora2"+j).val();
