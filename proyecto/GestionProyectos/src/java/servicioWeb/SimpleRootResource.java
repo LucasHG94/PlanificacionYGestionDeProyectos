@@ -1061,9 +1061,9 @@ public class SimpleRootResource {
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
                     List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();                   
-                    if (idP == p.getId() && item.getFechafin() == null) {
+                    if (idP == p.getId() && item.getFechainicio()!=null && item.getFechafin() == null) {
                         for (Actividad pred : predecesoras) {
-                            if (pred.getFechafin() != null) {                          
+                            if (pred.getFechafin() != null ) {                          
                                 actividadesProyecto.add(item);
                             }
                         }
@@ -1106,7 +1106,6 @@ public class SimpleRootResource {
         List<Actividad> actividades = actividadFacade.findAll();
         for (Actividad item : actividades) {           
             if (nombreAct.compareTo(item.getNombre()) == 0) {
-                System.out.println(item.getNombre()+"dsadasdasd");
                 DateTime fechaIni = new DateTime(item.getFechainicio());
                 if(fechaCierre.isAfter(fechaIni) && fechaCierre.isBefore(ahora)){
                 item.setFechafin(fechaCierre.toDate());
