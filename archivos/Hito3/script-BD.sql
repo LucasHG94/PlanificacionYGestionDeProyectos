@@ -349,7 +349,7 @@ INSERT INTO Asignacion VALUES('Trabajador8', 2, 4, 2);
 INSERT INTO Asignacion VALUES('Trabajador8', 2, 4, 3);
 
 /* Proyecto 3*/
-INSERT INTO Proyecto VALUES(3, 'Proyecto sin terminar', '2016-01-18' , NULL, 'Trabajador1');
+INSERT INTO Proyecto VALUES(3, 'Proyecto sin terminar- PROBAR CERRAR ACTIVIDAD', '2016-01-18' , NULL, 'Trabajador1');
 INSERT INTO Etapa VALUES(3, 1, 'Etapa unica');
 INSERT INTO Actividad VALUES(3, 1, 1, 'Actividad1','2016-01-18', '2016-01-19', 24, 'ANALISTA');
 INSERT INTO Actividad VALUES(3, 1, 2, 'Actividad2', '2016-01-20', '2015-10-22', 36, 'ANALISTA');
@@ -383,6 +383,42 @@ INSERT INTO Asignacion VALUES('Trabajador1', 3, 1, 2);
 INSERT INTO Asignacion VALUES('Trabajador2', 3, 1, 2);
 INSERT INTO Asignacion VALUES('Trabajador3', 3, 1, 3);
 INSERT INTO Asignacion VALUES('Trabajador4', 3, 1, 3);
+
+/* Proyecto 4*/
+INSERT INTO Proyecto VALUES(4, 'Proyecto sin terminar- PROBAR INICIAR ACTIVIDAD', '2016-01-18' , NULL, 'Trabajador7');
+INSERT INTO Etapa VALUES(4, 1, 'Etapa unica');
+INSERT INTO Actividad VALUES(4, 1, 1, 'Actividad1','2016-01-18', '2016-01-19', 24, 'ANALISTA');
+INSERT INTO Actividad VALUES(4, 1, 2, 'Actividad2', '2016-01-20', '2015-10-22', 36, 'ANALISTA');
+INSERT INTO Actividad VALUES(4, 1, 3, 'Actividad3', '2016-01-20', '2015-10-22', 60, 'PROGRAMADOR');
+INSERT INTO Actividad VALUES(4, 1, 4, 'Actividad4', NULL, NULL, 48, 'ANALISTA');
+INSERT INTO Actividad VALUES(4, 1, 5, 'Actividad5', NULL, NULL, 57, 'ANALISTA');
+INSERT INTO Actividad VALUES(4, 1, 6, 'Actividad6HITO', NULL, NULL, 0, NULL);
+
+INSERT INTO InformeSemanal VALUES('Trabajador7', 4, 1, 1, '2016-01-18',0,16,0,0,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 4, 1, 1, '2016-01-18',0,0,4,0,4,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador7', 4, 1, 2, '2016-01-18',6,6,6,6,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador8', 4, 1, 2, '2016-01-18',2,2,2,2,2,2,'RECHAZADO');
+INSERT INTO InformeSemanal VALUES('Trabajador9', 4, 1, 3, '2016-01-18',18,0,0,18,0,0,'ACEPTADO');
+INSERT INTO InformeSemanal VALUES('Trabajador10', 4, 1, 3, '2016-01-18',0,0,9,0,9,0,'ACEPTADO');
+
+INSERT INTO Precedencia VALUES(4, 1, 1, 4, 1, 2);
+INSERT INTO Precedencia VALUES(4, 1, 1, 4, 1, 3);
+INSERT INTO Precedencia VALUES(4, 1, 2, 4, 1, 4);
+INSERT INTO Precedencia VALUES(4, 1, 3, 4, 1, 4);
+INSERT INTO Precedencia VALUES(4, 1, 4, 4, 1, 5);
+INSERT INTO Precedencia VALUES(4, 1, 5, 4, 1, 6);
+
+INSERT INTO Dedicacion VALUES('Trabajador7', 4, 100);
+INSERT INTO Dedicacion VALUES('Trabajador8', 4, 50);
+INSERT INTO Dedicacion VALUES('Trabajador9', 4, 100);
+INSERT INTO Dedicacion VALUES('Trabajador10', 4, 50);
+
+INSERT INTO Asignacion VALUES('Trabajador7', 4, 1, 1);
+INSERT INTO Asignacion VALUES('Trabajador8', 4, 1, 1);
+INSERT INTO Asignacion VALUES('Trabajador7', 4, 1, 2);
+INSERT INTO Asignacion VALUES('Trabajador8', 4, 1, 2);
+INSERT INTO Asignacion VALUES('Trabajador9', 4, 1, 3);
+INSERT INTO Asignacion VALUES('Trabajador10', 4, 1, 3);
 
 
 /*Vacaciones trabajadores*/
