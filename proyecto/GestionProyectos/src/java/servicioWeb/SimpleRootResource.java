@@ -1191,4 +1191,52 @@ public class SimpleRootResource {
         return disponibles;
     }
     
+    @GET
+    @Produces("application/json")
+    @Path("/informesPendienteAprobar")
+    public List<Informesemanal> getInformesPendienteAprobar(@QueryParam("idP") int idP) {
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        List<Informesemanal> informesFiltrados = new ArrayList<>();
+        for(Informesemanal item:informes){
+            if(item.getActividad().getActividadPK().getIdproyecto()==idP & item.getEstado().equals("PENDIENTE-APROBAR")){
+                informesFiltrados.add(item);item.getInformesemanalPK().getFechasemana();
+            }
+        }
+        
+        return informesFiltrados;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/informesPendienteEnviar")
+    public List<Informesemanal> getInformesPendienteEnviar(@QueryParam("idP") int idP) {
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        List<Informesemanal> informesFiltrados = new ArrayList<>();
+        for(Informesemanal item:informes){
+            if(item.getActividad().getActividadPK().getIdproyecto()==idP & item.getEstado().equals("PENDIENTE-ENVIAR")){
+                informesFiltrados.add(item);item.getInformesemanalPK().getFechasemana();
+            }
+        }
+        
+        return informesFiltrados;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/aprobar")
+    public boolean setAprobar(@QueryParam("user") String user, @QueryParam("idP") int idP, @QueryParam("idA") int idA) {
+        boolean permitido=true;
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        System.out.println(user+":"+idP+":"+idA);
+        for(Informesemanal item:informes){
+            if(item.getInformesemanalPK().getIdproyecto()==idP & item.getInformesemanalPK().getIdactividad()==idA
+                    & item.getInformesemanalPK().getNicktrabajador().equals(user) & item.getEstado().equals("PENDIENTE-APROBAR")){
+                item.setEstado("ACEPTADO");
+                informeSemanalFacade.edit(item);
+                System.out.println("vdfv");
+            }
+        }
+        return permitido;
+    }
+    
 }

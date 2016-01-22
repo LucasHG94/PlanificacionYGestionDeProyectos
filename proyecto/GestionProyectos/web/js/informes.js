@@ -5,13 +5,13 @@ jQuery(function () {
     var idP = location.search.split('idP=')[1];
     
     var btn = document.getElementById("b1");
-    btn.setAttribute("onclick", "location.href=''");
+    btn.setAttribute("onclick", "location.href='informe_actividades_asignadas.html'");
     
     var btn = document.getElementById("b2");
-    btn.setAttribute("onclick", "location.href=''");
+    btn.setAttribute("onclick", "location.href='informesPendienteEnviar.html?idP="+idP+"'");
     
     var btn = document.getElementById("b3");
-    btn.setAttribute("onclick", "location.href='informe_actividades_asignadas.html'");
+    btn.setAttribute("onclick", "location.href='informesPendienteAprobar.html?idP="+idP+"'");
     
     var btn = document.getElementById("b4");
     btn.setAttribute("onclick", "location.href=''");
