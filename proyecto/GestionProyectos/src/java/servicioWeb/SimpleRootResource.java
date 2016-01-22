@@ -1087,7 +1087,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {
             if (item.getEtapa().getProyecto().equals(p) & item.getFechainicio()==null
                     & item.getEsfuerzoestimado()!=0) {
-                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();     
+                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();     
                 for (Actividad pred : predecesoras) {
                     if (pred.getFechafin() != null) {
                         actividadesFiltradas.add(item);
