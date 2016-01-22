@@ -1,4 +1,6 @@
-
+/*
+ * Metodos para cerrar las actividades, las obtienede la bd, las presenta y asigna fecha fin
+ */
 
 
 function cargarActividades() {

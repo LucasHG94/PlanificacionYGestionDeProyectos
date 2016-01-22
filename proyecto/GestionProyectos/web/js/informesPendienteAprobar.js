@@ -1,7 +1,6 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Volvamos la información básica de los trabajadores que tienen informes pendientes de
+ * aprobar y damos la opción de pasarles a aceptados
  */
 /* global res */
 

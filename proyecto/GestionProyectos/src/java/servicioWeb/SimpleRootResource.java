@@ -865,7 +865,7 @@ public class SimpleRootResource {
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
             }
         }
-        return actividadesTrabajador; //actividadesSemana;
+        return actividadesSemana; //actividadesSemana;
     }
     
     @GET

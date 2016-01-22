@@ -1,4 +1,6 @@
-
+/*
+ * Enlace de informes a la página de selección de informes
+ */
 
 jQuery(function () {
     var user = getCookie("username");

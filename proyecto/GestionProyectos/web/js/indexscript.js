@@ -1,5 +1,6 @@
 /*
  * Script para iniciar la sesión de los distitntos usuarios de la aplicación
+ * Valida los datos y distingue de tipo de usuario
  */
 jQuery("#loguearBtn").click(function () {
                 var user = jQuery("#user").val();
