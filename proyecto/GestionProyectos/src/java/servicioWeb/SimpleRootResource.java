@@ -1284,7 +1284,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {            
             if (nombreAct.compareTo(item.getNombre()) == 0) {
                 DateTime fechaIni = new DateTime(item.getFechainicio());
-                if ((fechaCierre.isAfter(fechaIni) || fechaCierre.isEqual(fechaIni)) && (fechaCierre.isBefore(ahora) || fechaCierre.isEqual(ahora))) {
+                if ((fechaCierre.isAfter(fechaIni) || fechaCierre.isEqual(fechaIni))) {
                     item.setFechafin(fechaCierre.toDate());
                     actividadFacade.edit(item);
                     if (item.getActividadCollection().size() <= 0) {
