@@ -4,7 +4,7 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Crear informe semanal</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <script type="text/javascript" src="js/utilidades.js"></script>
         <!-- Latest compiled and minified CSS -->
@@ -21,7 +21,7 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
             <div class="row">
                 <div class="col col-md-10 col-md-offset-1">
                     <div class="page-header" id="titulo">
-                        <h1 id="titulo">Inrforme semanal</h1>
+                        <h1 id="titulo">Informe semanal</h1>
                         <p>Introduzca las horas de las seis tareas de cada actividad</p>
                     </div>                  
                     <div class="panel panel-default" id="datos">
@@ -30,9 +30,9 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
                         </ul>
                     </div>
                     <button type="button" id="crear" class="btn btn-info">Enviar informes</button>
-                    <div  style="display:none" id="asignarAlertBad" class="alert alert-danger" role="alert">
-                                <strong>Error!</strong> <span id="aAlertBadText"></span>
-                    </div>
+                <div  style="display:none" id="asignarAlertBad" class="alert alert-danger" role="alert">
+                            <strong>Error!</strong> <span id="aAlertBadText"></span>
+                </div>
                 </div>
             </div>
         </div>
@@ -67,6 +67,7 @@ Formulario para que el desarrollador cree un informe de su actividad semanal
                 jQuery.get("http://localhost:8080/GestionProyectos/webresources/SimpleRoot/informeSemanal?user="+user+""+uriH, {
                 }, function (resultado) {
                     if(resultado){
+                        window.alert("guardado");//eliminame
                         $("#asignarAlertBad").hide();
                         $("#asignarAlertGood").show(500);
                         $("#aAlertGoodText").text("Informes enviados");

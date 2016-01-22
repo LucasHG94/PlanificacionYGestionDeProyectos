@@ -731,7 +731,7 @@ public class SimpleRootResource {
         List<Proyecto> proyectos = getProyectosJefe(nick);
         Date hoy = new Date();
         for (Proyecto p : proyectos) {
-            if (p.getFechafin() != null && p.getFechafin().compareTo(hoy) >= 0) {
+            if (p.getFechafin() == null || p.getFechafin().compareTo(hoy) >= 0) {
                 return false;
             }
         }
@@ -911,6 +911,9 @@ public class SimpleRootResource {
                 permitido = false;
             }
         }
+        
+        if((new Date()).before(fecha1)){permitido=false;}
+        if((new Date()).before(fecha2)){permitido=false;}
 
         if (permitido) {
             VacacionesPK vpk1 = new VacacionesPK(fecha1, t.getNick());
@@ -947,70 +950,69 @@ public class SimpleRootResource {
         List<Integer> idActividades = new ArrayList<>();
         List<Integer> idEtapas = new ArrayList<>();
         int i;
+        System.out.println(map.get("idActividad1").toString());
+        List<Double> tiempos = new ArrayList<>();
         for (i = 0; i < 4; i++) {
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idPs.add(Integer.parseInt(s2));
             System.out.println("idP=" + i + " : " + idPs.get(i));
-            s = map.get("idP" + i).toString();
+            
+            s = map.get("idActividad" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idActividades.add(Integer.parseInt(s2));
             System.out.println("idActividad=" + i + " : " + idActividades.get(i));
+            
             s = map.get("idEtapa" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
             idEtapas.add(Integer.parseInt(s2));
             System.out.println("idEtapa=" + i + " : " + idEtapas.get(i));
+            tiempos.add(0.0);
             for (int j = 0; j < 6; j++) {
                 s = map.get("hora" + j + "" + i).toString();
                 s1 = s.substring(0, s.length() - 1);
                 s2 = s1.substring(1, s1.length());
                 horas.add(Integer.parseInt(s2));
-                System.out.println("i=" + i + ";j=" + j + " : " + s2);
-
-            }
-        }
-        List<Informesemanal> informeSem = informeSemanalFacade.findAll();
-        for (Informesemanal item : informeSem) {
-            if (item.getTrabajador().getNick().equals(user)
-                    & item.getInformesemanalPK().getFechasemana().equals(new Date())) {
-                permitido = false;
+                tiempos.set(i, tiempos.get(i)+Integer.parseInt(s2));
             }
         }
         int suma = 0;
         for (Integer hora : horas) {
             suma = suma + hora;
         }
+        for(int m=0;m<tiempos.size();m++){
+            int procentaje = 40;
+            Collection<Dedicacion> col = proyectoFacade.find(idPs.get(m)).getDedicacionCollection();
+            for (Dedicacion d : col) {
+                if(d.getProyecto().getId()==idPs.get(m)){
+                    procentaje=d.getPorcentaje();System.out.println(procentaje);
+                }
+            }
+            if(tiempos.get(m)<suma*procentaje/100){
+                permitido=false;
+            }
+        }
         if (suma > 40) {
             permitido = false;
-        } else {
+        } 
+        if(permitido){
             for (int k = 0; k < i; k++) {
                 InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
                         idActividades.get(k), idEtapas.get(k), new Date());
-                Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                permitido = false;
-            }
-        }
-
-        if (permitido) {
-            try {
-                for (int k = 0; k < i; k++) {
-                    InformesemanalPK informePK = new InformesemanalPK(user, idPs.get(k),
-                            idActividades.get(k), idEtapas.get(k), new Date());
-                    Informesemanal informe = new Informesemanal(informePK, "PendienteAprobar");
-                    informe.setHorastarea1(horas.get(0));
-                    informe.setHorastarea2(horas.get(1));
-                    informe.setHorastarea3(horas.get(2));
-                    informe.setHorastarea4(horas.get(3));
-                    informe.setHorastarea5(horas.get(4));
-                    informe.setHorastarea6(horas.get(5));
+                Informesemanal informe = new Informesemanal(informePK, "PENDIENTE-APROBAR");
+                informe.setHorastarea1(horas.get(0));
+                informe.setHorastarea2(horas.get(1));
+                informe.setHorastarea3(horas.get(2));
+                informe.setHorastarea4(horas.get(3));
+                informe.setHorastarea5(horas.get(4));
+                informe.setHorastarea6(horas.get(5));
+                try{
                     informeSemanalFacade.create(informe);
-                    System.out.println(informe.getInformesemanalPK().getFechasemana());
-                }
-            } catch (Exception E) {
-                permitido = false;
+                } catch (Exception E) {}
+                System.out.println(informe.getInformesemanalPK().getFechasemana());
             }
         }
         return permitido;
@@ -1053,13 +1055,107 @@ public class SimpleRootResource {
         Trabajador t = trabajadorFacade.find(nombre);
         List<Proyecto> proyectos = proyectoFacade.findAll();
         for (Proyecto p : proyectos) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0 && p.getFechafin()==null) {
+                List<Actividad> actividades = actividadFacade.findAll();
+                List<Actividad> actividadesProyecto = new ArrayList<>();
+                for (Actividad item : actividades) {
+                    int idP = item.getActividadPK().getIdproyecto();
+                    List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();                   
+                    if (idP == p.getId() && item.getFechainicio()!=null && item.getFechafin() == null) {
+                        for (Actividad pred : predecesoras) {
+                            if (pred.getFechafin() != null ) {                          
+                                actividadesProyecto.add(item);
+                            }
+                        }
+
+                    }
+                }
+                return actividadesProyecto;
+            }
+        }
+        return null;
+    }
+    
+        
+    @GET
+    @Produces("application/json")
+    @Path("/actividadesDisponibles")
+    public List<Actividad> getActividadesDisponibles(@QueryParam("idP") int idProyecto) {
+        Proyecto p = proyectoFacade.find(idProyecto);
+        List<Actividad> actividades = actividadFacade.findAll();
+        List<Actividad> actividadesFiltradas = new ArrayList<>();
+        for (Actividad item : actividades) {
+            if (item.getEtapa().getProyecto().equals(p) & item.getFechainicio()==null
+                    & item.getEsfuerzoestimado()!=0) {
+                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();     
+                for (Actividad pred : predecesoras) {
+                    if (pred.getFechafin() != null) {
+                        actividadesFiltradas.add(item);
+                    }
+                }
+            }
+        }
+        return actividadesFiltradas;
+    }
+
+    @GET
+    @Path("/cerrarActividad/{nombre}/fechaFin/{fechaFin}")
+    public boolean setFechaFin(@PathParam("nombre") String nombre,  @PathParam("fechaFin") String fechaFin) {       
+        String nombreAct = nombre;
+        DateTime ahora = new DateTime();
+        DateTime fechaCierre = new DateTime(fechaFin);
+        List<Actividad> actividades = actividadFacade.findAll();
+        for (Actividad item : actividades) {           
+            if (nombreAct.compareTo(item.getNombre()) == 0) {
+                DateTime fechaIni = new DateTime(item.getFechainicio());
+                if(fechaCierre.isAfter(fechaIni) && fechaCierre.isBefore(ahora)){
+                item.setFechafin(fechaCierre.toDate());
+                actividadFacade.edit(item);             
+                return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/setFechaInicio")
+    public boolean setFechaInicio(@QueryParam("idP") int idP, @QueryParam("idA") int idA,
+            @QueryParam("idE") int idE) {
+        boolean permitido = true;
+        List<Actividad> actividades = actividadFacade.findAll();
+        Actividad a = null;
+        for (Actividad item : actividades) {
+            if(item.getActividadPK().getId()==idA & item.getActividadPK().getIdproyecto()==idP
+                    & item.getActividadPK().getIdetapa()==idE){
+                a = item;
+            }
+        }
+        try{
+            a.setFechainicio(new Date());
+            actividadFacade.edit(a);
+        }catch(Exception E){
+            permitido=false;
+        }
+
+        return permitido;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/actividadesAsignables")
+    public List<Actividad> getActividadesAsignables(@PathParam("nick") String nombre) {
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        for (Proyecto p : proyectos) {
             if (t.getNick().compareTo(p.getNickjefe()) == 0) {
                 List<Actividad> actividades = actividadFacade.findAll();
                 List<Actividad> actividadesProyecto = new ArrayList<>();
                 for (Actividad item : actividades) {
                     int idP = item.getActividadPK().getIdproyecto();
                     List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();
-                    if (idP == p.getId() && null == item.getFechafin()) {
+                    if (idP == p.getId() && null == item.getFechainicio()) {
                         for (Actividad pred : predecesoras) {
                             if (pred.getFechafin() != null) {
                                 actividadesProyecto.add(item);
@@ -1073,21 +1169,26 @@ public class SimpleRootResource {
         }
         return null;
     }
-
+    
     @GET
-    @Path("/proyectos/{idP}/etapas/{idE}/actividades/{idA}/fechaCierre/{fechaFin}")
-    public void setFechaFin(@PathParam("idP") String idP, @PathParam("idE") String idE, @PathParam("idA") String idA, @PathParam("fechaFin") String fechaFin) {
-        int numP = Integer.valueOf(idP);
-        int numE = Integer.valueOf(idE);
-        int numA = Integer.valueOf(idA);
-        Date fechaCierre = new Date(fechaFin);
-        System.out.println(fechaCierre);
-        List<Actividad> actividades = getActividadesProyecto(numP);
-        for (Actividad item : actividades) {
-            if (numE == item.getActividadPK().getIdetapa() && numA == item.getActividadPK().getId()) {
-                item.setFechafin(fechaCierre);
+    @Produces("application/json")
+    @Path("/proyectos/jefe/{nick}/desarrolladoresAsignables")
+    public List<Trabajador> getDesarrolladoresAsignables(@PathParam("nick") String nombre) {
+        Trabajador t = trabajadorFacade.find(nombre);
+        List<Proyecto> proyectos = proyectoFacade.findAll();
+        List<Trabajador> disponibles = null;
+        for (Proyecto p : proyectos) {
+            if (t.getNick().compareTo(p.getNickjefe()) == 0) {
+                List<Dedicacion> dedicaciones = (List<Dedicacion>) p.getDedicacionCollection();
+                for(Dedicacion d: dedicaciones){
+                    Trabajador worker = d.getTrabajador();
+                    if(worker.getDedicacionCollection().size()<4){
+                        disponibles.add(worker);
+                    }
+                }
             }
         }
+        return disponibles;
     }
-
+    
 }
