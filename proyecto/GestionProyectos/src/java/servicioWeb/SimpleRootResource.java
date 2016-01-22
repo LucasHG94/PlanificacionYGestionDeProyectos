@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Clase con todos los metodos restful para la aplicación
  */
 package servicioWeb;
 
@@ -132,6 +130,14 @@ public class SimpleRootResource {
         System.out.println("aaaah");
     }
     
+    /**
+     * Obtención de datos de informe actividades proyectos
+     * @param nick
+     * @param nump
+     * @param f1
+     * @param f2
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/usuario/{nick}/informes/iap/{nump}/{fecha1}/{fecha2}")
@@ -202,6 +208,13 @@ public class SimpleRootResource {
         return result.toString();
     }
     
+    /**
+     * Nos devuelve los informes entre las fechas dadas
+     * @param nick
+     * @param f1
+     * @param f2
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/usuario/{nick}/informes/ia/{fecha1}/{fecha2}")
@@ -232,6 +245,11 @@ public class SimpleRootResource {
         return result.toString();
     }
     
+    /**
+     * Calcula la duración con los datos de las actividades
+     * @param actividades
+     * @return 
+     */
     public List<Actividad> calcularFechasEstimadas(List<Actividad> actividades) {
         List<Actividad> resultado = new ArrayList<>();
         //List<Actividad> actividades = getActividadesProyecto(5);
@@ -255,6 +273,10 @@ public class SimpleRootResource {
         
     }
     
+    /**
+     * 
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/test/infact")
@@ -283,6 +305,11 @@ public class SimpleRootResource {
         
     }
     
+    /**
+     * Comprueba las fechas de las predecesoras para calcular la fecha estimada
+     * @param a
+     * @param precedidas 
+     */
     public void calcularFechasRecursivo(Actividad a, List<Actividad> precedidas) {
         if (precedidas.size() <= 0) {
             return;
@@ -320,6 +347,12 @@ public class SimpleRootResource {
         }
     }
     
+    /**
+     * Obtenemos la fecha aproximada teniendo la duración
+     * @param fechaInicio
+     * @param a
+     * @return 
+     */
     public DateTime getFechaAproximada(DateTime fechaInicio, Actividad a) {
         List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
         int idProyecto = a.getActividadPK().getIdproyecto();
@@ -356,6 +389,13 @@ public class SimpleRootResource {
         return diasEstimados;
     }
     
+    /**
+     * Obtenemos las actividades filtradas por id y etapa
+     * @param actividades
+     * @param etapa
+     * @param id
+     * @return 
+     */
     public Actividad getActividad(List<Actividad> actividades, int etapa, int id) {
         ActividadPK pk;
         for (Actividad a : actividades) {
@@ -379,6 +419,12 @@ public class SimpleRootResource {
         return resultado;
     }
     
+    /**
+     * 
+     * @param numP
+     * @param fecha
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyecto/{numP}/informes/aa/{fecha}")
@@ -435,6 +481,11 @@ public class SimpleRootResource {
         return result.toString();
     }
     
+    /**
+     * Comprueba si exite un trabajador dado
+     * @param nick
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/trabajador/{nick}/existe")
@@ -443,6 +494,12 @@ public class SimpleRootResource {
         return t != null;
     }
     
+    /**
+     * Asignar en la base de datos una categoría a un trabajador
+     * @param cat
+     * @param nick
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/trabajador/{nick}/{categoria}")
@@ -464,17 +521,6 @@ public class SimpleRootResource {
     @Produces("application/json")
     @Path("/test/test1")
     public boolean test1(@QueryParam("testdata") String test) {
-        /*Proyecto p = proyectoFacade.find(3);
-         Etapa e = new Etapa(new EtapaPK(p.getId(), 1));
-         e.setNombre("Primera");
-         Actividad a = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 1));
-         a.setNombre("Una y ya");
-         Actividad b = new Actividad(new ActividadPK(p.getId(), e.getEtapaPK().getId(), 2));
-         b.setNombre("Otra y ya");
-         etapaFacade.create(e);
-         actividadFacade.create(a);
-         actividadFacade.create(b);
-         */
         
         Actividad una = actividadFacade.find(new ActividadPK(3, 1, 1));
         Actividad otra = actividadFacade.find(new ActividadPK(3, 1, 2));
@@ -487,6 +533,11 @@ public class SimpleRootResource {
         return true;
     }
     
+    /**
+     * Nombre no usados para un proyecto
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos/nombreDisponible")
@@ -494,6 +545,12 @@ public class SimpleRootResource {
         return proyectoFacade.getByName(nombre).isEmpty();
     }
     
+    /**
+     * Asigna plan a un proyecto
+     * @param id
+     * @param data
+     * @return 
+     */
     @POST
     @Produces("application/json")
     @Path("/proyectos/{id}/plan")
@@ -607,6 +664,11 @@ public class SimpleRootResource {
         return true;
     }
     
+    /**
+     * Proyectos aún no iniciados
+     * @param nickJefe
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/noiniciados")
@@ -621,6 +683,13 @@ public class SimpleRootResource {
         return proyectosNoIniciados;
     }
     
+    /**
+     * Poner como participante a un trabajador en un proyecto
+     * @param id
+     * @param nick
+     * @param por
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos/{id}/asignarParticipacion/{nick}")
@@ -706,6 +775,11 @@ public class SimpleRootResource {
         
     }
     
+    /**
+     * Obtenemos el proyecto de dado un jefe
+     * @param nick
+     * @return 
+     */
     public Proyecto jefeActualmente(String nick) {
         List<Proyecto> proyectos = getProyectosJefe(nick);
         Date hoy = new Date();
@@ -720,6 +794,11 @@ public class SimpleRootResource {
         return null;
     }
     
+    /**
+     * Nos informa si el trabajador dado puede ser jefe
+     * @param nick
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/trabajador/{nick}/disponibleParaJefe")
@@ -738,6 +817,12 @@ public class SimpleRootResource {
         return true;
     }
     
+    /**
+     * Dar de alta a un proyecto nuevo
+     * @param nombre
+     * @param nickjefe
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Consumes("application/json")
@@ -750,6 +835,11 @@ public class SimpleRootResource {
         return true;
     }
     
+    /**
+     * Obtiene los proyectos de un trabajador
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos")
@@ -777,6 +867,11 @@ public class SimpleRootResource {
         return getProyectosJefe(nick);
     }
     
+    /**
+     * Devuelve los proyectos de un jefe
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectosjefe")
@@ -793,6 +888,12 @@ public class SimpleRootResource {
         return pJefe;
     }
     
+    /**
+     * Identifica que tipo de empleado se ha logueado
+     * @param nombre
+     * @param contraseña
+     * @return 
+     */
     @GET
     @Path("/usuario")
     public int login(@QueryParam("user") String nombre, @QueryParam("password") String contraseña) {
@@ -815,6 +916,11 @@ public class SimpleRootResource {
         return 0;
     }
     
+    /**
+     * Comprueba si es el admin el que esta logueado
+     * @param nombre
+     * @return 
+     */
     @GET
     @Path("/admin")
     public int checkAdmin(@QueryParam("user") String nombre) {
@@ -827,6 +933,12 @@ public class SimpleRootResource {
         return 0;
     }
     
+    /**
+     * Actividades de un trabajador y de un proyecto
+     * @param nombre
+     * @param idProyecto
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/actividades")
@@ -845,6 +957,11 @@ public class SimpleRootResource {
         return actividadesTrabajador;
     }
     
+    /**
+     * Devuelve las actividades de un trabajador para la semana actual
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/actividadesSemana")
@@ -868,6 +985,17 @@ public class SimpleRootResource {
         return actividadesSemana; //actividadesSemana;
     }
     
+    /**
+     * Asigna las vacaciones al trabajador
+     * @param nombre
+     * @param ano1
+     * @param mes1
+     * @param dia1
+     * @param ano2
+     * @param mes2
+     * @param dia2
+     * @return 
+     */
     @GET
     @Consumes("application/json")
     @Produces("application/json")
@@ -938,6 +1066,12 @@ public class SimpleRootResource {
         return permitido;
     }
     
+    /**
+     * Crea un informes semanales de un trabajador (uno por actividad) con las 
+     * comprobaciones necesarias
+     * @param info
+     * @return 
+     */
     @GET
     @Consumes("application/json")
     @Produces("application/json")
@@ -997,7 +1131,7 @@ public class SimpleRootResource {
                     System.out.println(procentaje);
                 }
             }
-            if (tiempos.get(m) < suma * procentaje / 100) {
+            if (horas.size()!=1 && tiempos.get(m) < suma * procentaje / 100) {
                 permitido = false;
             }
         }
@@ -1025,6 +1159,10 @@ public class SimpleRootResource {
         return permitido;
     }
     
+    /**
+     * Cambia el valor de los proyectos paralelos
+     * @param numP 
+     */
     @GET
     @Path("/admin/conf")
     public void setParalelos(@QueryParam("numP") String numP) {
@@ -1035,6 +1173,12 @@ public class SimpleRootResource {
         configFacade.edit(paralel);
     }
     
+    /**
+     * Crea un nuevo usuario en la base de datos
+     * @param nick
+     * @param pass
+     * @param cat 
+     */
     @GET
     @Path("/admin/newUser")
     public void createUsuario(@QueryParam("nick") String nick, @QueryParam("pass") String pass, @QueryParam("cat") String cat) {
@@ -1046,6 +1190,10 @@ public class SimpleRootResource {
         trabajadorFacade.create(newUser);
     }
     
+    /**
+     * devuelve todos los trabajadores
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/trabajadores")
@@ -1055,6 +1203,11 @@ public class SimpleRootResource {
         return workers;
     }
     
+    /**
+     * Devuelve las actividades listas para su cierre
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/cerrar")
@@ -1089,6 +1242,11 @@ public class SimpleRootResource {
         return null;
     }
     
+    /**
+     * Devuele las actividades que se pueden iniciar actualmente
+     * @param idProyecto
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/actividadesDisponibles")
@@ -1110,6 +1268,12 @@ public class SimpleRootResource {
         return actividadesFiltradas;
     }
     
+    /**
+     * Guarda la fecha de finalización de la actividad
+     * @param nombre
+     * @param fechaFin
+     * @return 
+     */
     @GET
     @Path("/cerrarActividad/{nombre}/fechaFin/{fechaFin}")
     public boolean setFechaFin(@PathParam("nombre") String nombre, @PathParam("fechaFin") String fechaFin) {        
@@ -1135,6 +1299,13 @@ public class SimpleRootResource {
         return false;
     }
     
+    /**
+     * Guarda la fecha de inicio de la actividad
+     * @param idP
+     * @param idA
+     * @param idE
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/setFechaInicio")
@@ -1159,6 +1330,11 @@ public class SimpleRootResource {
         return permitido;
     }
     
+    /**
+     * Actividades que podemos asignar a un trabajador
+     * @param nombre
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/proyectos/jefe/{nick}/actividadesAsignables")
@@ -1208,6 +1384,11 @@ public class SimpleRootResource {
         return disponibles;
     }
     
+    /**
+     * Informes que se encuentran en estado PENDIENTE-APROBAR
+     * @param idP
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/informesPendienteAprobar")
@@ -1224,6 +1405,11 @@ public class SimpleRootResource {
         return informesFiltrados;
     }
     
+    /**
+     * Informes que están pendientes de enviar
+     * @param idP
+     * @return 
+     */
     @GET
     @Produces("application/json")
     @Path("/informesPendienteEnviar")
