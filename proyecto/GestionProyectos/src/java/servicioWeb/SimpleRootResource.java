@@ -1205,7 +1205,12 @@ public class SimpleRootResource {
             System.out.println("IDP, IDE,ID: "+idp+" "+ide+" "+id);
             Actividad a = actividadFacade.find(new ActividadPK(idp, ide, id));
             Trabajador t = trabajadorFacade.find(nick);
-            a.getTrabajadorCollection().add(t);
+            System.out.println("Nick: " + t.getNick());
+            List<Trabajador> trabajadores = new ArrayList<>(a.getTrabajadorCollection());
+            trabajadores.add(t);
+            a.setTrabajadorCollection(trabajadores);
+            t.getActividadCollection().add(a);
+            trabajadorFacade.edit(t);
             actividadFacade.edit(a);
             resultado = true;
         } catch (Exception e) {
