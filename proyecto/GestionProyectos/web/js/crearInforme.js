@@ -13,6 +13,7 @@ jQuery(function () {
     jQuery.get("/GestionProyectos/webresources/SimpleRoot/actividadesSemana", {
         user: user, idP:idP
     }, function (resultado) {
+        longitud=resultado.length;
         for (j = 0; j < resultado.length; j++) {
             idActividades[j] = resultado[j].actividadPK.id;
             idEtapas[j] = resultado[j].actividadPK.idetapa;
