@@ -1,6 +1,6 @@
 /*
  * Script para recoger los datos del informe rellenado por el desarrollador
- * 
+ * Muestra los datos adecuados y solicita el número de horas
  */
 
 /* global idPs, idActividades, idEtapas */

@@ -1,7 +1,5 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Obtenemos la relación de informes y mostramos su estado
  */
 var templates = '<a href="#" class="list-group-item list-group-item-info active">Informe de actividad: ${nombre}<span class="badge">${fecha}</span><span class="badge">${estado}</span></a>';
 var templatew = '<a href="#" class="list-group-item list-group-item-warning active">Informe de actividad: ${nombre}<span class="badge">${fecha}</span><span class="badge">${estado}</span></a>';

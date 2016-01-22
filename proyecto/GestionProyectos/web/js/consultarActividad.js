@@ -1,5 +1,7 @@
 /*
  * Script para presentar las actividades de un usuario para un proyecto dado
+ * Obtenemos las activiades adecuadas y colocamos un boton para redirigir con 
+ * la información necesaria.
  */
 jQuery(function () {
     var user = getCookie("username");

@@ -1,7 +1,5 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 var plantillas = '<a href="#" class="list-group-item"> <h4 class="list-group-item-heading">${nombre}</h4> <p class="list-group-item-text">Duracion estimada: ${duracionestimada}</p><p class="list-group-item-text">Duracion real: ${duracionreal}</p><div class="progress"> <div class="progress-bar ${suc} ${active}" role="progressbar" style="width: ${progreso}%"> <span class="sr-only"></span> </div></div></a>';
 var plantillad = '<a href="#" class="list-group-item"> <h4 class="list-group-item-heading">${nombre}</h4> <p class="list-group-item-text">Duracion estimada: ${duracionestimada}</p><p class="list-group-item-text">Duracion real: ${duracionreal}</p><div class="progress"> <div class="progress-bar progress-bar-danger ${active}" role="progressbar" style="width: ${progreso}%"> <span class="sr-only"></span> </div></div></a>';
