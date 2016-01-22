@@ -853,12 +853,12 @@ public class SimpleRootResource {
         List<Actividad> actividadesTrabajador = new ArrayList<>();
         for (Actividad item : actividades) {
             if (item.getTrabajadorCollection().contains(t)
-                    & item.getEtapa().getProyecto().getFechafin().before(new Date())) {
+                    & item.getEtapa().getProyecto().getFechafin()==null) {//before.(new Date())
                 actividadesTrabajador.add(item);
             }
         }
         List<Actividad> actividadesSemana = new ArrayList<>();
-        for (Actividad item : actividadesTrabajador) {
+        for (Actividad item : actividadesTrabajador) {//TODO
             if (item.getFechainicio().before(new Date()) & item.getFechafin().after(new Date())) {
                 actividadesSemana.add(item);
                 //System.out.println(item.getFechainicio()+" -: "+item.getFechafin()+" -> "+new Date());
@@ -952,7 +952,7 @@ public class SimpleRootResource {
         int i;
         System.out.println(map.get("idActividad1").toString());
         List<Double> tiempos = new ArrayList<>();
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 2; i++) {//TODO
             s = map.get("idP" + i).toString();
             s1 = s.substring(0, s.length() - 1);
             s2 = s1.substring(1, s1.length());
@@ -1087,7 +1087,7 @@ public class SimpleRootResource {
         for (Actividad item : actividades) {
             if (item.getEtapa().getProyecto().equals(p) & item.getFechainicio()==null
                     & item.getEsfuerzoestimado()!=0) {
-                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection();     
+                List<Actividad> predecesoras = (List<Actividad>) item.getActividadCollection1();     
                 for (Actividad pred : predecesoras) {
                     if (pred.getFechafin() != null) {
                         actividadesFiltradas.add(item);
@@ -1189,6 +1189,54 @@ public class SimpleRootResource {
             }
         }
         return disponibles;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/informesPendienteAprobar")
+    public List<Informesemanal> getInformesPendienteAprobar(@QueryParam("idP") int idP) {
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        List<Informesemanal> informesFiltrados = new ArrayList<>();
+        for(Informesemanal item:informes){
+            if(item.getActividad().getActividadPK().getIdproyecto()==idP & item.getEstado().equals("PENDIENTE-APROBAR")){
+                informesFiltrados.add(item);item.getInformesemanalPK().getFechasemana();
+            }
+        }
+        
+        return informesFiltrados;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/informesPendienteEnviar")
+    public List<Informesemanal> getInformesPendienteEnviar(@QueryParam("idP") int idP) {
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        List<Informesemanal> informesFiltrados = new ArrayList<>();
+        for(Informesemanal item:informes){
+            if(item.getActividad().getActividadPK().getIdproyecto()==idP & item.getEstado().equals("PENDIENTE-ENVIAR")){
+                informesFiltrados.add(item);item.getInformesemanalPK().getFechasemana();
+            }
+        }
+        
+        return informesFiltrados;
+    }
+    
+    @GET
+    @Produces("application/json")
+    @Path("/aprobar")
+    public boolean setAprobar(@QueryParam("user") String user, @QueryParam("idP") int idP, @QueryParam("idA") int idA) {
+        boolean permitido=true;
+        List<Informesemanal> informes = informeSemanalFacade.findAll();
+        System.out.println(user+":"+idP+":"+idA);
+        for(Informesemanal item:informes){
+            if(item.getInformesemanalPK().getIdproyecto()==idP & item.getInformesemanalPK().getIdactividad()==idA
+                    & item.getInformesemanalPK().getNicktrabajador().equals(user) & item.getEstado().equals("PENDIENTE-APROBAR")){
+                item.setEstado("ACEPTADO");
+                informeSemanalFacade.edit(item);
+                System.out.println("vdfv");
+            }
+        }
+        return permitido;
     }
     
 }

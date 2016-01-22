@@ -59,13 +59,6 @@ jQuery(function () {
             itemlista.setAttribute("style", "display:none");
             itemlista.textContent = resultado[j].nombre + " ";
             var btn = document.createElement("button");
-            btn.setAttribute("id", "iniciar");
-            btn.setAttribute("class", "badge");
-            btn.setAttribute("onClick","location.href='iniciar_proyecto.html'");
-            var t = document.createTextNode("Iniciar");
-            btn.appendChild(t);
-            itemlista.appendChild(btn);
-            var btn = document.createElement("button");
             btn.setAttribute("id", "asiganar");
             btn.setAttribute("class", "badge");
             btn.setAttribute("onClick","location.href=''");
@@ -111,6 +104,16 @@ jQuery(function () {
             lista.appendChild(itemlista);
             $(itemlista).show(500);
         }
+        var lista = document.getElementById("titulo2");
+        var titulo = document.createElement("p");
+        var btn = document.createElement("button");
+        btn.setAttribute("id", "iniciar");
+        btn.setAttribute("class", "btn btn-info");
+        btn.setAttribute("onClick","location.href='iniciar_proyecto.html'");
+        var t = document.createTextNode("Iniciar proyecto");
+        btn.appendChild(t);
+        titulo.appendChild(btn);
+        lista.appendChild(titulo);
     });
     
 });
